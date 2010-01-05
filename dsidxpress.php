@@ -5,7 +5,7 @@ Plugin URI: http://wordpress.org/extend/plugins/dsidxpress/
 Description: This plugin allows WordPress to embed live real estate data directly into the blog. You MUST have Diverse Solutions account to use this plugin.
 Author: Diverse Solutions
 Author URI: http://www.diversesolutions.com/
-Version: 1.0-beta10
+Version: 1.0-beta11
 */
 
 /*
