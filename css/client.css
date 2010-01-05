@@ -1,0 +1,28 @@
+p.dsidx-error
+{
+	margin-left: 20px;
+	margin-right: 20px;
+	padding: 5px;
+	border: 1px solid #FF0000;
+}
+.dsidx-widget
+{
+	text-align: left;
+}
+.dsidx-search-widget th
+{
+	padding-right: 10px;
+}
+.dsidx-search-widget .dsidx-price
+{
+	width: 80px;
+}
+.dsidx-improvedsqft
+{
+	width: 50px;
+}
+.dsidx-search-widget .dsidx-beds,
+.dsidx-search-widget .dsidx-baths
+{
+	width: 25px;
+}

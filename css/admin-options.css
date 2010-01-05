@@ -1,0 +1,16 @@
+#option-FullApiKey {
+	width: 370px;
+}
+.dsidx-status
+{
+	font-weight: bold;
+	text-transform: uppercase; 
+}
+.dsidx-success
+{
+	color: green;
+}
+.dsidx-failure
+{
+	color: red;
+}
