@@ -21,7 +21,7 @@ class dsSearchAgent_Admin {
 		return $buttons;
 	}
 	static function Initialize() {
-		register_setting("dssearchagent", "dssearchagent-wordpress-edition", "dsSearchAgent_Admin::SanitizeOptions");
+		register_setting("dsidxpress", "dssearchagent-wordpress-edition", "dsSearchAgent_Admin::SanitizeOptions");
 	}
 	static function LoadHeader() {
 		global $dsSearchAgent_PluginUrl;
@@ -42,7 +42,7 @@ HTML;
 		<div class="icon32" id="icon-options-general"><br/></div>
 		<h2>dsIDXpress Options</h2>
 		<form method="post" action="options.php">
-			<?php settings_fields("dssearchagent"); ?>
+			<?php settings_fields("dsidxpress"); ?>
 			
 			<h3>Plugin activation</h3>
 			<p>
@@ -195,25 +195,23 @@ HTML;
 		}
 		
 		$options["Activated"] = $setDiagnostics["DiagnosticsSuccessful"];
-		$options["FullApiKey"] = false;
-		
 		update_option("dssearchagent-wordpress-edition", $options);
 		$wp_rewrite->flush_rules();
 		
 		return $setDiagnostics;
 	}
 	static function SanitizeOptions($options) {
-		if ($options["FullApiKey"] !== false) {
+		if ($options["FullApiKey"]) {
 			$apiKeyParts = explode("/", $options["FullApiKey"]);
-
+	
 			$options["AccountID"] = $apiKeyParts[0];
 			$options["SearchSetupID"] = $apiKeyParts[1];
 			$options["PrivateApiKey"] = $apiKeyParts[2];
-
+	
 			dsSearchAgent_ApiRequest::FetchData("BindToRequester", array(), false, 0, $options);
+			
+			unset($options["FullApiKey"]);
 		}
-		
-		unset($options["FullApiKey"]);
 		return $options;
 	}
 }

@@ -8,10 +8,6 @@ class dsSearchAgent_Rewrite {
 		return self::$UrlSlug;
 	}
 	static function InsertRules($incomingRules) {
-		$options = get_option("dssearchagent-wordpress-edition");
-			if (!$options["Activated"])
-				return $incomingRules;
-		
 		$slug = self::GetUrlSlug();
 		$idxRules = array(
 			$slug . "city/([^/]+)(?:/page\-(\\d+))?"		=> 'index.php?idx-action=results&idx-q-Cities=$matches[1]&idx-d-ResultPage=$matches[2]',

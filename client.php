@@ -14,11 +14,6 @@ class dsSearchAgent_Client {
 	static function Activate($posts) {
 		global $wp_query;
 		
-		add_action("wp_head", "dsSearchAgent_Client::HeaderUnconditional");
-		add_filter("style_loader_tag", "dsSearchAgent_Client::FilterVersionForAssets");
-		add_filter("script_loader_src", "dsSearchAgent_Client::FilterVersionForAssets");
-		wp_enqueue_script("jquery");
-		
 		// for remote debugging while this plugin is in beta
 		if ($_SERVER["REMOTE_ADDR"] == "70.168.154.66") {
 			if ($_GET["debug-wpquery"]) {
@@ -34,6 +29,15 @@ class dsSearchAgent_Client {
 				exit();
 			}
 		}
+		
+		$options = get_option(DSIDXPRESS_OPTION_NAME);
+		if (!$options["Activated"])
+			return $posts;
+		
+		add_action("wp_head", "dsSearchAgent_Client::HeaderUnconditional");
+		add_filter("style_loader_tag", "dsSearchAgent_Client::FilterVersionForAssets");
+		add_filter("script_loader_src", "dsSearchAgent_Client::FilterVersionForAssets");
+		wp_enqueue_script("jquery");
 		
 		if (!is_array($wp_query->query) || !isset($wp_query->query["idx-action"]))
 			return $posts;

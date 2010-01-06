@@ -25,8 +25,7 @@ Version: 1.0-beta11
 */
 require_once(ABSPATH . "wp-admin/includes/plugin.php");
 
-register_activation_hook(__FILE__, "dsSearchAgent::FlushRewriteRules");
-
+define('DSIDXPRESS_OPTION_NAME', 'dssearchagent-wordpress-edition');
 if(!defined('PHP_VERSION_ID'))
 {
 	$version = explode('.',PHP_VERSION);
@@ -40,11 +39,9 @@ $dsSearchAgent_PluginData = get_plugin_data(__FILE__);
 $dsSearchAgent_PluginVersion = $dsSearchAgent_PluginData["Version"];
 $dsSearchAgent_Options = get_option("dssearchagent-wordpress-edition");
 
-if ($dsSearchAgent_Options["Activated"]) {
-	require_once("widget-search.php");
-	require_once("widget-list-areas.php");
-	require_once("widget-listings.php");
-}
+require_once("widget-search.php");
+require_once("widget-list-areas.php");
+require_once("widget-listings.php");
 require_once("rewrite.php");
 require_once("api-request.php");
 
@@ -55,15 +52,15 @@ if (is_admin()) {
 	require_once("shortcodes.php");
 }
 
+register_activation_hook(__FILE__, "dsSearchAgent::FlushRewriteRules");
 add_action("widgets_init", "dsSearchAgent::InitWidgets");
+
 class dsSearchAgent {
 	static function InitWidgets() {
 		global $dsSearchAgent_Options;
-		if ($dsSearchAgent_Options["Activated"]) {
-			register_widget("dsSearchAgent_SearchWidget");
-			register_widget("dsSearchAgent_ListAreasWidget");
-			register_widget("dsSearchAgent_ListingsWidget");
-		}
+		register_widget("dsSearchAgent_SearchWidget");
+		register_widget("dsSearchAgent_ListAreasWidget");
+		register_widget("dsSearchAgent_ListingsWidget");
 	}
 	static function FlushRewriteRules() {
 		global $wp_rewrite;
