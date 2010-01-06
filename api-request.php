@@ -79,10 +79,9 @@ class dsSearchAgent_ApiRequest {
 	}
 	private static function FilterData($data) {
 		global $wp_version;
-		global $dsSearchAgent_PluginUrl, $dsSearchAgent_PluginVersion;
 		
-		$data = str_replace('{$pluginUrlPath}', $dsSearchAgent_PluginUrl, $data);
-		$data = str_replace('{$pluginVersion}', $dsSearchAgent_PluginVersion, $data);
+		$data = str_replace('{$pluginUrlPath}', DSIDXPRESS_PLUGIN_URL, $data);
+		$data = str_replace('{$pluginVersion}', DSIDXPRESS_PLUGIN_VERSION, $data);
 		$data = str_replace('{$wordpressVersion}', $wp_version, $data);
 		
 		$blogUrlWithoutProtocol = str_replace("http://", "", get_bloginfo("url"));

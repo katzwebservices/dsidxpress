@@ -1,26 +1,26 @@
-=== dsSearchAgent: WordPress Edition ===
+=== dsIDXpress ===
 Contributors: amattie, jmabe
 Tags: mls, idx, rets, housing, real estate
 Requires at least: 2.8
 Tested up to: 2.9
 Stable tag: 1.0-beta8
 
-This plugin allows WordPress to embed live real estate data directly into the blog. You MUST have a Diverse Solutions account to use this plugin.
+This plugin allows WordPress to embed live real estate data from an MLS directly into a blog. You MUST have a dsIDXpress account to use this plugin.
 
 == Description ==
 
 [Diverse Solutions]: http://www.diversesolutions.com "Diverse Solutions, plugin author"
 
-dsSearchAgent: WordPress Edition is an extension of our ([Diverse Solutions]) [MLS IDX solution](http://idx.diversesolutions.com). With this plugin, bloggers can embed **live** real estate listings (using what is known as *I*nternet *D*ata E*x*change, or IDX) into their blog's posts and pages using something WordPress calls "shortcodes" and into their sidebars using the included widgets. The plugin also functions as a full IDX solution by allowing visitors to search for, and view the details of, listings in the MLS.
+dsIDXpress is an extension of our ([Diverse Solutions]) [MLS IDX solution](http://idx.diversesolutions.com). With this plugin, bloggers can embed **live** real estate listings (using what is known as *I*nternet *D*ata E*x*change, or IDX) into their blog's posts and pages using something WordPress calls "shortcodes" and into their sidebars using the included widgets. The plugin also functions as a full IDX solution by allowing visitors to search for, and view the details of, listings in the MLS.
 
 ## IMPORTANT REQUIREMENTS TO USE THIS PLUGIN:
 
 * You must be an active member with a multiple listing service (MLS). This means that anyone other than real estate agents and brokers (and, in some MLS's, even agents are excluded) cannot use this plugin.
 * The executives at the MLS must be progressive enough to allow the data to be syndicated to your blog from our (Diverse Solutions) API.
-* You must have a dsSearchAgent account in order to get the required activation key.
+* You must have a dsIDXpress account in order to get the required activation key.
 * Your web host must be running at least PHP 5.2. PHP 5.2 has been out for 3 years at this point, so if they aren't using PHP 5.2, they're quite a ways behind the times. This is almost never an issue nowadays.
 
-dsSearchAgent: WordPress Edition contains many advanced features that enable bloggers to create "sticky content," visitors to find properties they like, and search engines to crawl the MLS data so that the listings show up with the blogger's domain in the search engines. It is intended to be a real estate agent's / broker's all-inclusive interface between the MLS they belong to and their WordPress site / blog. Following is a very high-level overview of the plugin's functionality.
+dsIDXpress contains many advanced features that enable bloggers to create "sticky content," visitors to find properties they like, and search engines to crawl the MLS data so that the listings show up with the blogger's domain in the search engines. It is intended to be a real estate agent's / broker's all-inclusive interface between the MLS they belong to and their WordPress site / blog. Following is a very high-level overview of the plugin's functionality.
 
 * It actually embeds the live MLS data INTO the blog -- **it does NOT use HTML "iframes!"**
 * It is **extremely easy** to set up, requiring 17.43 seconds on average. It's downloaded and installed like any other WordPress plugin and there's only one field to fill in (the activation key) to activate all of the plugin's functionality.
@@ -38,22 +38,22 @@ dsSearchAgent: WordPress Edition contains many advanced features that enable blo
 	* Canonical URLs are set for every IDX page to ensure search engines know the "true" url for the content -- even when the base URL is correct.
 * **... and so much more!**
 
-Following are some sites that have already implemented dsSearchAgent: WordPress Edition.
+Following are some sites that have already implemented dsIDXpress.
 
 * [Phoenix Real Estate Guy](http://www.phoenixrealestateguy.com/idx/city/phoenix/)
 * [Charlottesville Real Estate Blog](http://www.realcentralva.com/idx/city/crozet/)
 * Our own super-simple [demo site](http://wp.idx.diversesolutions.com/)
 
-If you'd like more information about the plugin or you would like to obtain an activation key to use this plugin on your blog, please feel free to [contact our sales department](http://www.diversesolutions.com). **This plugin is in beta**, so availability is limited (invite-only) until beta testing is completed and until final pricing is determined.
+If you'd like more information about the plugin or you would like to obtain an activation key to use this plugin on your blog, please feel free to [contact our sales department](http://www.diversesolutions.com).
 
 == Installation ==
 
 [Diverse Solutions]: http://www.diversesolutions.com "Diverse Solutions, plugin author"
 
 1. Go to your WordPress admin area, then go to the "Plugins" area, then go to "Add New".
-2. Search for "dssearchagent" (sans quotes) in the plugin search box.
+2. Search for "dsidxpress" (sans quotes) in the plugin search box.
 3. Click "Install" on the right, then click "Install" at the top-right in the window that comes up.
-4. Go to the "Settings" -> "dsSearchAgent" area.
+4. Go to the "Settings" -> "dsIDXpress" area.
 5. Fill in the activation key provided by [Diverse Solutions].
 
 == Screenshots ==

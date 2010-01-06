@@ -2,10 +2,10 @@
 /*
 Plugin Name: dsIDXpress
 Plugin URI: http://wordpress.org/extend/plugins/dsidxpress/
-Description: This plugin allows WordPress to embed live real estate data directly into the blog. You MUST have Diverse Solutions account to use this plugin.
+Description: This plugin allows WordPress to embed live real estate data from an MLS directly into a blog. You MUST have a dsIDXpress account to use this plugin.
 Author: Diverse Solutions
 Author URI: http://www.diversesolutions.com/
-Version: 1.0-beta11
+Version: 1.0-beta12
 */
 
 /*
@@ -23,21 +23,21 @@ Version: 1.0-beta11
 	See the License for the specific language governing permissions and
 	limitations under the License.
 */
+global $wp_version;
+
 require_once(ABSPATH . "wp-admin/includes/plugin.php");
+$pluginData = get_plugin_data(__FILE__);
 
-define('DSIDXPRESS_OPTION_NAME', 'dssearchagent-wordpress-edition');
-if(!defined('PHP_VERSION_ID'))
-{
-	$version = explode('.',PHP_VERSION);
-	define('PHP_VERSION_ID', ($version[0] * 10000 + $version[1] * 100 + $version[2]));
+define("DSIDXPRESS_OPTION_NAME", "dssearchagent-wordpress-edition");
+define("DSIDXPRESS_MIN_VERSION_PHP", "5.2.0");
+define("DSIDXPRESS_MIN_VERSION_WORDPRESS", "2.8.5");
+define("DSIDXPRESS_PLUGIN_URL", WP_PLUGIN_URL . "/dsidxpress/");
+define("DSIDXPRESS_PLUGIN_VERSION", $pluginData["Version"]);
+
+if (version_compare(phpversion(), DSIDXPRESS_MIN_VERSION_PHP) == -1 || version_compare($wp_version, DSIDXPRESS_MIN_VERSION_WORDPRESS) == -1) {
+	add_action("admin_notices", "dsidxpress_DisplayVersionWarnings");
+	return;
 }
-
-$dsSearchAgent_PluginName = str_replace(".php", "", basename(__FILE__));
-$dsSearchAgent_PluginUrl = WP_PLUGIN_URL . "/" . $dsSearchAgent_PluginName . "/";
-$dsSearchAgent_PluginPath = str_replace("\\", "/", WP_PLUGIN_DIR . "/" . $dsSearchAgent_PluginName . "/");
-$dsSearchAgent_PluginData = get_plugin_data(__FILE__);
-$dsSearchAgent_PluginVersion = $dsSearchAgent_PluginData["Version"];
-$dsSearchAgent_Options = get_option("dssearchagent-wordpress-edition");
 
 require_once("widget-search.php");
 require_once("widget-list-areas.php");
@@ -46,25 +46,41 @@ require_once("rewrite.php");
 require_once("api-request.php");
 
 if (is_admin()) {
-	require_once($dsSearchAgent_PluginPath . "admin.php");
+	// this is needed specifically for development as PHP seems to choke when 1) loading this in admin, 2) using windows, 3) using directory junctions
+	include_once(str_replace("\\", "/", WP_PLUGIN_DIR) . "/dsidxpress/admin.php");
 } else {
 	require_once("client.php");
 	require_once("shortcodes.php");
 }
 
-register_activation_hook(__FILE__, "dsSearchAgent::FlushRewriteRules");
-add_action("widgets_init", "dsSearchAgent::InitWidgets");
+register_activation_hook(__FILE__, "dsidxpress_FlushRewriteRules");
+add_action("widgets_init", "dsidxpress_InitWidgets");
 
-class dsSearchAgent {
-	static function InitWidgets() {
-		global $dsSearchAgent_Options;
-		register_widget("dsSearchAgent_SearchWidget");
-		register_widget("dsSearchAgent_ListAreasWidget");
-		register_widget("dsSearchAgent_ListingsWidget");
-	}
-	static function FlushRewriteRules() {
-		global $wp_rewrite;
-		$wp_rewrite->flush_rules();
-	}
+// not in a static class to prevent PHP < 5 from failing when including and interpreting this particular file
+function dsidxpress_DisplayVersionWarnings() {
+	global $wp_version;
+	
+	$currentVersionPhp = phpversion();
+	$currentVersionWordPress = $wp_version;
+	
+	$minVersionPhp = DSIDXPRESS_MIN_VERSION_PHP;
+	$minVersionWordPress = DSIDXPRESS_MIN_VERSION_WORDPRESS;
+	
+	echo <<<HTML
+		<div class="error">
+			In order to use the dsIDXpress plugin, your web server needs to be running at least PHP {$minVersionPhp} and WordPress {$minVersionWordPress}.
+			You're currently using PHP {$currentVersionPhp} and WordPress {$currentVersionWordPress}. Please consider upgrading.
+		</div>
+HTML;
 }
+function dsidxpress_InitWidgets() {
+	register_widget("dsSearchAgent_SearchWidget");
+	register_widget("dsSearchAgent_ListAreasWidget");
+	register_widget("dsSearchAgent_ListingsWidget");
+}
+function dsidxpress_FlushRewriteRules() {
+	global $wp_rewrite;
+	$wp_rewrite->flush_rules();
+}
+
 ?>

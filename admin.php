@@ -11,9 +11,8 @@ class dsSearchAgent_Admin {
 		//add_filter("mce_buttons", "dsSearchAgent_Admin::RegisterTinyMceButton");
 	}
 	static function AddTinyMcePlugin($plugins) {
-		global $dsSearchAgent_PluginUrl;
-		$plugins["idxlisting"] = $dsSearchAgent_PluginUrl . "tinymce/single_listing/editor_plugin.js";
-		$plugins["idxlistings"] = $dsSearchAgent_PluginUrl . "tinymce/multi_listings/editor_plugin.js";
+		$plugins["idxlisting"] = DSIDXPRESS_PLUGIN_URL . "tinymce/single_listing/editor_plugin.js";
+		$plugins["idxlistings"] = DSIDXPRESS_PLUGIN_URL . "tinymce/multi_listings/editor_plugin.js";
 		return $plugins;
 	}
 	static function RegisterTinyMceButton($buttons) {
@@ -24,10 +23,10 @@ class dsSearchAgent_Admin {
 		register_setting("dsidxpress", "dssearchagent-wordpress-edition", "dsSearchAgent_Admin::SanitizeOptions");
 	}
 	static function LoadHeader() {
-		global $dsSearchAgent_PluginUrl;
+		$pluginUrl = DSIDXPRESS_PLUGIN_URL;
 		
 		echo <<<HTML
-			<link rel="stylesheet" href="{$dsSearchAgent_PluginUrl}css/admin-options.css" type="text/css" />
+			<link rel="stylesheet" href="{$pluginUrl}css/admin-options.css" type="text/css" />
 HTML;
 	}
 	static function EditOptions() {
@@ -183,7 +182,7 @@ HTML;
 		$setDiagnostics["IsApiKeyAuthorizedToUri"] = $diagnostics["IsApiKeyAuthorizedToUri"];
 		$setDiagnostics["IsApiKeyAuthorizedToIP"] = $diagnostics["IsApiKeyAuthorizedToIP"];
 		
-		$setDiagnostics["PhpVersionAcceptable"] = PHP_VERSION_ID > 50200;
+		$setDiagnostics["PhpVersionAcceptable"] = version_compare(phpversion(), DSIDXPRESS_MIN_VERSION_PHP) != -1;
 		$setDiagnostics["UrlInterceptSet"] = get_option("permalink_structure") != "";
 		$setDiagnostics["ClockIsAccurate"] = $timeDiff < $secondsIn2Hrs && $timeDiff > -1 * $secondsIn2Hrs;
 		$setDiagnostics["UnderMonthlyCallLimit"] = $diagnostics["AllowedApiRequestCount"] === 0 || $diagnostics["AllowedApiRequestCount"] > $diagnostics["CurrentApiRequestCount"];

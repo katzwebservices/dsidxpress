@@ -92,7 +92,7 @@ class dsSearchAgent_Client {
 		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData($wp_query->query["idx-action"], $apiParams, false);
 		if ($apiHttpResponse["response"]["code"] == "404")
 			return array();
-		else if (!empty($apiHttpResponse["errors"]) || substr($apiHttpResponse["response"]["code"], 0, 1) == "5")
+		else if (empty($apiHttpResponse["body"]) || !empty($apiHttpResponse["errors"]) || substr($apiHttpResponse["response"]["code"], 0, 1) == "5")
 			wp_die("We're sorry, but we ran into a temporary problem while trying to load the real estate data. Please check back soon.", "Real estate data load error");
 		else
 			$apiData = $apiHttpResponse["body"];
@@ -175,11 +175,10 @@ class dsSearchAgent_Client {
 		return false;
 	}
 	static function HeaderUnconditional() {
-		global $dsSearchAgent_PluginUrl;
-		echo "<link rel=\"stylesheet\" href=\"{$dsSearchAgent_PluginUrl}css/client.css\" />";
+		$pluginUrl = DSIDXPRESS_PLUGIN_URL;
+		echo "<link rel=\"stylesheet\" href=\"{$pluginUrl}css/client.css\" />";
 	}
 	static function Header() {
-		global $dsSearchAgent_PluginUrl;
 		$blogUrl = get_bloginfo("url");
 		$urlSlug = dsSearchAgent_Rewrite::GetUrlSlug();
 		$canonicalUri = self::$CanonicalUri;
