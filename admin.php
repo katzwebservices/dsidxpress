@@ -21,6 +21,7 @@ class dsSearchAgent_Admin {
 	}
 	static function Initialize() {
 		register_setting("dsidxpress", "dssearchagent-wordpress-edition", "dsSearchAgent_Admin::SanitizeOptions");
+		register_setting("dsidxpress", "dsidxpress-api-options", "dsSearchAgent_Admin::SanitizeApiOptions");
 	}
 	static function LoadHeader() {
 		$pluginUrl = DSIDXPRESS_PLUGIN_URL;
@@ -36,12 +37,41 @@ HTML;
 			$diagnostics = self::RunDiagnostics($options);
 			$formattedApiKey = $options["AccountID"] . "/" . $options["SearchSetupID"] . "/" . $options["PrivateApiKey"];
 		}
+		
+		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("AccountOptions", array(), false, 0);
+		
+		if ($apiHttpResponse["response"]["code"] == "404")
+			return array();
+		else if (!empty($apiHttpResponse["errors"]) || substr($apiHttpResponse["response"]["code"], 0, 1) == "5")
+			wp_die("We're sorry, but we ran into a temporary problem while trying to load the account data. Please check back soon.", "Account data load error");
+		else
+			$account_options = json_decode($apiHttpResponse["body"]);
 ?>
 	<div class="wrap">
 		<div class="icon32" id="icon-options-general"><br/></div>
 		<h2>dsIDXpress Options</h2>
 		<form method="post" action="options.php">
 			<?php settings_fields("dsidxpress"); ?>
+			<?php if($diagnostics["DiagnosticsSuccessful"] === true){ ?>
+			<h3>Display Settings</h3>
+			
+			<table class="form-table">
+				<tr>
+					<th >
+						<label for="dsidxpress-CustomTitleText">Custom Title Text:</label>
+					</th>
+					<td>					
+						<input type="text" id="dsidxpress-CustomTitleText" maxlength="49" name="dsidxpress-api-options[CustomTitleText]" value="<?php echo $account_options->CustomTitleText; ?>" />
+						<span class="description">use <code>%title%</code> to designate where you want the location title like: <code>Real Estate in %title%</code></span>
+					</td>
+				</tr>
+			</table>
+			
+			<p class="submit">
+				<input type="submit" class="button-primary" name="Submit" value="Save Options" />
+			</p>
+			<?php }?>
+			
 			
 			<h3>Plugin activation</h3>
 			<p>
@@ -211,6 +241,24 @@ HTML;
 			
 			unset($options["FullApiKey"]);
 		}
+		return $options;
+	}
+	
+	/*
+	 * We're using the sanitize to capture the POST for these options so we can send them back to the diverse API
+	 * since we save and consume -most- options there.
+	 */
+	static function SanitizeApiOptions($options){
+		$options_text = "";
+		
+		foreach($options as $key => $value){
+			if($options_text != "") $options_text .= ",";
+			$options_text .= $key.'|'.urlencode($value);
+			unset($options[$key]);
+		}
+		
+		$result = dsSearchAgent_ApiRequest::FetchData("SaveAccountOptions", array("options" => $options_text), false, 0);
+		
 		return $options;
 	}
 }
