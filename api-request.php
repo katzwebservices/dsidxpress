@@ -14,17 +14,17 @@ class dsSearchAgent_ApiRequest {
 	
 	static function FetchData($action, $params = array(), $echoAssetsIfNotEnqueued = true, $cacheSecondsOverride = null, $options = null) {
 		global $wp_query, $wp_version;
-		global $dsSearchAgent_PluginVersion;
 		
-		$options = $options ? $options : get_option("dssearchagent-wordpress-edition");
+		$options = $options ? $options : get_option(DSIDXPRESS_OPTION_NAME);
 		$privateApiKey = $options["PrivateApiKey"];
 		$requestUri = self::$ApiEndPoint . $action;
+		$compressCache = function_exists('gzdeflate') && function_exists('gzinflate');
 		
 		$params["query.SearchSetupID"] = $options["SearchSetupID"];
 		$params["requester.AccountID"] = $options["AccountID"];
 		$params["requester.ApplicationProfile"] = "WordPressIdxModule";
 		$params["requester.ApplicationVersion"] = $wp_version;
-		$params["requester.PluginVersion"] = $dsSearchAgent_PluginVersion;
+		$params["requester.PluginVersion"] = DSIDXPRESS_PLUGIN_VERSION;
 		$params["requester.RequesterUri"] = get_bloginfo("url");
 		
 		foreach (self::$NumericValues as $key) {
@@ -38,6 +38,7 @@ class dsSearchAgent_ApiRequest {
 		if ($cacheSecondsOverride !== 0) {
 			$cachedRequestData = get_transient($transientKey);
 			if ($cachedRequestData) {
+				$cachedRequestData = $compressCache ? unserialize(gzinflate(base64_decode($cachedRequestData))) : $cachedRequestData;
 				$cachedRequestData["body"] = self::ExtractAndEnqueueStyles($cachedRequestData["body"], $echoAssetsIfNotEnqueued);
 				$cachedRequestData["body"] = self::ExtractAndEnqueueScripts($cachedRequestData["body"], $echoAssetsIfNotEnqueued);
 				return $cachedRequestData;
@@ -70,7 +71,7 @@ class dsSearchAgent_ApiRequest {
 		if (empty($response["errors"]) && substr($response["response"]["code"], 0, 1) != "5") {
 			$response["body"] = self::FilterData($response["body"]);
 			if ($cacheSecondsOverride !== 0)
-				set_transient($transientKey, $response, $cacheSecondsOverride === null ? self::$CacheSeconds : $cacheSecondsOverride);
+				set_transient($transientKey, $compressCache ? base64_encode(gzdeflate(serialize($response))) : $response, $cacheSecondsOverride === null ? self::$CacheSeconds : $cacheSecondsOverride);
 			$response["body"] = self::ExtractAndEnqueueStyles($response["body"], $echoAssetsIfNotEnqueued);
 			$response["body"] = self::ExtractAndEnqueueScripts($response["body"], $echoAssetsIfNotEnqueued);
 		}

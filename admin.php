@@ -20,7 +20,7 @@ class dsSearchAgent_Admin {
 		return $buttons;
 	}
 	static function Initialize() {
-		register_setting("dsidxpress", "dssearchagent-wordpress-edition", "dsSearchAgent_Admin::SanitizeOptions");
+		register_setting("dsidxpress", DSIDXPRESS_OPTION_NAME, "dsSearchAgent_Admin::SanitizeOptions");
 		register_setting("dsidxpress", "dsidxpress-api-options", "dsSearchAgent_Admin::SanitizeApiOptions");
 	}
 	static function LoadHeader() {
@@ -31,7 +31,7 @@ class dsSearchAgent_Admin {
 HTML;
 	}
 	static function EditOptions() {
-		$options = get_option("dssearchagent-wordpress-edition");
+		$options = get_option(DSIDXPRESS_OPTION_NAME);
 		
 		if ($options["PrivateApiKey"]) {
 			$diagnostics = self::RunDiagnostics($options);
@@ -224,7 +224,7 @@ HTML;
 		}
 		
 		$options["Activated"] = $setDiagnostics["DiagnosticsSuccessful"];
-		update_option("dssearchagent-wordpress-edition", $options);
+		update_option(DSIDXPRESS_OPTION_NAME, $options);
 		$wp_rewrite->flush_rules();
 		
 		return $setDiagnostics;

@@ -1,7 +1,7 @@
 <?php
 class dsSearchAgent_Shortcodes {
 	static function Listing($atts, $content = null, $code = "") {
-		$options = get_option("dssearchagent-wordpress-edition");
+		$options = get_option(DSIDXPRESS_OPTION_NAME);
 			if (!$options["Activated"])
 				return "";
 		
@@ -32,6 +32,8 @@ class dsSearchAgent_Shortcodes {
 		}
 		
 		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("Details", $apiRequestParams);
+		add_action("wp_footer", "dsSearchAgent_Shortcodes::InsertDisclaimer");
+		
 		if ($apiHttpResponse["response"]["code"] == "404") {
 			return "<p class=\"dsidx-error\">We're sorry, but we couldn't find MLS # {$atts[mlsnumber]} in our database. This property was most likely taken off the market.</p>";
 		}
@@ -42,7 +44,7 @@ class dsSearchAgent_Shortcodes {
 		}
 	}
 	static function Listings($atts, $content = null, $code = "") {
-		$options = get_option("dssearchagent-wordpress-edition");
+		$options = get_option(DSIDXPRESS_OPTION_NAME);
 			if (!$options["Activated"])
 				return "";
 		
@@ -77,11 +79,17 @@ class dsSearchAgent_Shortcodes {
 		$apiRequestParams["directive.SortOrders[0].Direction"] = $atts["orderdir"];
 		
 		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("Results", $apiRequestParams);
+		add_action("wp_footer", "dsSearchAgent_Shortcodes::InsertDisclaimer");
+		
 		if (empty($apiHttpResponse["errors"]) && $apiHttpResponse["response"]["code"] == "200") {
 			return $apiHttpResponse["body"];
 		} else {
 			return "<p class=\"dsidx-error\">We're sorry, but it seems that we're having some problems loading MLS data from our database. Please check back soon.</p>";
 		}
+	}
+	static function InsertDisclaimer() {
+		$disclaimer = dsSearchAgent_ApiRequest::FetchData("Disclaimer");
+		echo $disclaimer["body"];
 	}
 }
 
