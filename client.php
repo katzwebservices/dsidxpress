@@ -103,7 +103,7 @@ class dsSearchAgent_Client {
 		self::EnsureBaseUri();
 		
 		$posts = array((object)array(
-			"ID"				=> -1,
+			"ID"				=> 0,
 			"comment_count"		=> 0,
 			"comment_status"	=> "closed",
 			"ping_status"		=> "closed",
@@ -112,7 +112,7 @@ class dsSearchAgent_Client {
 			"post_date"			=> $dateaddedgmt ? $dateaddedgmt : date("c"),
 			"post_date_gmt"		=> $dateaddedgmt ? $dateaddedgmt : gmdate("c"),
 			"post_name"			=> "idx-data",
-			"post_parent"		=> -1,
+			"post_parent"		=> 0,
 			"post_status"		=> "publish",
 			"post_title"		=> $title,
 			"post_type"			=> "page"
