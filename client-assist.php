@@ -9,9 +9,10 @@ class dsSearchAgent_ClientAssist {
 		
 		if (!preg_match("/^http:\/\//", $urlBase))
 			$urlBase = "http://" . $urlBase;
+		$urlBase = str_replace(array('&', '"'), array('&amp;', '&quot;'), $urlBase);
 		
 		header('Content-Type: text/xml');
-		echo '<?xml version="1.0"?><gallery><album lgpath="' . str_replace(array('&', '"'), array('&amp;', '&quot;'), $urlBase) . '" fspath="' . str_replace(array('&', '"'), array('&amp;', '&quot;'), $_GET['uriBase']) . '">';
+		echo '<?xml version="1.0"?><gallery><album lgpath="' . $urlBase . '" fspath="' . $urlBase . '">';
 		for($i = 0; $i < (int)$_GET['count']; $i++) {
 			echo '<img src="' . $i . '-medium.jpg' . $uriSuffix . '" fs="' . $i . '-full.jpg' . $uriSuffix . '" />';
 		}
