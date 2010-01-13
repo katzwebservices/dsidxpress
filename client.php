@@ -126,7 +126,7 @@ class dsSearchAgent_Client {
 	static function EnsureBaseUri() {
 		$urlSlug = dsSearchAgent_Rewrite::GetUrlSlug();
 		$queryPosition = strrpos(self::$CanonicalUri, "?");
-		if ($queryPosition)
+		if ($queryPosition !== false)
 			$hardPermalink = substr(self::$CanonicalUri, 0, $queryPosition);
 		else
 			$hardPermalink = self::$CanonicalUri;
