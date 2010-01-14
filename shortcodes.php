@@ -49,16 +49,17 @@ class dsSearchAgent_Shortcodes {
 				return "";
 		
 		$atts = shortcode_atts(array(
-			"city"		=> "",
-			"community"	=> "",
-			"tract"		=> "",
-			"zip"		=> "",
-			"minprice"	=> "",
-			"maxprice"	=> "",
-			"linkid"	=> "",
-			"count"		=> "5",
-			"orderby"	=> "DateAdded",
-			"orderdir"	=> "DESC"
+			"city"			=> "",
+			"community"		=> "",
+			"tract"			=> "",
+			"zip"			=> "",
+			"minprice"		=> "",
+			"maxprice"		=> "",
+			"propertytypes"	=> "",
+			"linkid"		=> "",
+			"count"			=> "5",
+			"orderby"		=> "DateAdded",
+			"orderdir"		=> "DESC"
 		), $atts);
 		$apiRequestParams = array();
 		$apiRequestParams["responseDirective.ViewNameSuffix"] = "shortcode";
@@ -70,6 +71,12 @@ class dsSearchAgent_Shortcodes {
 		$apiRequestParams["query.ZipCodes"] = $atts["zip"];
 		$apiRequestParams["query.PriceMin"] = $atts["minprice"];
 		$apiRequestParams["query.PriceMax"] = $atts["maxprice"];
+		if ($atts["propertytypes"]) {
+			$propertyTypes = explode(",", str_replace(" ", "", $atts["propertytypes"]));
+			$propertyTypes = array_combine(range(0, count($propertyTypes) - 1), $propertyTypes);
+			foreach ($propertyTypes as $key => $value)
+				$apiRequestParams["query.PropertyTypes[{$key}]"] = $value;
+		}
 		if ($atts["linkid"]) {
 			$apiRequestParams["query.LinkID"] = $atts["linkid"];
 			$apiRequestParams["query.ForceUsePropertySearchConstraints"] = "true";
