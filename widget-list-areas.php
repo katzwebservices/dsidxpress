@@ -4,7 +4,7 @@ class dsSearchAgent_ListAreasWidget extends WP_Widget {
 		$this->WP_Widget("dsidx-list-areas", "IDX Areas", array(
 			"classname" => "dsidx-widget-list-areas",
 			"description" => "Lists of links for showing real estate"
-		));
+		));		
 	}
 	function widget($args, $instance) {
 		extract($args);
@@ -22,11 +22,15 @@ class dsSearchAgent_ListAreasWidget extends WP_Widget {
 		
 		echo "<ul class=\"dsidx-widget\">";
 		foreach ($areaOptions["areas"] as $area) {
-			$areaUrl = urlencode(strtolower(str_replace(array("-", " "), array("_", "-"), $area)));
 			$area = htmlentities($area);
 			$areaType = $areaOptions[areaType];
+			$area_pair = preg_split('/\|/', $area, -1);
+			$area_title = count($area_pair) == 2 ? $area_pair[0] : $area;
+			$areaUrl = count($area_pair) == 2 ? 
+				urlencode(strtolower(str_replace(array("-", " "), array("_", "-"), $area_pair[1]))) :
+				urlencode(strtolower(str_replace(array("-", " "), array("_", "-"), $area)));
 			
-			echo "<li><a href=\"{$urlBase}{$areaType}/{$areaUrl}/\">{$area}</a></li>";
+			echo "<li><a href=\"{$urlBase}{$areaType}/{$areaUrl}/\">{$area_title}</a></li>";
 		}
 		echo "</ul>";
 		echo $after_widget;
@@ -63,7 +67,7 @@ class dsSearchAgent_ListAreasWidget extends WP_Widget {
 		$areaOptionsFieldId = $this->get_field_id("areaOptions");
 		$areaOptionsFieldName = $this->get_field_name("areaOptions");
 		$selectedAreaType = array($instance["areaOptions"]["areaType"] => "selected=\"selected\"");
-		
+		$type_normalized = ucwords($instance["areaOptions"]["areaType"]);
 		echo <<<HTML
 			<p>
 				<label for="{$titleFieldId}">Widget title</label>
@@ -72,7 +76,7 @@ class dsSearchAgent_ListAreasWidget extends WP_Widget {
 			
 			<p>
 				<label for="{$areaOptionsFieldId}[areaType]">Area types</label>
-				<select class="widefat" id="{$areaOptionsFieldId}[areaType]" name="{$areaOptionsFieldName}[areaType]">
+				<select class="widefat" id="{$areaOptionsFieldId}_areaType" name="{$areaOptionsFieldName}[areaType]" onchange="dsWidgetListAreas.SwitchType(this, '{$areaOptionsFieldId}_link_title')">
 					<option value="city" {$selectedAreaType[city]}>Cities</option>
 					<option value="community" {$selectedAreaType[community]}>Communities</option>
 					<option value="tract" {$selectedAreaType[tract]}>Tracts</option>
@@ -80,14 +84,28 @@ class dsSearchAgent_ListAreasWidget extends WP_Widget {
 				</select>
 			</p>
 			
+			<h3>Add a Location</h3>
 			<p>
-				<label for="{$areaOptionsFieldId}[areas]">Areas (one per line)</label>
-				<textarea id="{$areaOptionsFieldId}[areas]" name="{$areaOptionsFieldName}[areas]" class="widefat" rows="10">{$areas}</textarea>
+				<label for="{$titleFieldId}_title">Title</label>
+				<input id="{$titleFieldId}_title" name="{$titleFieldName}_title" value="" class="widefat" type="text" />
+			</p>
+			<p>
+				<label for="{$titleFieldId}_lookup">Lookup Value</label>
+				<input id="{$titleFieldId}_lookup" name="{$ttleFieldName}_lookup" value="" class="widefat" type="text" /><br />
+				See all <span id="{$areaOptionsFieldId}_link_title">{$type_normalized}</span> Lookup Types <a href="javascript:void(0);" onclick="dsWidgetListAreas.LaunchLookupList('{$areaOptionsFieldId}_areaType')">here</a>
+			</p>
+			<p>
+				<input type="button" value="Add This Location" onclick="dsWidgetListAreas.AddArea('{$titleFieldId}_title', '{$titleFieldId}_lookup', '{$areaOptionsFieldId}_areas')"/>
+			</p>
+			
+			<h3>Areas (one per line)</h3>
+			<p>
+				<textarea id="{$areaOptionsFieldId}_areas" name="{$areaOptionsFieldName}[areas]" class="widefat" rows="10">{$areas}</textarea>
 			</p>
 			
 			<p>
 				<label for="{$areaOptionsFieldId}[sortAreas]">Sort areas?</label>
-				<input id="{$areaOptionsFieldId}[sortAreas]" name="{$areaOptionsFieldName}[sortAreas]" class="checkbox" type="checkbox" />
+				<input id="{$areaOptionsFieldId}_sortAreas" name="{$areaOptionsFieldName}[sortAreas]" class="checkbox" type="checkbox" />
 			</p>
 HTML;
 	}

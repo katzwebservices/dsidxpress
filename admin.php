@@ -1,4 +1,6 @@
 <?php
+add_action("load-settings_page_dsidxpress", "dsSearchAgent_Admin::LocationList");
+
 add_action("admin_init", "dsSearchAgent_Admin::Initialize");
 add_action("admin_menu", "dsSearchAgent_Admin::AddMenu");
 
@@ -22,6 +24,36 @@ class dsSearchAgent_Admin {
 	static function Initialize() {
 		register_setting("dsidxpress", DSIDXPRESS_OPTION_NAME, "dsSearchAgent_Admin::SanitizeOptions");
 		register_setting("dsidxpress", "dsidxpress-api-options", "dsSearchAgent_Admin::SanitizeApiOptions");
+		
+		wp_enqueue_script('dsidxpress_widget_list_areas', DSIDXPRESS_PLUGIN_URL . 'js/widget-list-areas.js', array('jquery'), DSIDXPRESS_PLUGIN_VERSION);
+	}
+	static function LocationList(){
+		if($_REQUEST["action"] == "LocationList"){
+			$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("LocationList", array("type" => $_REQUEST['type']), false, 0);
+			//print_r($apiHttpResponse);
+			if ($apiHttpResponse["response"]["code"] == "404")
+				return array();
+			else if (!empty($apiHttpResponse["errors"]) || substr($apiHttpResponse["response"]["code"], 0, 1) == "5")
+				wp_die("We're sorry, but we ran into a temporary problem while trying to load the account data. Please check back soon.", "Account data load error");
+			else
+				$locations = json_decode($apiHttpResponse["body"]);
+			
+			?><html>
+				<head>
+					<style>* { font-family:Verdana; } h2 { font-size: 14px; } body { font-size: 12px; }</style>
+				</head>
+				<body>
+				<h2>Possible <?php echo ucwords($_REQUEST['type']); ?> Locations</h2>
+				<?php 
+			
+				foreach ($locations->Locations as $location){
+					?><div><?php echo $location->LocationName; ?></div><?php
+				}
+			
+				?></body>
+			</html><?php	
+			exit;
+		}
 	}
 	static function LoadHeader() {
 		$pluginUrl = DSIDXPRESS_PLUGIN_URL;
@@ -62,7 +94,7 @@ HTML;
 					</th>
 					<td>					
 						<input type="text" id="dsidxpress-CustomTitleText" maxlength="49" name="dsidxpress-api-options[CustomTitleText]" value="<?php echo $account_options->CustomTitleText; ?>" />
-						<span class="description">use <code>%title%</code> to designate where you want the location title like: <code>Real Estate in %title%</code></span>
+						<span class="description">use <code>%title%</code> to designate where you want the location title like: <code>Real estate in the %title%</code></span>
 					</td>
 				</tr>
 			</table>
