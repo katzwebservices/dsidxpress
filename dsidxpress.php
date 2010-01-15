@@ -29,10 +29,15 @@ require_once(ABSPATH . "wp-admin/includes/plugin.php");
 $pluginData = get_plugin_data(__FILE__);
 
 define("DSIDXPRESS_OPTION_NAME", "dssearchagent-wordpress-edition");
+define("DSIDXPRESS_API_OPTIONS_NAME", "dsidxpress-api-options");
+define("DSIDXPRESS_CUSTOM_OPTIONS_NAME", "dsidxpress-custom-options");
+
 define("DSIDXPRESS_MIN_VERSION_PHP", "5.2.0");
 define("DSIDXPRESS_MIN_VERSION_WORDPRESS", "2.8.5");
 define("DSIDXPRESS_PLUGIN_URL", WP_PLUGIN_URL . "/dsidxpress/");
 define("DSIDXPRESS_PLUGIN_VERSION", $pluginData["Version"]);
+
+
 
 if (version_compare(phpversion(), DSIDXPRESS_MIN_VERSION_PHP) == -1 || version_compare($wp_version, DSIDXPRESS_MIN_VERSION_WORDPRESS) == -1) {
 	add_action("admin_notices", "dsidxpress_DisplayVersionWarnings");

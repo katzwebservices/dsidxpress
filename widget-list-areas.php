@@ -95,7 +95,7 @@ class dsSearchAgent_ListAreasWidget extends WP_Widget {
 				See all <span id="{$areaOptionsFieldId}_link_title">{$type_normalized}</span> Lookup Types <a href="javascript:void(0);" onclick="dsWidgetListAreas.LaunchLookupList('{$areaOptionsFieldId}_areaType')">here</a>
 			</p>
 			<p>
-				<input type="button" value="Add This Location" onclick="dsWidgetListAreas.AddArea('{$titleFieldId}_title', '{$titleFieldId}_lookup', '{$areaOptionsFieldId}_areas')"/>
+				<input type="button" class="button" value="Add This Location" onclick="dsWidgetListAreas.AddArea('{$titleFieldId}_title', '{$titleFieldId}_lookup', '{$areaOptionsFieldId}_areas')"/>
 			</p>
 			
 			<h3>Areas (one per line)</h3>

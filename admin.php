@@ -1,13 +1,31 @@
 <?php
-add_action("load-settings_page_dsidxpress", "dsSearchAgent_Admin::LocationList");
 
 add_action("admin_init", "dsSearchAgent_Admin::Initialize");
 add_action("admin_menu", "dsSearchAgent_Admin::AddMenu");
 
+// hook hack to help with preventing wordpress template from showing
+add_action("load-settings_page_dsidxpress", "dsSearchAgent_Admin::LocationList");
+
+// hook into Google XML Sitemaps plugin http://wordpress.org/extend/plugins/google-sitemap-generator/
+add_action("sm_buildmap", "dsSearchAgent_Admin::GoogleXMLSitemaps");
+
+
 class dsSearchAgent_Admin {
+	static function TopLevel() {
+		// figure out if we're activated, if we are send to activation, if we are send to options
+	}
 	static function AddMenu() {
-		$optionsPage = add_options_page("dsIDXpress Options", "dsIDXpress", "manage_options", "dsidxpress", "dsSearchAgent_Admin::EditOptions");
+		$options = get_option(DSIDXPRESS_OPTION_NAME);
+		
+		add_menu_page('dsIDXPress', 'dsIDXPress', "manage_options", "dsidxpress", "dsSearchAgent_Admin::TopLevel", DSIDXPRESS_PLUGIN_URL . 'assets/idxpress_LOGOicon.png'); //, [icon_url]);
+
+		if(isset($options["PrivateApiKey"]))
+			$optionsPage = add_submenu_page("dsidxpress", "dsIDXPress Options", "Options", "manage_options", "dsidxpress", "dsSearchAgent_Admin::EditOptions");
+			
+		$activationPage = add_submenu_page("dsidxpress", "dsIDXpress Activation", "Activation", "manage_options", isset($options["PrivateApiKey"]) ? "dsidxpress_acivate" : "dsidxpress", "dsSearchAgent_Admin::Activation");
+		
 		add_action("admin_print_scripts-{$optionsPage}", "dsSearchAgent_Admin::LoadHeader");
+		add_action("admin_print_scripts-{$activationPage}", "dsSearchAgent_Admin::LoadHeader");
 		
 		//add_filter("mce_external_plugins", "dsSearchAgent_Admin::AddTinyMcePlugin");
 		//add_filter("mce_buttons", "dsSearchAgent_Admin::RegisterTinyMceButton");
@@ -22,9 +40,11 @@ class dsSearchAgent_Admin {
 		return $buttons;
 	}
 	static function Initialize() {
-		register_setting("dsidxpress", DSIDXPRESS_OPTION_NAME, "dsSearchAgent_Admin::SanitizeOptions");
-		register_setting("dsidxpress", "dsidxpress-api-options", "dsSearchAgent_Admin::SanitizeApiOptions");
-		
+		register_setting("dsidxpress_activation", DSIDXPRESS_OPTION_NAME, "dsSearchAgent_Admin::SanitizeOptions");
+		register_setting("dsidxpress_options", DSIDXPRESS_API_OPTIONS_NAME, "dsSearchAgent_Admin::SanitizeApiOptions");	
+		register_setting("dsidxpress_options", DSIDXPRESS_CUSTOM_OPTIONS_NAME);
+
+		wp_enqueue_script('dsidxpress_widget_list_areas', DSIDXPRESS_PLUGIN_URL . 'js/admin-options.js', array('jquery','jquery-ui-sortable'), DSIDXPRESS_PLUGIN_VERSION);		
 		wp_enqueue_script('dsidxpress_widget_list_areas', DSIDXPRESS_PLUGIN_URL . 'js/widget-list-areas.js', array('jquery'), DSIDXPRESS_PLUGIN_VERSION);
 	}
 	static function LocationList(){
@@ -62,14 +82,10 @@ class dsSearchAgent_Admin {
 			<link rel="stylesheet" href="{$pluginUrl}css/admin-options.css" type="text/css" />
 HTML;
 	}
+	
 	static function EditOptions() {
-		$options = get_option(DSIDXPRESS_OPTION_NAME);
-		
-		if ($options["PrivateApiKey"]) {
-			$diagnostics = self::RunDiagnostics($options);
-			$formattedApiKey = $options["AccountID"] . "/" . $options["SearchSetupID"] . "/" . $options["PrivateApiKey"];
-		}
-		
+		$options = get_option(DSIDXPRESS_CUSTOM_OPTIONS_NAME);
+				
 		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("AccountOptions", array(), false, 0);
 		
 		if ($apiHttpResponse["response"]["code"] == "404")
@@ -78,33 +94,158 @@ HTML;
 			wp_die("We're sorry, but we ran into a temporary problem while trying to load the account data. Please check back soon.", "Account data load error");
 		else
 			$account_options = json_decode($apiHttpResponse["body"]);
+			
+		$urlBase = get_bloginfo("url");
+		if (substr($urlBase, strlen($urlBase), 1) != "/") $urlBase .= "/";
+		$urlBase .= dsSearchAgent_Rewrite::GetUrlSlug();
 ?>
-	<div class="wrap">
+	<div class="wrap metabox-holder">
 		<div class="icon32" id="icon-options-general"><br/></div>
 		<h2>dsIDXpress Options</h2>
 		<form method="post" action="options.php">
-			<?php settings_fields("dsidxpress"); ?>
-			<?php if($diagnostics["DiagnosticsSuccessful"] === true){ ?>
-			<h3>Display Settings</h3>
+			<?php settings_fields("dsidxpress_options"); ?>
+			<h4>Display Settings</h4>
 			
 			<table class="form-table">
 				<tr>
-					<th >
+					<th>
 						<label for="dsidxpress-CustomTitleText">Custom Title Text:</label>
 					</th>
 					<td>					
-						<input type="text" id="dsidxpress-CustomTitleText" maxlength="49" name="dsidxpress-api-options[CustomTitleText]" value="<?php echo $account_options->CustomTitleText; ?>" />
+						<input type="text" id="dsidxpress-CustomTitleText" maxlength="49" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[CustomTitleText]" value="<?php echo $account_options->CustomTitleText; ?>" />
 						<span class="description">use <code>%title%</code> to designate where you want the location title like: <code>Real estate in the %title%</code></span>
 					</td>
 				</tr>
 			</table>
 			
+			<h4>XML Sitemaps Locations</h4>
+			<?php if ( in_array('google-sitemap-generator/sitemap.php', get_settings('active_plugins'))) {?>
+			<span class="description">Add the Locations (City, Community, Tract, or Zip) to your XML Sitemap by adding them via the dialogs below.</span>
+			<div class="dsidxpress-SitemapLocations stuffbox">
+				<script>dsIDXPressOptions.UrlBase = '<?php echo $urlBase; ?>'; dsIDXPressOptions.OptionPrefix = '<?php echo DSIDXPRESS_CUSTOM_OPTIONS_NAME; ?>';</script>
+				<h3><span class="hndle">Locations for Sitemap</span></h3>
+				<div class="inside">
+					<ul id="dsidxpress-SitemapLocations">
+					<?php 
+						if(isset($options["SitemapLocations"]) && is_array($options["SitemapLocations"])){
+							$location_index = 0;
+							foreach($options["SitemapLocations"] as $key => $value){
+								$location_sanitized = urlencode(strtolower(str_replace(array("-", " "), array("_", "-"), $value["value"])));
+								$city_selected = ''; $community_selected = ''; $tract_selected = ''; $zip_selected = '';
+								switch($value["type"]){
+									case 'city': $city_selected = ' selected="selected"'; break;
+									case 'community': $community_selected = ' selected="selected"'; break;
+									case 'tract': $tract_selected = ' selected="selected"'; break;
+									case 'zip': $zip_selected = ' selected="selected"'; break;
+								}
+								
+								?>
+								<li class="ui-state-default dsidxpress-SitemapLocation">
+									<div class="arrow"><span class="dsidxpress-up_down"></span></div>
+									<div class="value">
+										<a href="<?php echo $urlBase . $value["type"] .'/'. $location_sanitized;?>" target="_blank"><?php echo $value["value"]; ?></a>
+										<input type="hidden" name="<?php echo DSIDXPRESS_CUSTOM_OPTIONS_NAME ; ?>[SitemapLocations][<?php echo $location_index; ?>][value]" value="<?php echo $value["value"]; ?>" />
+									</div>
+									<div class="type"><select id="dsidxpress-NewSitemapLocationType" name="<?php echo DSIDXPRESS_CUSTOM_OPTIONS_NAME ; ?>[SitemapLocations][<?php echo $location_index; ?>][type]">
+										<option value="city"<?php echo $city_selected; ?>>City</option>
+										<option value="community"<?php echo $community_selected; ?>>Community</option>
+										<option value="tract"<?php echo $tract_selected; ?>>Tract</option>
+										<option value="zip"<?php echo $zip_selected; ?>>Zip Code</option>
+									</select></div>
+									<div class="action"><input type="button" value="Remove" class="button" onclick="dsIDXPressOptions.RemoveSitemapLocation(this)" /></div>
+									<div style="clear:both"></div>
+								</li>
+								<?php
+								$location_index++;
+							}
+						}
+					?>
+					</ul>
+				
+					<div class="dsidxpress-SitemapLocationsNew">
+						<div class="arrow">Location:</div>
+						<div class="value"><input type="text" id="dsidxpress-NewSitemapLocation" maxlength="49" value="" /></div>
+						<div class="type">
+							<select class="widefat" id="dsidxpress-NewSitemapLocationType"">
+								<option value="city">City</option>
+								<option value="community">Community</option>
+								<option value="tract">Tract</option>
+								<option value="zip">Zip Code</option>
+							</select>
+						</div>
+						<div class="action">
+							<input type="button" class="button" id="dsidxpress-NewSitemapLocationAdd" value="Add" onclick="dsIDXPressOptions.AddSitemapLocation()" />
+						</div>
+						<div style="clear:both"></div>
+					</div>
+				</div>
+			</div>
+						
+			<h4>XML Sitemaps Options</h4>		
+			<table class="form-table">
+				<tr>
+					<th>
+						<label for="<?php echo DSIDXPRESS_CUSTOM_OPTIONS_NAME ; ?>[SitemapPriority]">Priority:</label>
+					</th>
+					<td>	
+						<select name="<?php echo DSIDXPRESS_CUSTOM_OPTIONS_NAME ; ?>[SitemapPriority]" id="<?php echo DSIDXPRESS_CUSTOM_OPTIONS_NAME ; ?>_SitemapPriority">
+							<option value="0.0"<?php echo ($options["SitemapPriority"] == "0.0" ? ' selected="selected"' : '') ?>>0.0</option>
+							<option value="0.1"<?php echo ($options["SitemapPriority"] == "0.1" ? ' selected="selected"' : '') ?>>0.1</option>
+							<option value="0.2"<?php echo ($options["SitemapPriority"] == "0.2" ? ' selected="selected"' : '') ?>>0.2</option>
+							<option value="0.3"<?php echo ($options["SitemapPriority"] == "0.3" ? ' selected="selected"' : '') ?>>0.3</option>
+							<option value="0.4"<?php echo ($options["SitemapPriority"] == "0.4" ? ' selected="selected"' : '') ?>>0.4</option>
+							<option value="0.5"<?php echo ($options["SitemapPriority"] == "0.5" || !isset($options["SitemapPriority"]) ? ' selected="selected"' : '') ?>>0.5</option>
+							<option value="0.6"<?php echo ($options["SitemapPriority"] == "0.6" ? ' selected="selected"' : '') ?>>0.6</option>
+							<option value="0.7"<?php echo ($options["SitemapPriority"] == "0.7" ? ' selected="selected"' : '') ?>>0.7</option>
+							<option value="0.8"<?php echo ($options["SitemapPriority"] == "0.8" ? ' selected="selected"' : '') ?>>0.8</option>
+							<option value="0.9"<?php echo ($options["SitemapPriority"] == "0.9" ? ' selected="selected"' : '') ?>>0.9</option>
+							<option value="1.0"<?php echo ($options["SitemapPriority"] == "1.0" ? ' selected="selected"' : '') ?>>1.0</option>
+						</select>
+						<span class="description">Priority for crawler to give to page. 1 being highest priority, 0 lowest.</span>
+					</td>
+				</tr>
+				<tr>
+					<th>
+						<label for="<?php echo DSIDXPRESS_CUSTOM_OPTIONS_NAME ; ?>[SitemapFrequency]">Frequency:</label>
+					</th>
+					<td>	
+						<select name="<?php echo DSIDXPRESS_CUSTOM_OPTIONS_NAME ; ?>[SitemapFrequency]" id="<?php echo DSIDXPRESS_CUSTOM_OPTIONS_NAME ; ?>_SitemapFrequency">
+							<option value="always"<?php echo ($options["SitemapFrequency"] == "always" ? ' selected="selected"' : '') ?>>Always</option>
+							<option value="hourly"<?php echo ($options["SitemapFrequency"] == "hourly" ? 'selected="selected"' : '') ?>>Hourly</option>
+							<option value="daily"<?php echo ($options["SitemapFrequency"] == "daily" || !isset($options["SitemapFrequency"]) ? 'selected="selected"' : '') ?>>Daily</option>
+							<option value="weekly"<?php echo ($options["SitemapFrequency"] == "weekly" ? 'selected="selected"' : '') ?>>Weekly</option>
+							<option value="monthly"<?php echo ($options["SitemapFrequency"] == "monthly" ? 'selected="selected"' : '') ?>>Monthly</option>
+							<option value="yearly"<?php echo ($options["SitemapFrequency"] == "yearly" ? 'selected="selected"' : '') ?>>Yearly</option>
+							<option value="never"<?php echo ($options["SitemapFrequency"] == "never" ? 'selected="selected"' : '') ?>>Never</option>
+						</select>
+						<span class="description">The "hint" to send to the crawler. This does not guarantee frequency, crawler will do what they want.</span>
+					</td>
+				</tr>
+			</table>
+			<?php } else { ?>
+				<span class="description">To enable this functionality, install and activate this plugin: <a href="http://wordpress.org/extend/plugins/google-sitemap-generator/" target="_blank">Google XML Sitemaps</a></span>
+			<?php }?>
 			<p class="submit">
 				<input type="submit" class="button-primary" name="Submit" value="Save Options" />
 			</p>
-			<?php }?>
-			
-			
+		</form>
+	</div><?php
+	}
+
+	static function Activation() {
+		$options = get_option(DSIDXPRESS_OPTION_NAME);
+		
+		if ($options["PrivateApiKey"]) {
+			$diagnostics = self::RunDiagnostics($options);
+			$formattedApiKey = $options["AccountID"] . "/" . $options["SearchSetupID"] . "/" . $options["PrivateApiKey"];
+		}
+?>
+	<div class="wrap metabox-holder">
+		<div class="icon32" id="icon-options-general"><br/></div>
+		<h2>dsIDXpress Activation</h2>
+		<form method="post" action="options.php">
+			<?php settings_fields("dsidxpress_activation"); ?>
+
 			<h3>Plugin activation</h3>
 			<p>
 				In order to use <i>dsIDXpress</i>
@@ -129,7 +270,7 @@ HTML;
 						<label for="option-FullApiKey">Activation key:</label>
 					</th>
 					<td>
-						<input type="text" id="option-FullApiKey" maxlength="49" name="dssearchagent-wordpress-edition[FullApiKey]" value="<?php echo $formattedApiKey ?>" />
+						<input type="text" id="option-FullApiKey" maxlength="49" name="<?php echo DSIDXPRESS_OPTION_NAME; ?>[FullApiKey]" value="<?php echo $formattedApiKey ?>" />
 					</td>
 				</tr>
 				<tr>
@@ -281,17 +422,40 @@ HTML;
 	 * since we save and consume -most- options there.
 	 */
 	static function SanitizeApiOptions($options){
-		$options_text = "";
-		
-		foreach($options as $key => $value){
-			if($options_text != "") $options_text .= ",";
-			$options_text .= $key.'|'.urlencode($value);
-			unset($options[$key]);
+		if(isset($options) && is_array($options)){
+			$options_text = "";
+			
+			foreach($options as $key => $value){
+				if($options_text != "") $options_text .= ",";
+				$options_text .= $key.'|'.urlencode($value);
+				unset($options[$key]);
+			}
+			
+			$result = dsSearchAgent_ApiRequest::FetchData("SaveAccountOptions", array("options" => $options_text), false, 0);
 		}
-		
-		$result = dsSearchAgent_ApiRequest::FetchData("SaveAccountOptions", array("options" => $options_text), false, 0);
-		
 		return $options;
+	}
+	
+	static function GoogleXMLSitemaps() {
+		$options = get_option(DSIDXPRESS_CUSTOM_OPTIONS_NAME);
+
+		$urlBase = get_bloginfo("url");
+		if (substr($urlBase, strlen($urlBase), 1) != "/") $urlBase .= "/";
+		$urlBase .= dsSearchAgent_Rewrite::GetUrlSlug();
+		
+		if (in_array('google-sitemap-generator/sitemap.php', get_settings('active_plugins'))) {
+			$generatorObject = &GoogleSitemapGenerator::GetInstance();
+						
+			if($generatorObject != null && isset($options["SitemapLocations"]) && is_array($options["SitemapLocations"])){
+				$location_index = 0;
+				foreach($options["SitemapLocations"] as $key => $value){
+					$location_sanitized = urlencode(strtolower(str_replace(array("-", " "), array("_", "-"), $value["value"])));
+					$url = $urlBase . $value["type"] .'/'. $location_sanitized;
+					
+					$generatorObject->AddUrl($url, time(), $options["SitemapFrequency"], floatval($options["SitemapPriority"]));
+				}
+			}
+   		}
 	}
 }
 ?>
