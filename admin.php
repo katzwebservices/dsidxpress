@@ -11,13 +11,10 @@ add_action("sm_buildmap", "dsSearchAgent_Admin::GoogleXMLSitemaps");
 
 
 class dsSearchAgent_Admin {
-	static function TopLevel() {
-		// figure out if we're activated, if we are send to activation, if we are send to options
-	}
 	static function AddMenu() {
 		$options = get_option(DSIDXPRESS_OPTION_NAME);
 		
-		add_menu_page('dsIDXPress', 'dsIDXPress', "manage_options", "dsidxpress", "dsSearchAgent_Admin::TopLevel", DSIDXPRESS_PLUGIN_URL . 'assets/idxpress_LOGOicon.png'); //, [icon_url]);
+		add_menu_page('dsIDXPress', 'dsIDXPress', "manage_options", "dsidxpress", "", DSIDXPRESS_PLUGIN_URL . 'assets/idxpress_LOGOicon.png'); //, [icon_url]);
 
 		if(isset($options["PrivateApiKey"]))
 			$optionsPage = add_submenu_page("dsidxpress", "dsIDXPress Options", "Options", "manage_options", "dsidxpress", "dsSearchAgent_Admin::EditOptions");
