@@ -1,19 +1,26 @@
-tinyMCEPopup.requireLangPack();
 
-var ExampleDialog = {
-	init : function() {
-		var f = document.forms[0];
-
-		// Get the selected contents as text and place it in the input
-		f.someval.value = tinyMCEPopup.editor.selection.getContent({format : 'text'});
-		f.somearg.value = tinyMCEPopup.getWindowArg('some_custom_arg');
+var dsidxSingleListing = {
+	init: function() {
+		var selectedContent = tinyMCEPopup.editor.selection.getContent({format : 'text'});
+		var customWindowArg = tinyMCEPopup.getWindowArg('some_custom_arg');
+		
+		jQuery('#show-all').change(dsidxSingleListing.toggleShowAll);
 	},
-
-	insert : function() {
-		// Insert the contents from the input into the document
-		tinyMCEPopup.editor.execCommand('mceInsertContent', false, document.forms[0].someval.value);
+	insert: function() {
+		var mlsNumber = jQuery('#mls-number').val();
+		var shortcode = '[idx-listing mlsnumber="' + mlsNumber + '" showall="true"]';
+		tinyMCEPopup.editor.execCommand('mceInsertContent', false, shortcode);
 		tinyMCEPopup.close();
+	},
+	toggleShowAll: function() {
+		var checkbox = jQuery(this);
+		var othersDisabled = checkbox.is(":checked"); 
+		
+		jQuery('#data-show-options input:checkbox').not(checkbox).each(function() {
+			this.checked = true;
+			this.disabled = othersDisabled;
+		});
 	}
 };
 
-tinyMCEPopup.onInit.add(ExampleDialog.init, ExampleDialog);
+tinyMCEPopup.onInit.add(dsidxSingleListing.init, dsidxSingleListing);

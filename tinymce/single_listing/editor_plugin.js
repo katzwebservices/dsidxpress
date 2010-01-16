@@ -2,9 +2,9 @@ tinymce.create('tinymce.plugins.dsidxListing', {
 	init : function(ed, url) {
 		ed.addCommand('dsidx-listing', function() {
 			ed.windowManager.open({
-				file : url + '/dialog.htm',
-				width : 320,
-				height : 120,
+				file : url + '/dialog.php',
+				width : 250,
+				height : 310,
 				inline : 1
 			}, {
 				plugin_url : url, // Plugin absolute URL
@@ -12,7 +12,7 @@ tinymce.create('tinymce.plugins.dsidxListing', {
 			});
 		});
 		ed.addButton('idxlisting', {
-			title : 'Insert single listing from MLS data (by dsSearchAgent)',
+			title : 'Insert single listing from MLS data (by dsIDXpress)',
 			cmd : 'dsidx-listing',
 			image : url + '/img/single_listing.png'
 		});
@@ -27,7 +27,7 @@ tinymce.create('tinymce.plugins.dsidxListing', {
 	},
 	getInfo : function() {
 		return {
-			longname : 'Insert single listing from MLS data (by dsSearchAgent)',
+			longname : 'Insert single listing from MLS data (by dsIDXpress)',
 			author : 'Diverse Solutions',
 			authorurl : 'http://www.diversesolutions.com',
 			infourl : 'javascript:void(0)',

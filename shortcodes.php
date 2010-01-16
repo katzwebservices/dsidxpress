@@ -8,8 +8,8 @@ class dsSearchAgent_Shortcodes {
 		$atts = shortcode_atts(array(
 			"mlsnumber"			=> "",
 			"showall"			=> "false",
-			"showschools"		=> "false",
 			"showpricehistory"	=> "false",
+			"showschools"		=> "false",
 			"showextradetails"	=> "false",
 			"showfeatures"		=> "false",
 			"showlocation"		=> "false"
