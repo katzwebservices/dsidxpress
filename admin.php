@@ -54,27 +54,27 @@ class dsSearchAgent_Admin {
 				wp_die("We're sorry, but we ran into a temporary problem while trying to load the account data. Please check back soon.", "Account data load error");
 			else
 				$locations = json_decode($apiHttpResponse["body"]);
-			
+
 			?><html>
 				<head>
 					<style>* { font-family:Verdana; } h2 { font-size: 14px; } body { font-size: 12px; }</style>
 				</head>
 				<body>
 				<h2>Possible <?php echo ucwords($_REQUEST['type']); ?> Locations</h2>
-				<?php 
-			
+				<?php
+
 				foreach ($locations->Locations as $location){
 					?><div><?php echo $location->LocationName; ?></div><?php
 				}
-			
+
 				?></body>
-			</html><?php	
+			</html><?php
 			exit;
 		}
 	}
 	static function LoadHeader() {
 		$pluginUrl = DSIDXPRESS_PLUGIN_URL;
-		
+
 		echo <<<HTML
 			<link rel="stylesheet" href="{$pluginUrl}css/admin-options.css" type="text/css" />
 HTML;
@@ -84,7 +84,7 @@ HTML;
 		$options = get_option(DSIDXPRESS_CUSTOM_OPTIONS_NAME);
 				
 		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("AccountOptions", array(), false, 0);
-		
+
 		if ($apiHttpResponse["response"]["code"] == "404")
 			return array();
 		else if (!empty($apiHttpResponse["errors"]) || substr($apiHttpResponse["response"]["code"], 0, 1) == "5")
@@ -102,19 +102,19 @@ HTML;
 		<form method="post" action="options.php">
 			<?php settings_fields("dsidxpress_options"); ?>
 			<h4>Display Settings</h4>
-			
+
 			<table class="form-table">
 				<tr>
 					<th>
 						<label for="dsidxpress-CustomTitleText">Custom Title Text:</label>
 					</th>
-					<td>					
+					<td>
 						<input type="text" id="dsidxpress-CustomTitleText" maxlength="49" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[CustomTitleText]" value="<?php echo $account_options->CustomTitleText; ?>" />
 						<span class="description">use <code>%title%</code> to designate where you want the location title like: <code>Real estate in the %title%</code></span>
 					</td>
 				</tr>
 			</table>
-			
+
 			<h4>XML Sitemaps Locations</h4>
 			<?php if ( in_array('google-sitemap-generator/sitemap.php', get_settings('active_plugins'))) {?>
 			<span class="description">Add the Locations (City, Community, Tract, or Zip) to your XML Sitemap by adding them via the dialogs below.</span>
@@ -280,7 +280,7 @@ HTML;
 			<p class="submit">
 				<input type="submit" class="button-primary" name="Submit" value="Activate Plugin For This Blog / Server" />
 			</p>
-			
+
 <?php
 		if ($diagnostics) {
 ?>
@@ -302,7 +302,7 @@ HTML;
 					<td class="dsidx-status dsidx-<?php echo $diagnostics["IsAccountValid"] ? "success" : "failure" ?>">
 						<?php echo $diagnostics["IsAccountValid"] ? "Yes" : "No" ?>
 					</td>
-					
+
 					<th style="width: 290px;">Activation key active?</th>
 					<td class="dsidx-status dsidx-<?php echo $diagnostics["IsApiKeyValid"] ? "success" : "failure" ?>">
 						<?php echo $diagnostics["IsApiKeyValid"] ? "Yes" : "No" ?>
@@ -313,7 +313,7 @@ HTML;
 					<td class="dsidx-status dsidx-<?php echo $diagnostics["IsAccountAuthorizedToMLS"] ? "success" : "failure" ?>">
 						<?php echo $diagnostics["IsAccountAuthorizedToMLS"] ? "Yes" : "No" ?>
 					</td>
-					
+
 					<th>Activation key authorized for this blog?</th>
 					<td class="dsidx-status dsidx-<?php echo $diagnostics["IsApiKeyAuthorizedToUri"] ? "success" : "failure" ?>">
 						<?php echo $diagnostics["IsApiKeyAuthorizedToUri"] ? "Yes" : "No" ?>
@@ -324,7 +324,7 @@ HTML;
 					<td class="dsidx-status dsidx-<?php echo $diagnostics["ClockIsAccurate"] ? "success" : "failure" ?>">
 						<?php echo $diagnostics["ClockIsAccurate"] ? "Yes" : "No" ?>
 					</td>
-					
+
 					<th>Activation key authorized for this server?</th>
 					<td class="dsidx-status dsidx-<?php echo $diagnostics["IsApiKeyAuthorizedToIP"] ? "success" : "failure" ?>">
 						<?php echo $diagnostics["IsApiKeyAuthorizedToIP"] ? "Yes" : "No" ?>
@@ -335,7 +335,7 @@ HTML;
 					<td class="dsidx-status dsidx-<?php echo $diagnostics["UrlInterceptSet"] ? "success" : "failure" ?>">
 						<?php echo $diagnostics["UrlInterceptSet"] ? "Yes" : "No" ?>
 					</td>
-					
+
 					<th>Under monthly API call limit?</th>
 					<td class="dsidx-status dsidx-<?php echo $diagnostics["UnderMonthlyCallLimit"] ? "success" : "failure" ?>">
 						<?php echo $diagnostics["UnderMonthlyCallLimit"] ? "Yes" : "No" ?>
@@ -346,7 +346,7 @@ HTML;
 					<td class="dsidx-status dsidx-<?php echo $diagnostics["PhpVersionAcceptable"] ? "success" : "failure" ?>">
 						<?php echo $diagnostics["PhpVersionAcceptable"] ? "Yes" : "No" ?>
 					</td>
-					
+
 					<th>Would you like fries with that?</th>
 					<td class="dsidx-status dsidx-success">
 						Yes <!-- you kidding? we ALWAYS want fries. mmmm, friessssss -->
@@ -366,54 +366,54 @@ HTML;
 		// could allow a bug on the wire to pick up the key, but 1) we have IP and URL restrictions, and 2) there are much bigger issues than the
 		// key going over the wire in the clear if the traffic is being spied on in the first place
 		global $wp_rewrite;
-		
+
 		$diagnostics = dsSearchAgent_ApiRequest::FetchData("Diagnostics", array("apiKey" => $options["PrivateApiKey"]), false, 0);
 		if (empty($diagnostics["body"]) || $diagnostics["response"]["code"] != "200")
 			return array("error" => true);
-		
+
 		$diagnostics = (array)json_decode($diagnostics["body"]);
 		$setDiagnostics = array();
 		$timeDiff = time() - strtotime($diagnostics["CurrentServerTimeUtc"]);
 		$secondsIn2Hrs = 60 * 60 * 2;
-		
+
 		$setDiagnostics["IsApiKeyValid"] = $diagnostics["IsApiKeyValid"];
 		$setDiagnostics["IsAccountAuthorizedToMLS"] = $diagnostics["IsAccountAuthorizedToMLS"];
 		$setDiagnostics["IsAccountValid"] = $diagnostics["IsAccountValid"];
 		$setDiagnostics["IsApiKeyAuthorizedToUri"] = $diagnostics["IsApiKeyAuthorizedToUri"];
 		$setDiagnostics["IsApiKeyAuthorizedToIP"] = $diagnostics["IsApiKeyAuthorizedToIP"];
-		
+
 		$setDiagnostics["PhpVersionAcceptable"] = version_compare(phpversion(), DSIDXPRESS_MIN_VERSION_PHP) != -1;
 		$setDiagnostics["UrlInterceptSet"] = get_option("permalink_structure") != "";
 		$setDiagnostics["ClockIsAccurate"] = $timeDiff < $secondsIn2Hrs && $timeDiff > -1 * $secondsIn2Hrs;
 		$setDiagnostics["UnderMonthlyCallLimit"] = $diagnostics["AllowedApiRequestCount"] === 0 || $diagnostics["AllowedApiRequestCount"] > $diagnostics["CurrentApiRequestCount"];
-		
+
 		$setDiagnostics["DiagnosticsSuccessful"] = true;
 		foreach ($setDiagnostics as $key => $value) {
 			if (!$value)
 				$setDiagnostics["DiagnosticsSuccessful"] = false;
 		}
-		
+
 		$options["Activated"] = $setDiagnostics["DiagnosticsSuccessful"];
 		update_option(DSIDXPRESS_OPTION_NAME, $options);
 		$wp_rewrite->flush_rules();
-		
+
 		return $setDiagnostics;
 	}
 	static function SanitizeOptions($options) {
 		if ($options["FullApiKey"]) {
 			$apiKeyParts = explode("/", $options["FullApiKey"]);
-	
+
 			$options["AccountID"] = $apiKeyParts[0];
 			$options["SearchSetupID"] = $apiKeyParts[1];
 			$options["PrivateApiKey"] = $apiKeyParts[2];
-	
+
 			dsSearchAgent_ApiRequest::FetchData("BindToRequester", array(), false, 0, $options);
-			
+
 			unset($options["FullApiKey"]);
 		}
 		return $options;
 	}
-	
+
 	/*
 	 * We're using the sanitize to capture the POST for these options so we can send them back to the diverse API
 	 * since we save and consume -most- options there.

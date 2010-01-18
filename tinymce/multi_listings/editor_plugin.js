@@ -2,13 +2,12 @@ tinymce.create('tinymce.plugins.dsidxListings', {
 	init : function(ed, url) {
 		ed.addCommand('dsidx-listings', function() {
 			ed.windowManager.open({
-				file : url + '/dialog.htm',
-				width : 320,
-				height : 120,
+				file : url + '/dialog.php',
+				width : 250,
+				height : 320,
 				inline : 1
 			}, {
-				plugin_url : url, // Plugin absolute URL
-				some_custom_arg : 'custom arg' // Custom argument
+				plugin_url : url
 			});
 		});
 		ed.addButton('idxlistings', {
@@ -17,9 +16,7 @@ tinymce.create('tinymce.plugins.dsidxListings', {
 			image : url + '/img/multi_listings.png'
 		});
 		ed.onNodeChange.add(function(ed, cm, n) {
-			if (!/^\[idx-listings /.test(n.innerHTML))
-				return;
-			//cm.setActive('idxlistings', n.nodeName == 'IMG');
+			cm.setActive('idxlistings', /^\[idx-listings /.test(n.innerHTML));
 		});
 	},
 	createControl : function(n, cm) {
@@ -27,7 +24,7 @@ tinymce.create('tinymce.plugins.dsidxListings', {
 	},
 	getInfo : function() {
 		return {
-			longname : 'Insert listings from MLS data (by dsSearchAgent)',
+			longname : 'Insert "live" listings from MLS data (by dsIDXpress)',
 			author : 'Diverse Solutions',
 			authorurl : 'http://www.diversesolutions.com',
 			infourl : 'javascript:void(0)',

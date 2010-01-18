@@ -21,7 +21,7 @@ $localJsUri = get_option("siteurl") . "/" . WPINC . "/js/";
 <!DOCTYPE html>
 <html>
 <head>
-	<title>dsIDXpress: Insert Property</title>
+	<title>dsIDXpress: Insert Properties</title>
 
 	<script src="<?php echo $localJsUri ?>tinymce/tiny_mce_popup.js?ver=<?php echo urlencode($tinymce_version) ?>"></script>
 	<script src="<?php echo $localJsUri ?>jquery/jquery.js?ver=<?php echo urlencode($wp_version) ?>"></script>
@@ -43,7 +43,7 @@ $localJsUri = get_option("siteurl") . "/" . WPINC . "/js/";
 <body>
 
 	<p>
-		You can easily harness the power of dsIDXpress to insert a "live" real estate listing into your blog post.
+		You can easily harness the power of dsIDXpress to insert "live" real estate listings into your blog post.
 	</p>
 	<table id="data-table">
 		<tr>
