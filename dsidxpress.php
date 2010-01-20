@@ -37,8 +37,6 @@ define("DSIDXPRESS_MIN_VERSION_WORDPRESS", "2.8.5");
 define("DSIDXPRESS_PLUGIN_URL", WP_PLUGIN_URL . "/dsidxpress/");
 define("DSIDXPRESS_PLUGIN_VERSION", $pluginData["Version"]);
 
-
-
 if (version_compare(phpversion(), DSIDXPRESS_MIN_VERSION_PHP) == -1 || version_compare($wp_version, DSIDXPRESS_MIN_VERSION_WORDPRESS) == -1) {
 	add_action("admin_notices", "dsidxpress_DisplayVersionWarnings");
 	return;
@@ -64,13 +62,13 @@ add_action("widgets_init", "dsidxpress_InitWidgets");
 // not in a static class to prevent PHP < 5 from failing when including and interpreting this particular file
 function dsidxpress_DisplayVersionWarnings() {
 	global $wp_version;
-	
+
 	$currentVersionPhp = phpversion();
 	$currentVersionWordPress = $wp_version;
-	
+
 	$minVersionPhp = DSIDXPRESS_MIN_VERSION_PHP;
 	$minVersionWordPress = DSIDXPRESS_MIN_VERSION_WORDPRESS;
-	
+
 	echo <<<HTML
 		<div class="error">
 			In order to use the dsIDXpress plugin, your web server needs to be running at least PHP {$minVersionPhp} and WordPress {$minVersionWordPress}.

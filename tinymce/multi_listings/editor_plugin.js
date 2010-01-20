@@ -3,8 +3,8 @@ tinymce.create('tinymce.plugins.dsidxListings', {
 		ed.addCommand('dsidx-listings', function() {
 			ed.windowManager.open({
 				file : url + '/dialog.php',
-				width : 250,
-				height : 320,
+				width : 380,
+				height : 400,
 				inline : 1
 			}, {
 				plugin_url : url

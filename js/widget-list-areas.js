@@ -15,8 +15,8 @@ dsWidgetListAreas = {
 		jQuery('#'+lookup_id).val('');
 	},
 
-	LaunchLookupList : function(drop_down_id){
-		window.open('options-general.php?page=dsidxpress&action=LocationList&type='+  jQuery('#'+drop_down_id).val(), 'wpdslookuptypes', 'width=400,height=600,menubar=no,toolbar=no,location=no,resizable=yes,scrollbars=yes');
+	LaunchLookupList : function(url, drop_down_id){
+		window.open(url + '?type='+  jQuery('#'+drop_down_id).val(), 'wpdslookuptypes', 'width=400,height=600,menubar=no,toolbar=no,location=no,resizable=yes,scrollbars=yes');
 	},
 	
 	SwitchType : function (drop_down, link_title_id){

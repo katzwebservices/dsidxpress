@@ -1,5 +1,5 @@
 
-var dsidxSingleListing = (function() {
+var dsidxMultiListings = (function() {
 	var nodeEditing;
 	var returnObj;
 	
@@ -9,33 +9,63 @@ var dsidxSingleListing = (function() {
 			var nodeTextContent = startNode.textContent; 
 			var showAllIsSet;
 			
-			if (/^\[idx-listing /.test(nodeTextContent) && startNode.tagName == 'P') {
+			if (/^\[idx-listings /.test(nodeTextContent) && startNode.tagName == 'P') {
 				nodeEditing = startNode;
 				tinyMCEPopup.editor.execCommand('mceSelectNode', false, nodeEditing);
-				
-				showAllIsSet = /^[^\]]+ showall=['"]?true/.test(nodeTextContent);
-				jQuery('#show-all').get(0).checked = showAllIsSet;
-				jQuery('#show-price-history').get(0).checked = showAllIsSet || /^[^\]]+ showpricehistory=['"]?true/.test(nodeTextContent);
-				jQuery('#show-schools').get(0).checked = showAllIsSet || /^[^\]]+ showschools=['"]?true/.test(nodeTextContent);
-				jQuery('#show-extra-details').get(0).checked = showAllIsSet || /^[^\]]+ showextradetails=['"]?true/.test(nodeTextContent);
-				jQuery('#show-features').get(0).checked = showAllIsSet || /^[^\]]+ showfeatures=['"]?true/.test(nodeTextContent);
-				jQuery('#show-location').get(0).checked = showAllIsSet || /^[^\]]+ showlocation=['"]?true/.test(nodeTextContent);
-				jQuery('#mls-number').val(/^[^\]]+ mlsnumber=['"]?([^ "']+)/.exec(nodeTextContent)[1]);
 			}
-			jQuery('#show-all').change(dsidxSingleListing.toggleShowAll).change();
+			
+			$('#area-type').change(this.loadAreasByType);
+			this.loadAreasByType();
+		},
+		loadAreasByType: function() {
+			$.ajax({
+				url: ApiRequest.uriBase + 'LocationsByType',
+				dataType: 'jsonp',
+				cache: true,
+				jsonpCallback: 'loadByType',
+				data: {
+					searchSetupID: ApiRequest.searchSetupID,
+					type: $('#area-type').val(),
+					minListingCount: 5
+				},
+				success: function(data) { 
+					var options = [];
+					var areaName, listingCount, urlEscapedAreaName, printableAreaName;
+					
+					for (var i = 0, j = data.length; i < j; ++i) {
+						areaName = data[i].Name;
+						listingCount = data[i].ListingCount;
+						urlEscapedAreaName = escape(areaName);
+						
+						if (areaName.length > 20)
+							printableAreaName = $('<div/>').text(areaName.substr(0, 20) + '... (' + String(listingCount) + ')').html();
+						else
+							printableAreaName = $('<div/>').text(areaName + ' (' + String(listingCount) + ')').html();
+						options.push('<option value="' + urlEscapedAreaName + '">' + printableAreaName + '</option>');
+					}
+					$('#area-name').html(options.join(''));
+				}
+			});
+		},
+		changeTab: function(type) {
+			if (type == 'quick-search') {
+				mcTabs.displayTab('custom_search_tab', 'custom_search_panel');
+			} else if (type == 'pre-saved-links') {
+				mcTabs.displayTab('saved_links_tab', 'saved_links_panel');
+			}
 		},
 		insert: function() {
-			var mlsNumber = jQuery('#mls-number').val();
+			var mlsNumber = $('#mls-number').val();
 			
 			if (!mlsNumber)
 				tinyMCEPopup.close();
 			
 			var shortcode = '<p>[idx-listing mlsnumber="' + mlsNumber + '"';
 			
-			if (jQuery('#show-all:checked').length) {
+			if ($('#show-all:checked').length) {
 				shortcode += ' showall="true"';
 			} else {
-				jQuery('#data-show-options input:checked').each(function() {
+				$('#data-show-options input:checked').each(function() {
 					shortcode += ' ' + this.name + '="true"';
 				});
 			}
@@ -44,19 +74,9 @@ var dsidxSingleListing = (function() {
 			tinyMCEPopup.editor.execCommand(nodeEditing ? 'mceReplaceContent' : 'mceInsertContent', false, shortcode);
 			tinyMCEPopup.close();
 		},
-		toggleShowAll: function() {
-			var checkbox = jQuery(this);
-			var isChecked = checkbox.is(":checked");
-			var othersDisabled = isChecked;
-			
-			jQuery('#data-show-options input:checkbox').not(checkbox).each(function() {
-				this.checked = isChecked || this.checked;
-				this.disabled = othersDisabled;
-			});
-		}
 	};
 	
 	return returnObj;
 })();
 
-tinyMCEPopup.onInit.add(dsidxSingleListing.init, dsidxSingleListing);
+tinyMCEPopup.onInit.add(dsidxMultiListings.init, dsidxMultiListings);
