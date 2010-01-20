@@ -24,7 +24,8 @@
 	background-image:url(../assets/222222_256x240_icons_icons.png);
 	background-position:-128px -48px;
 	background-repeat:no-repeat;
-	display:block;
+	/*display:block;*/
+	display:none;
 	overflow:hidden;
 	text-indent:-99999px;
 	height:16px;
@@ -41,19 +42,26 @@
 }
 
 .dsidxpress-SitemapLocations li .arrow, .dsidxpress-SitemapLocations li .value{
-	cursor: move;
+	/*cursor: move;*/
 }
 
 .dsidxpress-SitemapLocations .arrow{
-	width:70px;
+	width:40px;
 	height: 24px;
 	line-height:24px;
 	text-align:center;
 	float:left;
 }
 
+.dsidxpress-SitemapLocations .priority{
+	width: 105px;
+	height: 24px;
+	line-height:24px;
+	float:left;
+}
+
 .dsidxpress-SitemapLocations .value{
-	width: 370px;
+	width: 225px;
 	height: 24px;
 	line-height:24px;
 	float:left;

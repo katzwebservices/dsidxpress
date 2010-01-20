@@ -1,6 +1,6 @@
 <?php
 class dsSearchAgent_ApiRequest {
-	public static $ApiEndPoint = "http://localhost/api/";
+	public static $ApiEndPoint = "http://api.idx.diversesolutions.com/api/";
 	// do NOT change this value or you will be automatically banned from the API. since the data is only updated every two hours, and
 	// since these API calls are computationally intensive on our servers, we need to set a reasonable cache duration.
 	private static $CacheSeconds = 7200;
@@ -67,6 +67,7 @@ class dsSearchAgent_ApiRequest {
 			"httpversion"	=> "1.1",
 			"redirection"	=> "0"
 		));
+		
 
 		if (empty($response["errors"]) && substr($response["response"]["code"], 0, 1) != "5") {
 			$response["body"] = self::FilterData($response["body"]);

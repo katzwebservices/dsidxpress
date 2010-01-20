@@ -93,28 +93,38 @@ HTML;
 					<?php
 						if(isset($options["SitemapLocations"]) && is_array($options["SitemapLocations"])){
 							$location_index = 0;
+							
+							usort($options["SitemapLocations"], "dsSearchAgent_Admin::CompareListObjects");
+							
 							foreach($options["SitemapLocations"] as $key => $value){
 								$location_sanitized = urlencode(strtolower(str_replace(array("-", " "), array("_", "-"), $value["value"])));
-								$city_selected = ''; $community_selected = ''; $tract_selected = ''; $zip_selected = '';
-								switch($value["type"]){
-									case 'city': $city_selected = ' selected="selected"'; break;
-									case 'community': $community_selected = ' selected="selected"'; break;
-									case 'tract': $tract_selected = ' selected="selected"'; break;
-									case 'zip': $zip_selected = ' selected="selected"'; break;
-								}
-
 								?>
 								<li class="ui-state-default dsidxpress-SitemapLocation">
-									<!-- <div class="arrow"><span class="dsidxpress-up_down"></span></div>  -->
+									<div class="arrow"><span class="dsidxpress-up_down"></span></div>
 									<div class="value">
 										<a href="<?php echo $urlBase . $value["type"] .'/'. $location_sanitized;?>" target="_blank"><?php echo $value["value"]; ?></a>
 										<input type="hidden" name="<?php echo DSIDXPRESS_CUSTOM_OPTIONS_NAME ; ?>[SitemapLocations][<?php echo $location_index; ?>][value]" value="<?php echo $value["value"]; ?>" />
 									</div>
-									<div class="type"><select id="dsidxpress-NewSitemapLocationType" name="<?php echo DSIDXPRESS_CUSTOM_OPTIONS_NAME ; ?>[SitemapLocations][<?php echo $location_index; ?>][type]">
-										<option value="city"<?php echo $city_selected; ?>>City</option>
-										<option value="community"<?php echo $community_selected; ?>>Community</option>
-										<option value="tract"<?php echo $tract_selected; ?>>Tract</option>
-										<option value="zip"<?php echo $zip_selected; ?>>Zip Code</option>
+									<div class="priority">
+										Priority: <select name="<?php echo DSIDXPRESS_CUSTOM_OPTIONS_NAME ; ?>[SitemapLocations][<?php echo $location_index; ?>][priority]">
+											<option value="0.0"<?php echo ($value["priority"] == "0.0" ? ' selected="selected"' : '') ?>>0.0</option>
+											<option value="0.1"<?php echo ($value["priority"] == "0.1" ? ' selected="selected"' : '') ?>>0.1</option>
+											<option value="0.2"<?php echo ($value["priority"] == "0.2" ? ' selected="selected"' : '') ?>>0.2</option>
+											<option value="0.3"<?php echo ($value["priority"] == "0.3" ? ' selected="selected"' : '') ?>>0.3</option>
+											<option value="0.4"<?php echo ($value["priority"] == "0.4" ? ' selected="selected"' : '') ?>>0.4</option>
+											<option value="0.5"<?php echo ($value["priority"] == "0.5" || !isset($value["priority"]) ? ' selected="selected"' : '') ?>>0.5</option>
+											<option value="0.6"<?php echo ($value["priority"] == "0.6" ? ' selected="selected"' : '') ?>>0.6</option>
+											<option value="0.7"<?php echo ($value["priority"] == "0.7" ? ' selected="selected"' : '') ?>>0.7</option>
+											<option value="0.8"<?php echo ($value["priority"] == "0.8" ? ' selected="selected"' : '') ?>>0.8</option>
+											<option value="0.9"<?php echo ($value["priority"] == "0.9" ? ' selected="selected"' : '') ?>>0.9</option>
+											<option value="1.0"<?php echo ($value["priority"] == "1.0" ? ' selected="selected"' : '') ?>>1.0</option>
+										</select>
+									</div>
+									<div class="type"><select name="<?php echo DSIDXPRESS_CUSTOM_OPTIONS_NAME ; ?>[SitemapLocations][<?php echo $location_index; ?>][type]">
+										<option value="city"<?php echo ($value["type"] == "city" ? ' selected="selected"' : ''); ?>>City</option>
+										<option value="community"<?php echo ($value["type"] == "community" ? ' selected="selected"' : ''); ?>>Community</option>
+										<option value="tract"<?php echo ($value["type"] == "tract" ? ' selected="selected"' : ''); ?>>Tract</option>
+										<option value="zip"<?php echo ($value["type"] == "zip" ? ' selected="selected"' : ''); ?>>Zip Code</option>
 									</select></div>
 									<div class="action"><input type="button" value="Remove" class="button" onclick="dsIDXPressOptions.RemoveSitemapLocation(this)" /></div>
 									<div style="clear:both"></div>
@@ -127,7 +137,7 @@ HTML;
 					</ul>
 
 					<div class="dsidxpress-SitemapLocationsNew">
-						<div class="arrow">Location:</div>
+						<div class="arrow">New:</div>
 						<div class="value"><input type="text" id="dsidxpress-NewSitemapLocation" maxlength="49" value="" /></div>
 						<div class="type">
 							<select class="widefat" id="dsidxpress-NewSitemapLocationType"">
@@ -141,46 +151,27 @@ HTML;
 							<input type="button" class="button" id="dsidxpress-NewSitemapLocationAdd" value="Add" onclick="dsIDXPressOptions.AddSitemapLocation()" />
 						</div>
 						<div style="clear:both"></div>
-					</div>
+					</div>	
 				</div>
 			</div>
+			
+			<span class="description">"Priority" gives a hint to the web crawler as to what you think the importance of each page is. <code>1</code> being highest and <code>0</code> lowest.</span>
 
 			<h4>XML Sitemaps Options</h4>
 			<table class="form-table">
-				<tr>
-					<th>
-						<label for="<?php echo DSIDXPRESS_CUSTOM_OPTIONS_NAME ; ?>[SitemapPriority]">Priority:</label>
-					</th>
-					<td>
-						<select name="<?php echo DSIDXPRESS_CUSTOM_OPTIONS_NAME ; ?>[SitemapPriority]" id="<?php echo DSIDXPRESS_CUSTOM_OPTIONS_NAME ; ?>_SitemapPriority">
-							<option value="0.0"<?php echo ($options["SitemapPriority"] == "0.0" ? ' selected="selected"' : '') ?>>0.0</option>
-							<option value="0.1"<?php echo ($options["SitemapPriority"] == "0.1" ? ' selected="selected"' : '') ?>>0.1</option>
-							<option value="0.2"<?php echo ($options["SitemapPriority"] == "0.2" ? ' selected="selected"' : '') ?>>0.2</option>
-							<option value="0.3"<?php echo ($options["SitemapPriority"] == "0.3" ? ' selected="selected"' : '') ?>>0.3</option>
-							<option value="0.4"<?php echo ($options["SitemapPriority"] == "0.4" ? ' selected="selected"' : '') ?>>0.4</option>
-							<option value="0.5"<?php echo ($options["SitemapPriority"] == "0.5" || !isset($options["SitemapPriority"]) ? ' selected="selected"' : '') ?>>0.5</option>
-							<option value="0.6"<?php echo ($options["SitemapPriority"] == "0.6" ? ' selected="selected"' : '') ?>>0.6</option>
-							<option value="0.7"<?php echo ($options["SitemapPriority"] == "0.7" ? ' selected="selected"' : '') ?>>0.7</option>
-							<option value="0.8"<?php echo ($options["SitemapPriority"] == "0.8" ? ' selected="selected"' : '') ?>>0.8</option>
-							<option value="0.9"<?php echo ($options["SitemapPriority"] == "0.9" ? ' selected="selected"' : '') ?>>0.9</option>
-							<option value="1.0"<?php echo ($options["SitemapPriority"] == "1.0" ? ' selected="selected"' : '') ?>>1.0</option>
-						</select>
-						<span class="description">Priority for crawler to give to page. 1 being highest priority, 0 lowest.</span>
-					</td>
-				</tr>
 				<tr>
 					<th>
 						<label for="<?php echo DSIDXPRESS_CUSTOM_OPTIONS_NAME ; ?>[SitemapFrequency]">Frequency:</label>
 					</th>
 					<td>
 						<select name="<?php echo DSIDXPRESS_CUSTOM_OPTIONS_NAME ; ?>[SitemapFrequency]" id="<?php echo DSIDXPRESS_CUSTOM_OPTIONS_NAME ; ?>_SitemapFrequency">
-							<option value="always"<?php echo ($options["SitemapFrequency"] == "always" ? ' selected="selected"' : '') ?>>Always</option>
+							<!--<option value="always"<?php echo ($options["SitemapFrequency"] == "always" ? ' selected="selected"' : '') ?>>Always</option> -->
 							<option value="hourly"<?php echo ($options["SitemapFrequency"] == "hourly" ? 'selected="selected"' : '') ?>>Hourly</option>
 							<option value="daily"<?php echo ($options["SitemapFrequency"] == "daily" || !isset($options["SitemapFrequency"]) ? 'selected="selected"' : '') ?>>Daily</option>
-							<option value="weekly"<?php echo ($options["SitemapFrequency"] == "weekly" ? 'selected="selected"' : '') ?>>Weekly</option>
+							<!--<option value="weekly"<?php echo ($options["SitemapFrequency"] == "weekly" ? 'selected="selected"' : '') ?>>Weekly</option>
 							<option value="monthly"<?php echo ($options["SitemapFrequency"] == "monthly" ? 'selected="selected"' : '') ?>>Monthly</option>
 							<option value="yearly"<?php echo ($options["SitemapFrequency"] == "yearly" ? 'selected="selected"' : '') ?>>Yearly</option>
-							<option value="never"<?php echo ($options["SitemapFrequency"] == "never" ? 'selected="selected"' : '') ?>>Never</option>
+							<option value="never"<?php echo ($options["SitemapFrequency"] == "never" ? 'selected="selected"' : '') ?>>Never</option> -->
 						</select>
 						<span class="description">The "hint" to send to the crawler. This does not guarantee frequency, crawler will do what they want.</span>
 					</td>
@@ -412,6 +403,9 @@ HTML;
 
 			if($generatorObject != null && isset($options["SitemapLocations"]) && is_array($options["SitemapLocations"])){
 				$location_index = 0;
+
+				usort($options["SitemapLocations"], "dsSearchAgent_Admin::CompareListObjects");
+							
 				foreach($options["SitemapLocations"] as $key => $value){
 					$location_sanitized = urlencode(strtolower(str_replace(array("-", " "), array("_", "-"), $value["value"])));
 					$url = $urlBase . $value["type"] .'/'. $location_sanitized;
@@ -421,5 +415,15 @@ HTML;
 			}
    		}
 	}
+	
+	static function CompareListObjects($a, $b)
+    {
+        $al = strtolower($a["value"]);
+        $bl = strtolower($b["value"]);
+        if ($al == $bl) {
+            return 0;
+        }
+        return ($al > $bl) ? +1 : -1;
+    }
 }
 ?>
