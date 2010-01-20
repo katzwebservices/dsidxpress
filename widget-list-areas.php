@@ -5,8 +5,10 @@ class dsSearchAgent_ListAreasWidget extends WP_Widget {
 			"classname" => "dsidx-widget-list-areas",
 			"description" => "Lists of links for showing real estate"
 		));
+		wp_enqueue_script('dsidxpress_widget_list_areas', DSIDXPRESS_PLUGIN_URL . 'js/widget-list-areas.js', array('jquery'), DSIDXPRESS_PLUGIN_VERSION);
 	}
 	function widget($args, $instance) {
+		
 		extract($args);
 		extract($instance);
 		$title = apply_filters("widget_title", $title);

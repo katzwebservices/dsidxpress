@@ -1,12 +1,15 @@
 dsIDXPressOptions = {
 	UrlBase : '',
 	OptionPrefix : '',
+	EnableDragDrop: false,
 	
 	Init : function(){
-		jQuery("#dsidxpress-SitemapLocations").sortable({
-			stop: function(event, ui) { dsIDXPressOptions.RepairOrder(); }
-		});
-		jQuery("#dsidxpress-SitemapLocations").disableSelection();
+		if(dsIDXPressOptions.EnableDragDrop){
+			jQuery("#dsidxpress-SitemapLocations").sortable({
+				stop: function(event, ui) { dsIDXPressOptions.RepairOrder(); }
+			});
+			jQuery("#dsidxpress-SitemapLocations").disableSelection();
+		}
 	},
 	
 	AddSitemapLocation : function(){
@@ -25,7 +28,7 @@ dsIDXPressOptions = {
 		
 		jQuery('#dsidxpress-NewSitemapLocation').val('');
 		jQuery('#dsidxpress-SitemapLocations').append(
-			'<li class="ui-state-default dsidxpress-SitemapLocation">' +
+			(dsIDXPressOptions.EnableDragDrop ? '<li class="ui-state-default dsidxpress-SitemapLocation">' : '') +
 			'<div class="arrow"><span class="dsidxpress-up_down"></span></div>' +
 			'<div class="value">' +
 				'<a href="'+ dsIDXPressOptions.UrlBase + location_type +'/' + location_sanitized + '" target="_blank">' + location_name + '</a>'+

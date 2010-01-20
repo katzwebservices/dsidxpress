@@ -37,8 +37,7 @@ class dsSearchAgent_Admin {
 		register_setting("dsidxpress_options", DSIDXPRESS_API_OPTIONS_NAME, "dsSearchAgent_Admin::SanitizeApiOptions");
 		register_setting("dsidxpress_options", DSIDXPRESS_CUSTOM_OPTIONS_NAME);
 
-		wp_enqueue_script('dsidxpress_widget_list_areas', DSIDXPRESS_PLUGIN_URL . 'js/admin-options.js', array('jquery','jquery-ui-sortable'), DSIDXPRESS_PLUGIN_VERSION);
-		wp_enqueue_script('dsidxpress_widget_list_areas', DSIDXPRESS_PLUGIN_URL . 'js/widget-list-areas.js', array('jquery'), DSIDXPRESS_PLUGIN_VERSION);
+		wp_enqueue_script('dsidxpress_admin_options', DSIDXPRESS_PLUGIN_URL . 'js/admin-options.js', array('jquery','jquery-ui-sortable'), DSIDXPRESS_PLUGIN_VERSION);
 	}
 	static function LoadHeader() {
 		$pluginUrl = DSIDXPRESS_PLUGIN_URL;
@@ -106,7 +105,7 @@ HTML;
 
 								?>
 								<li class="ui-state-default dsidxpress-SitemapLocation">
-									<div class="arrow"><span class="dsidxpress-up_down"></span></div>
+									<!-- <div class="arrow"><span class="dsidxpress-up_down"></span></div>  -->
 									<div class="value">
 										<a href="<?php echo $urlBase . $value["type"] .'/'. $location_sanitized;?>" target="_blank"><?php echo $value["value"]; ?></a>
 										<input type="hidden" name="<?php echo DSIDXPRESS_CUSTOM_OPTIONS_NAME ; ?>[SitemapLocations][<?php echo $location_index; ?>][value]" value="<?php echo $value["value"]; ?>" />
