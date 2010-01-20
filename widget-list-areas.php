@@ -88,20 +88,6 @@ class dsSearchAgent_ListAreasWidget extends WP_Widget {
 				</select>
 			</p>
 
-			<h3>Add a Location</h3>
-			<p>
-				<label for="{$titleFieldId}_title">Title</label>
-				<input id="{$titleFieldId}_title" name="{$titleFieldName}_title" value="" class="widefat" type="text" />
-			</p>
-			<p>
-				<label for="{$titleFieldId}_lookup">Lookup Value</label>
-				<input id="{$titleFieldId}_lookup" name="{$ttleFieldName}_lookup" value="" class="widefat" type="text" /><br />
-				See all <span id="{$areaOptionsFieldId}_link_title">{$type_normalized}</span> Lookup Types <a href="javascript:void(0);" onclick="dsWidgetListAreas.LaunchLookupList('{$pluginUrl}', '{$areaOptionsFieldId}_areaType')">here</a>
-			</p>
-			<p>
-				<input type="button" class="button" value="Add This Location" onclick="dsWidgetListAreas.AddArea('{$titleFieldId}_title', '{$titleFieldId}_lookup', '{$areaOptionsFieldId}_areas')"/>
-			</p>
-
 			<h3>Areas (one per line)</h3>
 			<p>
 				<textarea id="{$areaOptionsFieldId}_areas" name="{$areaOptionsFieldName}[areas]" class="widefat" rows="10">{$areas}</textarea>
@@ -111,6 +97,22 @@ class dsSearchAgent_ListAreasWidget extends WP_Widget {
 				<label for="{$areaOptionsFieldId}[sortAreas]">Sort areas?</label>
 				<input id="{$areaOptionsFieldId}_sortAreas" name="{$areaOptionsFieldName}[sortAreas]" class="checkbox" type="checkbox" />
 			</p>
+			<a href="javascript:void(0);" onclick="jQuery('#{$titleFieldId}_advanced').slideDown(500); jQuery(this).hide()">Advanced</a>
+			<div id="{$titleFieldId}_advanced" style="display:none">
+				<hr />
+				<h3>Add an Area w/ a Custom Title</h3>
+				<p>
+					<label for="{$titleFieldId}_title">Link Text</label>
+					<input id="{$titleFieldId}_title" name="{$titleFieldName}_title" value="" class="widefat" type="text" />
+				</p>
+				<p>
+					<label for="{$titleFieldId}_lookup">Actual Area Name</label>
+					<input id="{$titleFieldId}_lookup" name="{$ttleFieldName}_lookup" value="" class="widefat" type="text" />
+					<span class="description">See all <span id="{$areaOptionsFieldId}_link_title">{$type_normalized}</span> Names <a href="javascript:void(0);" onclick="dsWidgetListAreas.LaunchLookupList('{$pluginUrl}locations.php', '{$areaOptionsFieldId}_areaType')">here</a></span>
+				</p>
+				
+				<input type="button" class="button" value="Add This Area" onclick="dsWidgetListAreas.AddArea('{$titleFieldId}_title', '{$titleFieldId}_lookup', '{$areaOptionsFieldId}_areas')"/>
+			</div>
 HTML;
 	}
 }
