@@ -20,8 +20,8 @@ class dsSearchAgent_Admin {
 		add_action("admin_print_scripts-{$optionsPage}", "dsSearchAgent_Admin::LoadHeader");
 		add_action("admin_print_scripts-{$activationPage}", "dsSearchAgent_Admin::LoadHeader");
 
-		//add_filter("mce_external_plugins", "dsSearchAgent_Admin::AddTinyMcePlugin");
-		//add_filter("mce_buttons", "dsSearchAgent_Admin::RegisterTinyMceButton");
+		add_filter("mce_external_plugins", "dsSearchAgent_Admin::AddTinyMcePlugin");
+		add_filter("mce_buttons", "dsSearchAgent_Admin::RegisterTinyMceButton");
 	}
 	static function AddTinyMcePlugin($plugins) {
 		$plugins["idxlisting"] = DSIDXPRESS_PLUGIN_URL . "tinymce/single_listing/editor_plugin.js";

@@ -59,6 +59,15 @@ $availableLinks = json_decode($availableLinks["body"]);
 		.panel_wrapper {
 			padding-top: 13px;
 		}
+		select {
+			width: 100%;
+		}
+		#property-type-container {
+			height: 98px;
+			overflow: auto;
+			border:1px solid #DDDDDD;
+			width: 100%;
+		}
 		label {
 			cursor: pointer;
 		}
@@ -67,10 +76,22 @@ $availableLinks = json_decode($availableLinks["body"]);
 			vertical-align: top;
 		}
 		td {
-			padding-bottom: 5px;
+			padding-bottom: 7px;
 		}
 		.panel_wrapper div.current {
-			height: 120px;
+			height: 205px;
+		}
+		#number-to-display-container {
+			margin:15px auto;
+			text-align:center;
+			width:250px;
+		}
+		#number-to-display-container label {
+			font-weight: bold;
+			margin-right: 10px;
+		}
+		#number-to-display {
+			width: 30px;
 		}
 	</style>
 </head>
@@ -82,8 +103,8 @@ $availableLinks = json_decode($availableLinks["body"]);
 	<p>
 		In order embed multiple listings into your page/post, you can either create a quick custom search or, if you have
 		<a href="http://www.diversesolutions.com/dssearchagent-idx-solution.aspx" target="_blank">dsSearchAgent Pro</a>, use a pre-saved link
-		you've already created in your Diverse Solutions Control Panel. Simply choose a tab below, configure the options, and then click "Insert
-		Listings" at the bottom.
+		you've already created in your <a href="http://controlpanel.diversesolutions.com/" target="_blank">Diverse Solutions Control Panel</a>.
+		Simply choose a tab below, configure the options, and then click "Insert Listings" at the bottom.
 	</p>
 
 	<div class="tabs">
@@ -95,7 +116,7 @@ $availableLinks = json_decode($availableLinks["body"]);
 
 	<div class="panel_wrapper">
 		<div id="custom_search_panel" class="panel current">
-			<table>
+			<table style="width: 100%;">
 				<tr>
 					<th style="width: 110px;">Area type</th>
 					<td>
@@ -110,9 +131,7 @@ $availableLinks = json_decode($availableLinks["body"]);
 				<tr>
 					<th>Area name</th>
 					<td>
-						<select id="area-name">
-							<option>- dynamic from area type -</option>
-						</select>
+						<select id="area-name"></select>
 					</td>
 				</tr>
 				<tr>
@@ -124,35 +143,42 @@ $availableLinks = json_decode($availableLinks["body"]);
 					</td>
 				</tr>
 				<tr>
-					<th>Property types</th>
+					<th>
+						Property types
+						<div style="margin-top: 5px; font-weight: normal;">(will use your defaults or the MLS's defaults if not selected)</div>
+					</th>
 					<td>
-						<select id="area-name">
-							<option value="">- All property types -</option>
+						<div id="property-type-container">
 <?php
 foreach ($propertyTypes as $propertyType) {
 	if ($propertyType->IsSearchedByDefault)
 		continue;
 
 	$name = htmlentities($propertyType->DisplayName);
-	echo "<option value=\"{$propertyType->SearchSetupPropertyTypeID}\">{$name}</option>";
+	$id = $propertyType->SearchSetupPropertyTypeID;
+	echo <<<HTML
+							<input type="checkbox" name="property-type-{$id}" id="property-type-{$id}" value="{$id}" />
+							<label for="property-type-{$id}">{$name}</label>
+							<br />
+HTML;
 }
 ?>
-						</select>
+						</div>
 					</td>
 				</tr>
 				<tr>
 					<th>Display order</th>
 					<td>
 						<select id="display-order-column">
-							<option>Price, highest first</option>
-							<option>Home size, largest first</option>
-							<option>Lot size, largest first</option>
-							<option>Walk Score&trade;, highest first</option>
-							<option>Price drop (%), highest first</option>
-							<option>Days on market, newest first</option>
-							<option>Days on market, oldest first</option>
-							<option>Last updated, newest first</option>
-							<option>Last updated, oldest first</option>
+							<option value="DateAdded|ASC" selected="selected">Days on market, newest first</option>
+							<option value="DateAdded|DESC">Days on market, oldest first</option>
+							<option value="LastUpdated|DESC">Last updated, newest first</option>
+							<option value="Price|ASC">Price, lowest first</option>
+							<option value="Price|DESC">Price, highest first</option>
+							<option value="ImprovedSqFt|DESC">Home size, largest first</option>
+							<option value="LotSqFt|DESC">Lot size, largest first</option>
+							<option value="WalkScore|DESC">Walk Score&trade;, highest first</option>
+							<option value="OverallPriceDropPercent|DESC">Price drop (%), highest first</option>
 						</select>
 					</td>
 				</tr>
@@ -174,9 +200,14 @@ foreach ($availableLinks as $link) {
 		</div>
 	</div>
 
+	<div id="number-to-display-container">
+		<label for="number-to-display">Number of listings to display</label>
+		<input type="text" id="number-to-display" />
+	</div>
+
 	<div class="mceActionPanel">
 		<div style="float: left">
-			<input type="button" id="insert" name="insert" value="Insert listings" onclick="dsidxSingleListing.insert();" />
+			<input type="button" id="insert" name="insert" value="Insert listings" onclick="dsidxMultiListings.insert();" />
 		</div>
 
 		<div style="float: right">

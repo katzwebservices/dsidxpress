@@ -24,7 +24,8 @@ $localJsUri = get_option("siteurl") . "/" . WPINC . "/js/";
 	<title>dsIDXpress: Insert Property</title>
 
 	<script src="<?php echo $localJsUri ?>tinymce/tiny_mce_popup.js?ver=<?php echo urlencode($tinymce_version) ?>"></script>
-	<script src="<?php echo $localJsUri ?>jquery/jquery.js?ver=<?php echo urlencode($wp_version) ?>"></script>
+	<!-- jsonpCallback $.ajax arg didn't seem to work w/ WP's version of jquery... -->
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.0/jquery.min.js"></script>
 	<script src="js/dialog.js?ver=<?php echo urlencode(DSIDXPRESS_PLUGIN_VERSION) ?>"></script>
 
 	<style type="text/css">

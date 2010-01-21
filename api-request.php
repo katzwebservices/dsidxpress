@@ -35,7 +35,7 @@ class dsSearchAgent_ApiRequest {
 		ksort($params);
 		$transientKey = "idx_" . sha1($action . "_" . implode("", $params));
 
-		if (0 && $cacheSecondsOverride !== 0) {
+		if ($cacheSecondsOverride !== 0) {
 			$cachedRequestData = get_transient($transientKey);
 			if ($cachedRequestData) {
 				$cachedRequestData = $compressCache ? unserialize(gzinflate(base64_decode($cachedRequestData))) : $cachedRequestData;
@@ -67,7 +67,7 @@ class dsSearchAgent_ApiRequest {
 			"httpversion"	=> "1.1",
 			"redirection"	=> "0"
 		));
-		
+
 
 		if (empty($response["errors"]) && substr($response["response"]["code"], 0, 1) != "5") {
 			$response["body"] = self::FilterData($response["body"]);
