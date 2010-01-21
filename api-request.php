@@ -68,7 +68,6 @@ class dsSearchAgent_ApiRequest {
 			"redirection"	=> "0"
 		));
 
-
 		if (empty($response["errors"]) && substr($response["response"]["code"], 0, 1) != "5") {
 			$response["body"] = self::FilterData($response["body"]);
 			if ($cacheSecondsOverride !== 0)

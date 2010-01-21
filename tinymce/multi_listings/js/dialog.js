@@ -8,7 +8,7 @@ var dsidxMultiListings = (function() {
 		init: function() {
 			var startNode = tinyMCEPopup.editor.selection.getStart();
 			var nodeTextContent = startNode.textContent;
-			var linkId, area, minPrice, maxPrice, checkedPropertyTypes, sortColumn, sortDirection;
+			var linkId, area, minPrice, maxPrice, checkedPropertyTypes, sortColumn, sortDirection, count;
 			
 			if (/^\[idx-listings /.test(nodeTextContent) && startNode.tagName == 'P') {
 				nodeEditing = startNode;
@@ -25,6 +25,7 @@ var dsidxMultiListings = (function() {
 					checkedPropertyTypes = /^[^\]]+ propertytypes=['"]?([\d,]+)/.exec(nodeTextContent);
 					sortColumn = /^[^\]]+ orderby=['"]?([^'" ]+)/.exec(nodeTextContent);
 					sortDirection = /^[^\]]+ orderdir=['"]?([^'" ]+)/.exec(nodeTextContent);
+					count = /^[^\]]+ count=['"]?(\d+)/.exec(nodeTextContent);
 					
 					if (area)
 						$('#area-type').val(area[1]);
@@ -41,6 +42,8 @@ var dsidxMultiListings = (function() {
 						sortDirection = sortDirection ? sortDirection[1] : 'DESC';
 						$('#display-order-column').val(sortColumn[1] + '|' + sortDirection);
 					}
+					if (count)
+						$('#number-to-display').val(count[1]);
 				}
 				
 				this.changeTab(/^[^\]]+ linkid=['"]?\d/.test(nodeTextContent) ? 'pre-saved-links' : 'quick-search');
@@ -94,12 +97,13 @@ var dsidxMultiListings = (function() {
 		},
 		insert: function() {
 			var shortcode = '<p>[idx-listings';
-			var minPrice, maxPrice, checkedPropertyTypes, sortOrder;
+			var minPrice, maxPrice, checkedPropertyTypes, sortOrder, count;
 			
 			minPrice = parseInt($('#min-price').val());
 			maxPrice = parseInt($('#max-price').val());
 			checkedPropertyTypes = $('#property-type-container input:checked').map(function() { return this.value; }).get().join(',');
 			sortOrder = $('#display-order-column').val().split('|');
+			count = parseInt($('#number-to-display').val());
 			
 			if (multiListingType == 'quick-search') {
 				shortcode += ' ' + $('#area-type').val() + '="' + unescape($('#area-name').val()) + '"';
@@ -113,6 +117,9 @@ var dsidxMultiListings = (function() {
 			} else if (multiListingType == 'pre-saved-links') {
 				shortcode += ' linkid="' + $('#saved-link').val() + '"';
 			}
+
+			if (!isNaN(count) && count > 0)
+				shortcode += ' count="' + count + '"';
 			
 			shortcode += ']</p>';
 			
