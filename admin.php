@@ -76,7 +76,7 @@ HTML;
 						<label for="dsidxpress-CustomTitleText">Custom Title Text:</label>
 					</th>
 					<td>
-						<input type="text" id="dsidxpress-CustomTitleText" maxlength="49" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[CustomTitleText]" value="<?php echo $account_options->CustomTitleText; ?>" />
+						<input type="text" id="dsidxpress-CustomTitleText" maxlength="49" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[CustomTitleText]" value="<?php echo $account_options->CustomTitleText; ?>" /><br />
 						<span class="description">use <code>%title%</code> to designate where you want the location title like: <code>Real estate in the %title%</code></span>
 					</td>
 				</tr>
