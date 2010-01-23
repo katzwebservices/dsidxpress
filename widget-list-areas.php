@@ -64,6 +64,8 @@ class dsSearchAgent_ListAreasWidget extends WP_Widget {
 		$title = htmlspecialchars($instance["title"]);
 		$areas = htmlspecialchars(implode("\n", (array)$instance["areaOptions"]["areas"]));
 
+		$advancedId = $this->get_field_id("advanced");
+		
 		$titleFieldId = $this->get_field_id("title");
 		$titleFieldName = $this->get_field_name("title");
 		$areaOptionsFieldId = $this->get_field_id("areaOptions");
@@ -97,21 +99,21 @@ class dsSearchAgent_ListAreasWidget extends WP_Widget {
 				<label for="{$areaOptionsFieldId}[sortAreas]">Sort areas?</label>
 				<input id="{$areaOptionsFieldId}_sortAreas" name="{$areaOptionsFieldName}[sortAreas]" class="checkbox" type="checkbox" />
 			</p>
-			<a href="javascript:void(0);" onclick="jQuery('#{$titleFieldId}_advanced').slideDown(500); jQuery(this).hide()">Advanced</a>
-			<div id="{$titleFieldId}_advanced" style="display:none">
+			<a href="javascript:void(0);" onclick="jQuery('#{$advancedId}_advanced').slideDown(500); jQuery(this).hide()">Advanced</a>
+			<div id="{$advancedId}_advanced" style="display:none">
 				<hr />
 				<h3>Add an Area w/ a Custom Title</h3>
 				<p>
-					<label for="{$titleFieldId}_title">Link Text</label>
-					<input id="{$titleFieldId}_title" name="{$titleFieldName}_title" value="" class="widefat" type="text" />
+					<label for="{$advancedId}_title">Link Text</label>
+					<input id="{$advancedId}_title" value="" class="widefat" type="text" />
 				</p>
 				<p>
-					<label for="{$titleFieldId}_lookup">Actual Area Name</label>
-					<input id="{$titleFieldId}_lookup" name="{$ttleFieldName}_lookup" value="" class="widefat" type="text" />
+					<label for="{$advancedId}_lookup">Actual Area Name</label>
+					<input id="{$advancedId}_lookup" value="" class="widefat" type="text" />
 					<span class="description">See all <span id="{$areaOptionsFieldId}_link_title">{$type_normalized}</span> Names <a href="javascript:void(0);" onclick="dsWidgetListAreas.LaunchLookupList('{$pluginUrl}locations.php', '{$areaOptionsFieldId}_areaType')">here</a></span>
 				</p>
 				
-				<input type="button" class="button" value="Add This Area" onclick="dsWidgetListAreas.AddArea('{$titleFieldId}_title', '{$titleFieldId}_lookup', '{$areaOptionsFieldId}_areas')"/>
+				<input type="button" class="button" value="Add This Area" onclick="dsWidgetListAreas.AddArea('{$advancedId}_title', '{$advancedId}_lookup', '{$areaOptionsFieldId}_areas')"/>
 			</div>
 HTML;
 	}
