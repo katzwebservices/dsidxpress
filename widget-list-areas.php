@@ -5,10 +5,11 @@ class dsSearchAgent_ListAreasWidget extends WP_Widget {
 			"classname" => "dsidx-widget-list-areas",
 			"description" => "Lists of links for showing real estate"
 		));
-		wp_enqueue_script('dsidxpress_widget_list_areas', DSIDXPRESS_PLUGIN_URL . 'js/widget-list-areas.js', array('jquery'), DSIDXPRESS_PLUGIN_VERSION);
+
+		if (is_admin())
+			wp_enqueue_script('dsidxpress_widget_list_areas', DSIDXPRESS_PLUGIN_URL . 'js/widget-list-areas.js', array('jquery'), DSIDXPRESS_PLUGIN_VERSION);
 	}
 	function widget($args, $instance) {
-		
 		extract($args);
 		extract($instance);
 		$title = apply_filters("widget_title", $title);
@@ -112,7 +113,7 @@ class dsSearchAgent_ListAreasWidget extends WP_Widget {
 					<input id="{$advancedId}_lookup" value="" class="widefat" type="text" />
 					<span class="description">See all <span id="{$areaOptionsFieldId}_link_title">{$type_normalized}</span> Names <a href="javascript:void(0);" onclick="dsWidgetListAreas.LaunchLookupList('{$pluginUrl}locations.php', '{$areaOptionsFieldId}_areaType')">here</a></span>
 				</p>
-				
+
 				<input type="button" class="button" value="Add This Area" onclick="dsWidgetListAreas.AddArea('{$advancedId}_title', '{$advancedId}_lookup', '{$areaOptionsFieldId}_areas')"/>
 			</div>
 HTML;
