@@ -170,8 +170,8 @@ HTML;
 					<th>Display order</th>
 					<td>
 						<select id="display-order-column">
-							<option value="DateAdded|ASC" selected="selected">Days on market, newest first</option>
-							<option value="DateAdded|DESC">Days on market, oldest first</option>
+							<option value="DateAdded|DESC" selected="selected">Days on market, newest first</option>
+							<option value="DateAdded|ASC">Days on market, oldest first</option>
 							<option value="LastUpdated|DESC">Last updated, newest first</option>
 							<option value="Price|ASC">Price, lowest first</option>
 							<option value="Price|DESC">Price, highest first</option>
