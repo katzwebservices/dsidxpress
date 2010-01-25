@@ -108,7 +108,7 @@ class dsSearchAgent_Client {
 		self::EnsureBaseUri();
 
 		$posts = array((object)array(
-			"ID"				=> 0,
+			"ID"				=> -1,
 			"comment_count"		=> 0,
 			"comment_status"	=> "closed",
 			"ping_status"		=> "closed",
