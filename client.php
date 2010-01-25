@@ -103,6 +103,7 @@ class dsSearchAgent_Client {
 
 		$title = self::ExtractValueFromApiData($apiData, "title");
 		$dateaddedgmt = self::ExtractValueFromApiData($apiData, "dateaddedgmt");
+		$description = self::ExtractValueFromApiData($apiData, "description");
 		self::$CanonicalUri = self::ExtractValueFromApiData($apiData, "canonical");
 		self::EnsureBaseUri();
 
@@ -115,6 +116,7 @@ class dsSearchAgent_Client {
 			"post_content"		=> $apiData,
 			"post_date"			=> $dateaddedgmt ? $dateaddedgmt : date("c"),
 			"post_date_gmt"		=> $dateaddedgmt ? $dateaddedgmt : gmdate("c"),
+			"post_excerpt"		=> $description,
 			"post_name"			=> "idx-data",
 			"post_parent"		=> 0,
 			"post_status"		=> "publish",
@@ -123,8 +125,10 @@ class dsSearchAgent_Client {
 		));
 		return $posts;
 	}
-	static function ExtractValueFromApiData($apiData, $key) {
-		preg_match('/^\<!\-\-\s*' . $key . ':\s*"(?P<value>.+)"\s*\-\-\>/m', $apiData, $matches);
+	static function ExtractValueFromApiData(&$apiData, $key) {
+		preg_match('/^\<!\-\-\s*' . $key . ':\s*"(?P<value>[^"]+)"\s*\-\-\>/ms', $apiData, $matches);
+		if ($matches[0])
+			$apiData = str_replace($matches[0], "", $apiData);
 		return $matches["value"];
 	}
 	static function EnsureBaseUri() {
