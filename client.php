@@ -14,7 +14,7 @@ class dsSearchAgent_Client {
 	static function Activate($posts) {
 		global $wp_query;
 
-		// for remote debugging since
+		// for remote debugging
 		if ($_SERVER["REMOTE_ADDR"] == "70.168.154.66") {
 			if ($_GET["debug-wpquery"]) {
 				print_r($wp_query);
@@ -39,8 +39,6 @@ class dsSearchAgent_Client {
 			return $posts;
 
 		add_action("wp_head", "dsSearchAgent_Client::HeaderUnconditional");
-		add_filter("style_loader_tag", "dsSearchAgent_Client::FilterVersionForAssets");
-		add_filter("script_loader_src", "dsSearchAgent_Client::FilterVersionForAssets");
 		wp_enqueue_script("jquery");
 
 		if (!is_array($wp_query->query) || !isset($wp_query->query["idx-action"]))
@@ -59,6 +57,14 @@ class dsSearchAgent_Client {
 		// we handle our own redirects and canonicals
 		add_filter("wp_redirect", "dsSearchAgent_Client::CancelAllRedirects");
 		add_filter("redirect_canonical", "dsSearchAgent_Client::CancelAllRedirects");
+		add_filter("page_link", "dsSearchAgent_Client::GetPermalink");
+
+		// "All in One SEO Pack" tries to do its own canonical URLs as well. we disable them here only to prevent
+		// duplicate canonical elements. even if this fell through w/ another plugin though, the page_link filter would
+		// ensure that the permalink is correct
+		global $aioseop_options;
+		if ($aioseop_options["aiosp_can"])
+			$aioseop_options["aiosp_can"] = false;
 
 		// we don't support RSS feeds just yet
 		remove_action("wp_head", "feed_links");
@@ -107,6 +113,7 @@ class dsSearchAgent_Client {
 		self::$CanonicalUri = self::ExtractValueFromApiData($apiData, "canonical");
 		self::EnsureBaseUri();
 
+		set_query_var("name", "dsidxpress-data"); // at least a few themes require _something_ to be set here to display a good <title> tag
 		$posts = array((object)array(
 			"ID"				=> -1,
 			"comment_count"		=> 0,
@@ -117,7 +124,7 @@ class dsSearchAgent_Client {
 			"post_date"			=> $dateaddedgmt ? $dateaddedgmt : date("c"),
 			"post_date_gmt"		=> $dateaddedgmt ? $dateaddedgmt : gmdate("c"),
 			"post_excerpt"		=> $description,
-			"post_name"			=> "idx-data",
+			"post_name"			=> "dsidxpress-data",
 			"post_parent"		=> 0,
 			"post_status"		=> "publish",
 			"post_title"		=> $title,
@@ -184,21 +191,21 @@ class dsSearchAgent_Client {
 	}
 	static function HeaderUnconditional() {
 		$pluginUrl = DSIDXPRESS_PLUGIN_URL;
-		echo "<link rel=\"stylesheet\" href=\"{$pluginUrl}css/client.css\" />";
+		echo "<link rel=\"stylesheet\" href=\"{$pluginUrl}css/client.css\" />\n";
 	}
-	static function Header() {
+	static function GetPermalink($incomingLink = null) {
 		$blogUrl = get_bloginfo("url");
 		$urlSlug = dsSearchAgent_Rewrite::GetUrlSlug();
 		$canonicalUri = self::$CanonicalUri;
 
-		if ($canonicalUri)
-			echo "<link rel=\"canonical\" href=\"{$blogUrl}/{$urlSlug}{$canonicalUri}\" />\n";
-	}
-	static function FilterVersionForAssets($string) {
-		if (!strpos($string, ".diversesolutions.com/"))
-			return $string;
+		if (isset($canonicalUri) && (!$incomingLink || preg_match("/dsidxpress-data/", $incomingLink)))
+			return "{$blogUrl}/{$urlSlug}{$canonicalUri}";
 		else
-			return str_replace(array("?#038;ver=-", "?ver=-", "&#038;ver=-", "&ver=-"), array("?", "?", "", ""), $string);
+			return $incomingLink;
+	}
+	static function Header() {
+		if (self::$CanonicalUri)
+			echo "<link rel=\"canonical\" href=\"" . self::GetPermalink() . "\" />\n";
 	}
 }
 ?>
