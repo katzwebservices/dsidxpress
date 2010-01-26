@@ -1,9 +1,9 @@
 === dsIDXpress ===
-Contributors: amattie, jmabe
+Contributors: Diverse Solutions
 Tags: mls, idx, rets, housing, real estate
 Requires at least: 2.8
 Tested up to: 2.9.1
-Stable tag: 1.0-beta19
+Stable tag: 1.0
 
 This plugin allows WordPress to embed live real estate data from an MLS directly into a blog. You MUST have a dsIDXpress account to use this plugin.
 
@@ -13,20 +13,21 @@ This plugin allows WordPress to embed live real estate data from an MLS directly
 
 With the [dsIDXpress plugin](http://www.dsidxpress.com), bloggers can embed **live** real estate listings (using what is known as *I*nternet *D*ata E*x*change, or IDX) into their blog's posts and pages using something WordPress calls "shortcodes" and into their sidebars using the included widgets. The plugin also functions as a full IDX solution by allowing visitors to search for, and view the details of, listings in the MLS.
 
-## IMPORTANT REQUIREMENTS TO USE THIS PLUGIN:
+## IMPORTANT REQUIREMENTS TO USE THIS PLUGIN
+
 
 * You must be an active member with a multiple listing service (MLS). This means that anyone other than real estate agents and brokers (and, in some MLS's, even agents are excluded) cannot use this plugin.
-* The executives at the MLS must be progressive enough to allow the data to be syndicated to your blog from our (Diverse Solutions) API.
-* You must have a dsIDXpress account in order to get the required activation key.
+* The executives at the MLS must be progressive enough to allow the data to be syndicated to your blog from our ([Diverse Solutions]) API.
+* You must have a dsIDXpress account in order to get the required activation key. You can visit the [dsIDXpress product site](http://www.dsidxpress.com/) to purchase a key or get a demo key.
 * Your web host must be running at least PHP 5.2. PHP 5.2 has been out for 3 years at this point, so if they aren't using PHP 5.2, they're quite a ways behind the times. This is almost never an issue nowadays.
 * You must be using at least WordPress 2.8. It will run faster on WordPress 2.9.1 and later.
 
-dsIDXpress contains many advanced features that enable bloggers to create "sticky content," visitors to find properties they like, and search engines to crawl the MLS data so that the listings show up with the blogger's domain in the search engines. It is intended to be a real estate agent's / broker's all-inclusive interface between the MLS they belong to and their WordPress site / blog. Following is a very high-level overview of the plugin's functionality.
+[dsIDXpress](http://www.dsidxpress.com/) contains many advanced features that enable bloggers to create "sticky content," visitors to find properties they like, and search engines to crawl the MLS data so that the listings show up with the blogger's domain in the search engines. It is intended to be a real estate agent's / broker's all-inclusive interface between the MLS they belong to and their WordPress site / blog. Following is a very high-level overview of the plugin's functionality.
 
 * It actually embeds the live MLS data INTO the blog -- **it does NOT use HTML "iframes!"**
-* It is **extremely easy** to set up, requiring 17.43 seconds of your time on average. It's downloaded and installed like any other WordPress plugin and there's only one field to fill in (the activation key) to activate all of the plugin's functionality.
+* It is **extremely easy** to set up, requiring 17.43 seconds of your time on average. It's downloaded and installed like any other WordPress plugin and there's only one field to fill in (the [activation key](http://www.dsidxpress.com/)) to activate all of the plugin's functionality.
 * The plugin is **exceptionally fast**. In some cases, loading the MLS data is actually faster than loading the WordPress data!
-* It has fanatical attention to detail, which is reflected in search engine rankings. That the HTML that the plugin outputs is semantically correct and is streamlined for speed, the HTML `title` and `meta name="description"` tags are supported (`meta name="description"` through any of the WordPress SEO packs), and the dynamic URLs reflect the content. A great number of simliar details too numerous to mention are built into the core of the plugin.
+* It has fanatical attention to detail, which is reflected in search engine rankings. That the HTML that the plugin outputs is semantically correct and is streamlined for speed, the HTML `title` and `meta name="description"` tags are supported (`meta name="description"` through many of the WordPress SEO packs), and the dynamic URLs reflect the content. A great number of simliar details too numerous to mention are built into the core of the plugin.
 * It has built-in support for WordPress shortcodes, allowing bloggers to **embed live listing data from the MLS** into their blog posts / pages. Adding / editing these shortcodes is made easy by using the tools that dsIDXpress builds into WordPress's page / post editor.
 	* The `idx-listings` shortcode embeds listings for particular areas *into* their blog pages / posts. For example, if a blogger typed `[idx-listings city="Laguna Beach" count="10"]` into their post, the 10 newest listings from the MLS in Laguna Beach would show up in place of that text when the post is displayed; each listing / photo links to the full property details. The data is *live*, so whether the post is viewed the next day or the next month, the 10 newest listings would always be displayed.
 	* The `idx-listing` shortcode embeds a single listing into a blog post / page. For example, putting `[idx-listing mlsnumber="U8000471"]` into the post would show the LIVE primary information for that MLS #. If the price gets changed, photos get added, the property goes off the market, or otherwise anything at all changes, the data will always reflect the changes from the MLS. A blogger could also use the `showall="true"` option (i.e. `[idx-listing mlsnumber="U8000471" showall="true"]`) to show ALL of the data for that area (extended details and features, price changes, schools, and even a map that will show up in Google Reader).
@@ -73,8 +74,12 @@ No. Due to MLS rules, we can only provide activation keys to MLS members.
 
 = Can I use this without an activation key if I'm a member of an MLS? =
 
-No. The data comes from our (Diverse Solutions') servers, and we require an activation key before any of the data is released.
+No. The data comes from our ([Diverse Solutions'](http://www.diversesolutions.com/)) servers, and we require an activation key before any of the data is released.
 
 = How much will an activation key cost? =
 
 You can find the pricing information on the [dsIDXpress pricing page](http://www.dsidxpress.com/pricing/).
+
+= How do I get more information? =
+
+For more info on this plugin, please check out the [dsIDXpress product page](http://www.dsidxpress.com/). You can also [contact our sales department](http://www.dsidxpress.com/contact/) if you have questions.

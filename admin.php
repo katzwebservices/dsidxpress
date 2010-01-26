@@ -10,14 +10,14 @@ class dsSearchAgent_Admin {
 	static function AddMenu() {
 		$options = get_option(DSIDXPRESS_OPTION_NAME);
 
-		add_menu_page('dsIDXPress', 'dsIDXPress', "manage_options", "dsidxpress", "", DSIDXPRESS_PLUGIN_URL . 'assets/idxpress_LOGOicon.png'); //, [icon_url]);
+		add_menu_page('dsIDXPress', 'dsIDXPress', "manage_options", "dsidxpress", "", DSIDXPRESS_PLUGIN_URL . 'assets/idxpress_LOGOicon.png');
 
-		if(isset($options["PrivateApiKey"]))
+		if (isset($options["Activated"])) {
 			$optionsPage = add_submenu_page("dsidxpress", "dsIDXPress Options", "Options", "manage_options", "dsidxpress", "dsSearchAgent_Admin::EditOptions");
+			add_action("admin_print_scripts-{$optionsPage}", "dsSearchAgent_Admin::LoadHeader");
+		}
 
-		$activationPage = add_submenu_page("dsidxpress", "dsIDXpress Activation", "Activation", "manage_options", isset($options["PrivateApiKey"]) ? "dsidxpress_acivate" : "dsidxpress", "dsSearchAgent_Admin::Activation");
-
-		add_action("admin_print_scripts-{$optionsPage}", "dsSearchAgent_Admin::LoadHeader");
+		$activationPage = add_submenu_page("dsidxpress", "dsIDXpress Activation", "Activation", "manage_options", isset($options["Activated"]) ? "dsidxpress_acivate" : "dsidxpress", "dsSearchAgent_Admin::Activation");
 		add_action("admin_print_scripts-{$activationPage}", "dsSearchAgent_Admin::LoadHeader");
 
 		add_filter("mce_external_plugins", "dsSearchAgent_Admin::AddTinyMcePlugin");
@@ -52,9 +52,7 @@ HTML;
 
 		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("AccountOptions", array(), false, 0);
 
-		if ($apiHttpResponse["response"]["code"] == "404")
-			return array();
-		else if (!empty($apiHttpResponse["errors"]) || substr($apiHttpResponse["response"]["code"], 0, 1) == "5")
+		if (!empty($apiHttpResponse["errors"]) || $apiHttpResponse["response"]["code"] != "200")
 			wp_die("We're sorry, but we ran into a temporary problem while trying to load the account data. Please check back soon.", "Account data load error");
 		else
 			$account_options = json_decode($apiHttpResponse["body"]);
@@ -91,12 +89,12 @@ HTML;
 				<div class="inside">
 					<ul id="dsidxpress-SitemapLocations">
 					<?php
-						if(isset($options["SitemapLocations"]) && is_array($options["SitemapLocations"])){
+						if (isset($options["SitemapLocations"]) && is_array($options["SitemapLocations"])) {
 							$location_index = 0;
-							
+
 							usort($options["SitemapLocations"], "dsSearchAgent_Admin::CompareListObjects");
-							
-							foreach($options["SitemapLocations"] as $key => $value){
+
+							foreach ($options["SitemapLocations"] as $key => $value) {
 								$location_sanitized = urlencode(strtolower(str_replace(array("-", " "), array("_", "-"), $value["value"])));
 								?>
 								<li class="ui-state-default dsidxpress-SitemapLocation">
@@ -151,10 +149,10 @@ HTML;
 							<input type="button" class="button" id="dsidxpress-NewSitemapLocationAdd" value="Add" onclick="dsIDXPressOptions.AddSitemapLocation()" />
 						</div>
 						<div style="clear:both"></div>
-					</div>	
+					</div>
 				</div>
 			</div>
-			
+
 			<span class="description">"Priority" gives a hint to the web crawler as to what you think the importance of each page is. <code>1</code> being highest and <code>0</code> lowest.</span>
 
 			<h4>XML Sitemaps Options</h4>
@@ -376,12 +374,12 @@ HTML;
 	 * We're using the sanitize to capture the POST for these options so we can send them back to the diverse API
 	 * since we save and consume -most- options there.
 	 */
-	static function SanitizeApiOptions($options){
-		if(isset($options) && is_array($options)){
+	static function SanitizeApiOptions($options) {
+		if (is_array($options)) {
 			$options_text = "";
 
-			foreach($options as $key => $value){
-				if($options_text != "") $options_text .= ",";
+			foreach ($options as $key => $value) {
+				if ($options_text != "") $options_text .= ",";
 				$options_text .= $key.'|'.urlencode($value);
 				unset($options[$key]);
 			}
@@ -401,12 +399,12 @@ HTML;
 		if (in_array('google-sitemap-generator/sitemap.php', get_settings('active_plugins'))) {
 			$generatorObject = &GoogleSitemapGenerator::GetInstance();
 
-			if($generatorObject != null && isset($options["SitemapLocations"]) && is_array($options["SitemapLocations"])){
+			if ($generatorObject != null && isset($options["SitemapLocations"]) && is_array($options["SitemapLocations"])) {
 				$location_index = 0;
 
 				usort($options["SitemapLocations"], "dsSearchAgent_Admin::CompareListObjects");
-							
-				foreach($options["SitemapLocations"] as $key => $value){
+
+				foreach ($options["SitemapLocations"] as $key => $value) {
 					$location_sanitized = urlencode(strtolower(str_replace(array("-", " "), array("_", "-"), $value["value"])));
 					$url = $urlBase . $value["type"] .'/'. $location_sanitized;
 
@@ -415,7 +413,7 @@ HTML;
 			}
    		}
 	}
-	
+
 	static function CompareListObjects($a, $b)
     {
         $al = strtolower($a["value"]);
