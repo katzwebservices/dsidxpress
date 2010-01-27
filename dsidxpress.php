@@ -33,7 +33,7 @@ define("DSIDXPRESS_API_OPTIONS_NAME", "dsidxpress-api-options");
 define("DSIDXPRESS_CUSTOM_OPTIONS_NAME", "dsidxpress-custom-options");
 
 define("DSIDXPRESS_MIN_VERSION_PHP", "5.2.0");
-define("DSIDXPRESS_MIN_VERSION_WORDPRESS", "2.8.5");
+define("DSIDXPRESS_MIN_VERSION_WORDPRESS", "2.8");
 define("DSIDXPRESS_PLUGIN_URL", WP_PLUGIN_URL . "/dsidxpress/");
 define("DSIDXPRESS_PLUGIN_VERSION", $pluginData["Version"]);
 

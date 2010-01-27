@@ -2,23 +2,26 @@
 
 add_action("admin_init", "dsSearchAgent_Admin::Initialize");
 add_action("admin_menu", "dsSearchAgent_Admin::AddMenu");
+add_action("admin_notices", "dsSearchAgent_Admin::DisplayAdminNotices");
+add_action("wp_ajax_dsidxpress-dismiss-notification", "dsSearchAgent_Admin::DismissNotification");
 
 // hook into Google XML Sitemaps plugin http://wordpress.org/extend/plugins/google-sitemap-generator/
 add_action("sm_buildmap", "dsSearchAgent_Admin::GoogleXMLSitemaps");
 
 class dsSearchAgent_Admin {
+	static $HeaderLoaded = null;
 	static function AddMenu() {
 		$options = get_option(DSIDXPRESS_OPTION_NAME);
 
-		add_menu_page('dsIDXPress', 'dsIDXPress', "manage_options", "dsidxpress", "", DSIDXPRESS_PLUGIN_URL . 'assets/idxpress_LOGOicon.png');
+		add_menu_page('dsIDXpress', 'dsIDXpress', "manage_options", "dsidxpress", "", DSIDXPRESS_PLUGIN_URL . 'assets/idxpress_LOGOicon.png');
+
+		$activationPage = add_submenu_page("dsidxpress", "dsIDXpress Activation", "Activation", "manage_options", "dsidxpress", "dsSearchAgent_Admin::Activation");
+		add_action("admin_print_scripts-{$activationPage}", "dsSearchAgent_Admin::LoadHeader");
 
 		if (isset($options["Activated"])) {
-			$optionsPage = add_submenu_page("dsidxpress", "dsIDXPress Options", "Options", "manage_options", "dsidxpress", "dsSearchAgent_Admin::EditOptions");
+			$optionsPage = add_submenu_page("dsidxpress", "dsIDXpress Options", "Options", "manage_options", "dsidxpress-options", "dsSearchAgent_Admin::EditOptions");
 			add_action("admin_print_scripts-{$optionsPage}", "dsSearchAgent_Admin::LoadHeader");
 		}
-
-		$activationPage = add_submenu_page("dsidxpress", "dsIDXpress Activation", "Activation", "manage_options", isset($options["Activated"]) ? "dsidxpress_acivate" : "dsidxpress", "dsSearchAgent_Admin::Activation");
-		add_action("admin_print_scripts-{$activationPage}", "dsSearchAgent_Admin::LoadHeader");
 
 		add_filter("mce_external_plugins", "dsSearchAgent_Admin::AddTinyMcePlugin");
 		add_filter("mce_buttons", "dsSearchAgent_Admin::RegisterTinyMceButton");
@@ -40,18 +43,83 @@ class dsSearchAgent_Admin {
 		wp_enqueue_script('dsidxpress_admin_options', DSIDXPRESS_PLUGIN_URL . 'js/admin-options.js', array('jquery','jquery-ui-sortable'), DSIDXPRESS_PLUGIN_VERSION);
 	}
 	static function LoadHeader() {
-		$pluginUrl = DSIDXPRESS_PLUGIN_URL;
+		if (self::$HeaderLoaded)
+			return;
 
+		$pluginUrl = DSIDXPRESS_PLUGIN_URL;
 		echo <<<HTML
 			<link rel="stylesheet" href="{$pluginUrl}css/admin-options.css" type="text/css" />
 HTML;
+		self::$HeaderLoaded = true;
 	}
+	static function DisplayAdminNotices() {
+		if (!current_user_can("manage_options"))
+			return;
 
+		$options = get_option(DSIDXPRESS_OPTION_NAME);
+		if (!isset($options["PrivateApiKey"])) {
+			echo <<<HTML
+				<div class="error">
+					<p>
+						In order to use the dsIDXpress plugin, you need to add your
+						<a href="http://www.dsidxpress.com/tryit/" target="_blank">activation key</a> to the
+						<a href="admin.php?page=dsidxpress">dsIDXpress activation area</a>.
+					</p>
+				</div>
+HTML;
+		} else if (isset($options["PrivateApiKey"]) && !isset($options["Activated"])) {
+			echo <<<HTML
+				<div class="error">
+					<p>
+						It looks like there may be a problem with the dsIDXpress that's installed on this blog.
+						Please take a look at the <a href="admin.php?page=dsidxpress">dsIDXpress diagnostics area</a>
+						to find out more about any potential issues
+					</p>
+				</div>
+HTML;
+		} else if (isset($options["Activated"]) && !isset($options["HideIntroNotification"])) {
+			wp_nonce_field("dsidxpress-dismiss-notification", "dsidxpress-dismiss-notification", false);
+			echo <<<HTML
+				<script>
+					function dsidxpressDismiss() {
+						jQuery.post(ajaxurl, {
+							action: 'dsidxpress-dismiss-notification',
+							_ajax_nonce: jQuery('#dsidxpress-dismiss-notification').val()
+						});
+						jQuery('#dsidxpress-intro-notification').slideUp();
+					}
+				</script>
+				<div id="dsidxpress-intro-notification" class="updated">
+					<p style="line-height: 1.6;">Now that you have the <strong>dsIDXpress plugin</strong>
+						activated, you'll probably want to start adding <strong>live MLS content</strong>
+						to your site right away. The easiest way to get started is to use the three new IDX widgets that have
+						been added to your <a href="widgets.php">widgets page</a> and the two new IDX icons
+						(they look like property markers) that have been added to the visual editor for
+						all of your <a href="page-new.php">pages</a> and <a href="post-new.php">posts</a>.
+						You'll also want to check out our <a href="http://wiki.dsidxpress.com/wiki:link-structure"
+							target="_blank">dsIDXpress virtual page link structure guide</a> so that you
+						can start linking to the property listings and property details pages throughout
+						your blog. Take a look at our <a href="http://wiki.dsidxpress.com/wiki:getting-started"
+							target="_blank">getting started guide</a> for more info.
+					</p>
+					<p style="text-align: right;">(<a href="javascript:void(0)" onclick="dsidxpressDismiss()">dismiss this message</a>)</p>
+				</div>
+HTML;
+		}
+	}
+	static function DismissNotification() {
+		$action = $_POST["action"];
+		check_ajax_referer($action);
+
+		$options = get_option(DSIDXPRESS_OPTION_NAME);
+		$options["HideIntroNotification"] = true;
+		update_option(DSIDXPRESS_OPTION_NAME, $options);
+		die();
+	}
 	static function EditOptions() {
 		$options = get_option(DSIDXPRESS_CUSTOM_OPTIONS_NAME);
 
 		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("AccountOptions", array(), false, 0);
-
 		if (!empty($apiHttpResponse["errors"]) || $apiHttpResponse["response"]["code"] != "200")
 			wp_die("We're sorry, but we ran into a temporary problem while trying to load the account data. Please check back soon.", "Account data load error");
 		else
@@ -84,7 +152,7 @@ HTML;
 			<?php if ( in_array('google-sitemap-generator/sitemap.php', get_settings('active_plugins'))) {?>
 			<span class="description">Add the Locations (City, Community, Tract, or Zip) to your XML Sitemap by adding them via the dialogs below.</span>
 			<div class="dsidxpress-SitemapLocations stuffbox">
-				<script>dsIDXPressOptions.UrlBase = '<?php echo $urlBase; ?>'; dsIDXPressOptions.OptionPrefix = '<?php echo DSIDXPRESS_CUSTOM_OPTIONS_NAME; ?>';</script>
+				<script>dsIDXpressOptions.UrlBase = '<?php echo $urlBase; ?>'; dsIDXpressOptions.OptionPrefix = '<?php echo DSIDXPRESS_CUSTOM_OPTIONS_NAME; ?>';</script>
 				<h3><span class="hndle">Locations for Sitemap</span></h3>
 				<div class="inside">
 					<ul id="dsidxpress-SitemapLocations">
@@ -124,7 +192,7 @@ HTML;
 										<option value="tract"<?php echo ($value["type"] == "tract" ? ' selected="selected"' : ''); ?>>Tract</option>
 										<option value="zip"<?php echo ($value["type"] == "zip" ? ' selected="selected"' : ''); ?>>Zip Code</option>
 									</select></div>
-									<div class="action"><input type="button" value="Remove" class="button" onclick="dsIDXPressOptions.RemoveSitemapLocation(this)" /></div>
+									<div class="action"><input type="button" value="Remove" class="button" onclick="dsIDXpressOptions.RemoveSitemapLocation(this)" /></div>
 									<div style="clear:both"></div>
 								</li>
 								<?php
@@ -146,7 +214,7 @@ HTML;
 							</select>
 						</div>
 						<div class="action">
-							<input type="button" class="button" id="dsidxpress-NewSitemapLocationAdd" value="Add" onclick="dsIDXPressOptions.AddSitemapLocation()" />
+							<input type="button" class="button" id="dsidxpress-NewSitemapLocationAdd" value="Add" onclick="dsIDXpressOptions.AddSitemapLocation()" />
 						</div>
 						<div style="clear:both"></div>
 					</div>
@@ -190,6 +258,9 @@ HTML;
 
 		if ($options["PrivateApiKey"]) {
 			$diagnostics = self::RunDiagnostics($options);
+			$options["Activated"] = $diagnostics["DiagnosticsSuccessful"];
+			update_option(DSIDXPRESS_OPTION_NAME, $options);
+
 			$formattedApiKey = $options["AccountID"] . "/" . $options["SearchSetupID"] . "/" . $options["PrivateApiKey"];
 		}
 ?>
@@ -198,10 +269,13 @@ HTML;
 		<h2>dsIDXpress Activation</h2>
 		<form method="post" action="options.php">
 			<?php settings_fields("dsidxpress_activation"); ?>
-
+<?php
+		if ($_GET["updated"])
+			echo "\n<div class=\"updated\"><p>Activation key saved. Please see below to check the current activation status.</p></div>\n";
+ ?>
 			<h3>Plugin activation</h3>
 			<p>
-				In order to use <i>dsIDXpress</i>
+				In order to use <i><a href="http://www.dsidxpress.com/" target="_blank">dsIDXpress</a></i>
 				to display real estate listings from the MLS on your blog, you must have an activation key from
 				<a href="http://www.diversesolutions.com/" target="_blank">Diverse Solutions</a>. Without it, the plugin itself
 				will be useless, widgets won't appear, and all "shortcodes" specific to this plugin in your post and page
@@ -215,8 +289,18 @@ HTML;
 				from us to your blog, you <b>must</b> be a member of the MLS you would like the data for. In some cases, you
 				even have to be a real estate broker (or have your broker sign off on your request for this data). If you're 1)
 				a real estate agent, and 2) a member of an MLS, and you're interested in finding out more, please
-				<a href="http://www.diversesolutions.com/" target="_blank">contact us</a>.
+				<a href="http://www.dsidxpress.com/contact/" target="_blank">contact us</a>.
 			</p>
+			<div id="dsidx-activation-notice">
+				<p>
+					By default, <strong>your activation key will only work on one blog at a time</strong>. If you'd like to make it
+					work on more than one blog, you need to <a href="http://www.dsidxpress.com/contact/" target="_blank">contact our sales department</a>.
+				</p>
+				<p>
+					<strong>If you activate dsIDXpress on this blog, dsIDXpress will immediately stop working on any other blogs you use
+					this plugin on!</strong>
+				</p>
+			</div>
 			<table class="form-table">
 				<tr>
 					<th style="width: 110px;">
@@ -323,7 +407,8 @@ HTML;
 		// key going over the wire in the clear if the traffic is being spied on in the first place
 		global $wp_rewrite;
 
-		$diagnostics = dsSearchAgent_ApiRequest::FetchData("Diagnostics", array("apiKey" => $options["PrivateApiKey"]), false, 0);
+		$diagnostics = dsSearchAgent_ApiRequest::FetchData("Diagnostics", array("apiKey" => $options["PrivateApiKey"]), false, 0, $options);
+
 		if (empty($diagnostics["body"]) || $diagnostics["response"]["code"] != "200")
 			return array("error" => true);
 
@@ -348,9 +433,6 @@ HTML;
 			if (!$value)
 				$setDiagnostics["DiagnosticsSuccessful"] = false;
 		}
-
-		$options["Activated"] = $setDiagnostics["DiagnosticsSuccessful"];
-		update_option(DSIDXPRESS_OPTION_NAME, $options);
 		$wp_rewrite->flush_rules();
 
 		return $setDiagnostics;
@@ -358,15 +440,20 @@ HTML;
 	static function SanitizeOptions($options) {
 		if ($options["FullApiKey"]) {
 			$apiKeyParts = explode("/", $options["FullApiKey"]);
+			unset($options["FullApiKey"]);
 
 			$options["AccountID"] = $apiKeyParts[0];
 			$options["SearchSetupID"] = $apiKeyParts[1];
 			$options["PrivateApiKey"] = $apiKeyParts[2];
 
 			dsSearchAgent_ApiRequest::FetchData("BindToRequester", array(), false, 0, $options);
+			$diagnostics = self::RunDiagnostics($options);
+			$options["Activated"] = $diagnostics["DiagnosticsSuccessful"];
 
-			unset($options["FullApiKey"]);
+			if (!$options["Activated"] && isset($options["HideIntroNotification"]))
+				unset($options["HideIntroNotification"]);
 		}
+
 		return $options;
 	}
 

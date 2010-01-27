@@ -1,12 +1,12 @@
-dsIDXPressOptions = {
+dsIDXpressOptions = {
 	UrlBase : '',
 	OptionPrefix : '',
 	EnableDragDrop: false,
 	
 	Init : function(){
-		if(dsIDXPressOptions.EnableDragDrop){
+		if(dsIDXpressOptions.EnableDragDrop){
 			jQuery("#dsidxpress-SitemapLocations").sortable({
-				stop: function(event, ui) { dsIDXPressOptions.RepairOrder(); }
+				stop: function(event, ui) { dsIDXpressOptions.RepairOrder(); }
 			});
 			jQuery("#dsidxpress-SitemapLocations").disableSelection();
 		}
@@ -31,11 +31,11 @@ dsIDXPressOptions = {
 		var html = '<li class="ui-state-default dsidxpress-SitemapLocation">' +
 			'<div class="arrow"><span class="dsidxpress-up_down"></span></div>' +
 			'<div class="value">' +
-				'<a href="'+ dsIDXPressOptions.UrlBase + location_type +'/' + location_sanitized + '" target="_blank">' + location_name + '</a>'+
-				'<input type="hidden" name="'+ dsIDXPressOptions.OptionPrefix +'[SitemapLocations]['+index+'][value]" value="'+ location_name +'" />'+
+				'<a href="'+ dsIDXpressOptions.UrlBase + location_type +'/' + location_sanitized + '" target="_blank">' + location_name + '</a>'+
+				'<input type="hidden" name="'+ dsIDXpressOptions.OptionPrefix +'[SitemapLocations]['+index+'][value]" value="'+ location_name +'" />'+
 			'</div>'+
 			'<div class="priority">'+
-				'Priority: <select name="'+ dsIDXPressOptions.OptionPrefix +'[SitemapLocations]['+index+'][priority]">'+
+				'Priority: <select name="'+ dsIDXpressOptions.OptionPrefix +'[SitemapLocations]['+index+'][priority]">'+
 					'<option value="0.0">0.0</option>'+
 					'<option value="0.1">0.1</option>'+
 					'<option value="0.2">0.2</option>'+
@@ -50,20 +50,20 @@ dsIDXPressOptions = {
 				'</select>'+
 			'</div>'+
 			'<div class="type">'+
-				'<select name="'+ dsIDXPressOptions.OptionPrefix +'[SitemapLocations]['+index+'][type]">'+
+				'<select name="'+ dsIDXpressOptions.OptionPrefix +'[SitemapLocations]['+index+'][type]">'+
 					'<option value="city"'+ city_selected +'>City</option>' +
 					'<option value="community"'+ community_selected +'>Community</option>' +
 					'<option value="tract"'+ tract_selected +'>Tract</option>' +
 					'<option value="zip"'+ zip_selected +'>Zip Code</option>' +
 				'</select>'+
 			'</div>' +
-			'<div class="action"><input type="button" value="Remove" class="button" onclick="dsIDXPressOptions.RemoveSitemapLocation(this)" /></div>'+
+			'<div class="action"><input type="button" value="Remove" class="button" onclick="dsIDXpressOptions.RemoveSitemapLocation(this)" /></div>'+
 			'<div style="clear:both"></div>'+
 			'</li>';
 		
 		jQuery('#dsidxpress-SitemapLocations').append(html);
 		
-		dsIDXPressOptions.RepairOrder();
+		dsIDXpressOptions.RepairOrder();
 	},
 	
 	RepairOrder : function(){
@@ -93,11 +93,11 @@ dsIDXPressOptions = {
 	RemoveSitemapLocation : function(button){
 		if(confirm("Are you sure you want to remove this item")) {
 			jQuery(button.parentNode.parentNode).remove();
-			dsIDXPressOptions.RepairOrder();
+			dsIDXpressOptions.RepairOrder();
 		}
 	}
 }
 
 jQuery(document).ready(function () {
-	dsIDXPressOptions.Init();
+	dsIDXpressOptions.Init();
 });
