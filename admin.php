@@ -60,24 +60,24 @@ HTML;
 		if (!isset($options["PrivateApiKey"])) {
 			echo <<<HTML
 				<div class="error">
-					<p>
+					<p style="line-height: 1.6;">
 						In order to use the dsIDXpress plugin, you need to add your
 						<a href="http://www.dsidxpress.com/tryit/" target="_blank">activation key</a> to the
 						<a href="admin.php?page=dsidxpress">dsIDXpress activation area</a>.
 					</p>
 				</div>
 HTML;
-		} else if (isset($options["PrivateApiKey"]) && !isset($options["Activated"])) {
+		} else if (isset($options["PrivateApiKey"]) && empty($options["Activated"])) {
 			echo <<<HTML
 				<div class="error">
-					<p>
+					<p style="line-height: 1.6;">
 						It looks like there may be a problem with the dsIDXpress that's installed on this blog.
 						Please take a look at the <a href="admin.php?page=dsidxpress">dsIDXpress diagnostics area</a>
 						to find out more about any potential issues
 					</p>
 				</div>
 HTML;
-		} else if (isset($options["Activated"]) && !isset($options["HideIntroNotification"])) {
+		} else if (isset($options["Activated"]) && empty($options["HideIntroNotification"])) {
 			wp_nonce_field("dsidxpress-dismiss-notification", "dsidxpress-dismiss-notification", false);
 			echo <<<HTML
 				<script>
@@ -96,11 +96,12 @@ HTML;
 						been added to your <a href="widgets.php">widgets page</a> and the two new IDX icons
 						(they look like property markers) that have been added to the visual editor for
 						all of your <a href="page-new.php">pages</a> and <a href="post-new.php">posts</a>.
-						You'll also want to check out our <a href="http://wiki.dsidxpress.com/wiki:link-structure"
+						<!-- You'll also want to check out our <a href="http://wiki.dsidxpress.com/wiki:link-structure"
 							target="_blank">dsIDXpress virtual page link structure guide</a> so that you
 						can start linking to the property listings and property details pages throughout
 						your blog. Take a look at our <a href="http://wiki.dsidxpress.com/wiki:getting-started"
-							target="_blank">getting started guide</a> for more info.
+							target="_blank">getting started guide</a> for more info. --> We will have a "getting
+						started" guide up shortly.
 					</p>
 					<p style="text-align: right;">(<a href="javascript:void(0)" onclick="dsidxpressDismiss()">dismiss this message</a>)</p>
 				</div>
@@ -269,10 +270,6 @@ HTML;
 		<h2>dsIDXpress Activation</h2>
 		<form method="post" action="options.php">
 			<?php settings_fields("dsidxpress_activation"); ?>
-<?php
-		if ($_GET["updated"])
-			echo "\n<div class=\"updated\"><p>Activation key saved. Please see below to check the current activation status.</p></div>\n";
- ?>
 			<h3>Plugin activation</h3>
 			<p>
 				In order to use <i><a href="http://www.dsidxpress.com/" target="_blank">dsIDXpress</a></i>
