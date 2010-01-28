@@ -495,7 +495,7 @@ HTML;
 					$location_sanitized = urlencode(strtolower(str_replace(array("-", " "), array("_", "-"), $value["value"])));
 					$url = $urlBase . $value["type"] .'/'. $location_sanitized;
 
-					$generatorObject->AddUrl($url, time(), $options["SitemapFrequency"], floatval($options["SitemapPriority"]));
+					$generatorObject->AddUrl($url, time(), $options["SitemapFrequency"], floatval($value["priority"]));
 				}
 			}
    		}
