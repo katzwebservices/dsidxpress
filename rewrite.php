@@ -18,7 +18,7 @@ class dsSearchAgent_Rewrite {
 			$slug . "mls-(.+)-.*"							=> 'index.php?idx-action=details&idx-q-MlsNumber=$matches[1]',
 			substr($slug, 0, strlen($slug) - 1) . "(?:/page\-(\\d+))?"	=> 'index.php?idx-action=results&idx-d-ResultPage=$matches[1]'
 		);
-		
+
 		return $idxRules + $incomingRules;
 	}
 	static function SaveQueryVars($queryVars) {
@@ -33,8 +33,8 @@ class dsSearchAgent_Rewrite {
 
 		// there will be a bunch of other parameters that will be used in the final API call, but we only need to
 		// be concerned with the ones in the pseudo- URL rewrite thing. the rest of the parameters will be passed
-		// as HTTP GET or POST vars, so we can just use the superglobal $_REQUEST to access those  
-		
+		// as HTTP GET or POST vars, so we can just use the superglobal $_REQUEST to access those
+
 		return $queryVars;
 	}
 }

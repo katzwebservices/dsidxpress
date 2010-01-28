@@ -96,12 +96,14 @@ HTML;
 						been added to your <a href="widgets.php">widgets page</a> and the two new IDX icons
 						(they look like property markers) that have been added to the visual editor for
 						all of your <a href="page-new.php">pages</a> and <a href="post-new.php">posts</a>.
-						<!-- You'll also want to check out our <a href="http://wiki.dsidxpress.com/wiki:link-structure"
+						You'll probably also want to check out our <a href="http://wiki.dsidxpress.com/wiki:link-structure"
 							target="_blank">dsIDXpress virtual page link structure guide</a> so that you
 						can start linking to the property listings and property details pages throughout
-						your blog. Take a look at our <a href="http://wiki.dsidxpress.com/wiki:getting-started"
-							target="_blank">getting started guide</a> for more info. --> We will have a "getting
-						started" guide up shortly.
+						your blog.
+					</p>
+					<p style="line-height: 1.6; text-align: center; font-weight: bold;">Take a look at the
+						<a href="http://wiki.dsidxpress.com/wiki:getting-started" target="_blank">dsIDXpress getting
+						started guide</a> for more info.
 					</p>
 					<p style="text-align: right;">(<a href="javascript:void(0)" onclick="dsidxpressDismiss()">dismiss this message</a>)</p>
 				</div>
@@ -436,6 +438,7 @@ HTML;
 	}
 	static function SanitizeOptions($options) {
 		if ($options["FullApiKey"]) {
+			$options["FullApiKey"] = trim($options["FullApiKey"]);
 			$apiKeyParts = explode("/", $options["FullApiKey"]);
 			unset($options["FullApiKey"]);
 
