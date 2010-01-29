@@ -13,6 +13,7 @@ class dsSearchAgent_Rewrite {
 			$slug . "city/([^/]+)(?:/page\-(\\d+))?"		=> 'index.php?idx-action=results&idx-q-Cities=$matches[1]&idx-d-ResultPage=$matches[2]',
 			$slug . "community/([^/]+)(?:/page\-(\\d+))?"	=> 'index.php?idx-action=results&idx-q-Communities=$matches[1]&idx-d-ResultPage=$matches[2]',
 			$slug . "tract/([^/]+)(?:/page\-(\\d+))?"		=> 'index.php?idx-action=results&idx-q-TractIdentifiers=$matches[1]&idx-d-ResultPage=$matches[2]',
+			$slug . "area/([^/]+)(?:/page\-(\\d+))?"		=> 'index.php?idx-action=results&idx-q-Areas=$matches[1]&idx-d-ResultPage=$matches[2]',
 			$slug . "zip/(\\d+)(?:/page\-(\\d+))?"			=> 'index.php?idx-action=results&idx-q-ZipCodes=$matches[1]&idx-d-ResultPage=$matches[2]',
 			$slug . "(\\d+)[^/]*(?:/page\-(\\d+))?"			=> 'index.php?idx-action=results&idx-q-LinkID=$matches[1]&idx-d-ResultPage=$matches[2]',
 			$slug . "mls-(.+)-.*"							=> 'index.php?idx-action=details&idx-q-MlsNumber=$matches[1]',
@@ -26,6 +27,7 @@ class dsSearchAgent_Rewrite {
 		$queryVars[] = "idx-q-Cities";
 		$queryVars[] = "idx-q-Communities";
 		$queryVars[] = "idx-q-TractIdentifiers";
+		$queryVars[] = "idx-q-Areas";
 		$queryVars[] = "idx-q-ZipCodes";
 		$queryVars[] = "idx-q-LinkID";
 		$queryVars[] = "idx-q-MlsNumber";

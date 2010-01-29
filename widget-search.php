@@ -10,22 +10,22 @@ class dsSearchAgent_SearchWidget extends WP_Widget {
 		extract($args);
 		extract($instance);
 		$title = apply_filters("widget_title", $title);
-		
+
 		$formAction = get_bloginfo("url");
 		if (substr($formAction, strlen($formAction), 1) != "/")
 			$formAction .= "/";
 		$formAction .= dsSearchAgent_Rewrite::GetUrlSlug();
-		
+
 		$defaultSearchPanels = dsSearchAgent_ApiRequest::FetchData("AccountSearchPanelsDefault", array(), false, 60 * 60 * 24);
 		$defaultSearchPanels = $defaultSearchPanels["response"]["code"] == "200" ? json_decode($defaultSearchPanels["body"]) : null;
-		
+
 		$propertyTypes = dsSearchAgent_ApiRequest::FetchData("AccountSearchSetupPropertyTypes", array(), false, 60 * 60 * 24);
 		$propertyTypes = $propertyTypes["response"]["code"] == "200" ? json_decode($propertyTypes["body"]) : null;
-		
+
 		echo $before_widget;
 		if ($title)
 			echo $before_title . $title . $after_title;
-		
+
 		echo <<<HTML
 			<div class="dsidx-search-widget dsidx-widget">
 			<form action="{$formAction}" method="get">
@@ -35,15 +35,12 @@ class dsSearchAgent_SearchWidget extends WP_Widget {
 							<select name="idx-q-PropertyTypes" style="width: 100%;">
 								<option value="">- All property types -</option>
 HTML;
-		
+
 		foreach ($propertyTypes as $propertyType) {
-			if ($propertyType->IsSearchedByDefault)
-				continue;
-			
 			$name = htmlentities($propertyType->DisplayName);
 			echo "<option value=\"{$propertyType->SearchSetupPropertyTypeID}\">{$name}</option>";
 		}
-		
+
 		echo <<<HTML
 							</select>
 						</td>
@@ -57,7 +54,7 @@ HTML;
 			$city = htmlentities($city);
 			echo "<option value=\"{$city}\">{$city}</option>";
 		}
-		
+
 		echo <<<HTML
 							</select>
 						</td>
@@ -103,16 +100,16 @@ HTML;
 	function update($new_instance, $old_instance) {
 		$new_instance["title"] = strip_tags($new_instance["title"]);
 		$new_instance["searchOptions"]["cities"] = explode("\n", $new_instance["searchOptions"]["cities"]);
-		
+
 		if ($new_instance["searchOptions"]["sortCities"])
 			sort($new_instance["searchOptions"]["cities"]);
-		
+
 		// we don't need to store this option
 		unset($new_instance["searchOptions"]["sortCities"]);
-		
+
 		foreach ($new_instance["searchOptions"]["sortCities"] as &$area)
 			$area = str_replace("\r", "", $area);
-		
+
 		return $new_instance;
 	}
 	function form($instance) {
@@ -125,23 +122,23 @@ HTML;
 
 		$title = htmlspecialchars($instance["title"]);
 		$cities = htmlspecialchars(implode("\n", (array)$instance["searchOptions"]["cities"]));
-		
+
 		$titleFieldId = $this->get_field_id("title");
 		$titleFieldName = $this->get_field_name("title");
 		$searchOptionsFieldId = $this->get_field_id("searchOptions");
 		$searchOptionsFieldName = $this->get_field_name("searchOptions");
-		
+
 		echo <<<HTML
 			<p>
 				<label for="{$titleFieldId}">Widget title</label>
 				<input id="{$titleFieldId}" name="{$titleFieldName}" value="{$title}" class="widefat" type="text" />
 			</p>
-			
+
 			<p>
 				<label for="{$searchOptionsFieldId}[cities]">Cities (one per line)</label>
 				<textarea id="{$searchOptionsFieldId}[cities]" name="{$searchOptionsFieldName}[cities]" class="widefat" rows="10">{$cities}</textarea>
 			</p>
-			
+
 			<p>
 				<label for="{$searchOptionsFieldId}[sortCities]">Sort cities?</label>
 				<input id="{$searchOptionsFieldId}[sortCities]" name="{$searchOptionsFieldName}[sortCities]" class="checkbox" type="checkbox" />
