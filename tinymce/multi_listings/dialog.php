@@ -1,7 +1,8 @@
 <?php
 // bootstrap our wordpress instance
 $bootstrapSearchDir = dirname($_SERVER["SCRIPT_FILENAME"]);
-$docRoot = $_SERVER["DOCUMENT_ROOT"];
+$appPhysicalPath = $_SERVER["APPL_PHYSICAL_PATH"];
+$docRoot = dirname(isset($appPhysicalPath) ? $appPhysicalPath : $_SERVER["DOCUMENT_ROOT"]);
 
 while (!file_exists($bootstrapSearchDir . "/wp-load.php")) {
 	$bootstrapSearchDir = dirname($bootstrapSearchDir);
@@ -151,9 +152,6 @@ $availableLinks = json_decode($availableLinks["body"]);
 						<div id="property-type-container">
 <?php
 foreach ($propertyTypes as $propertyType) {
-	if ($propertyType->IsSearchedByDefault)
-		continue;
-
 	$name = htmlentities($propertyType->DisplayName);
 	$id = $propertyType->SearchSetupPropertyTypeID;
 	echo <<<HTML
