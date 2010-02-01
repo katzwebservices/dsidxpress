@@ -14,21 +14,32 @@ class dsSearchAgent_Client {
 	static function Activate($posts) {
 		global $wp_query;
 
+		// we're going to make our own _corrected_ array for the superglobal $_GET due to bugs in the "preferred" way to host WP on windows w/ IIS 6.
+		// the reason for this is because the URL that handles the request becomes wp-404-handler.php and _SERVER["QUERY_STRING"] subsequently ends up
+		// being in the format of 404;http://<domain>:<port>/<url>?<query-arg-1>&<query-arg-2>. the result of that problem is that the first query arg
+		// ends up becoming the entire request url up to the second query param
+		$get = $_GET;
+		$getKeys = array_keys($get);
+		if (strpos($getKeys[0], "404;") === 0) {
+			$get[substr($getKeys[0], strpos($getKeys[0], "?") + 1)] = $get[$getKeys[0]];
+			unset($get[$getKeys[0]]);
+		}
+
 		// for remote debugging
 		if ($_SERVER["REMOTE_ADDR"] == "70.168.154.66") {
-			if ($_GET["debug-wpquery"]) {
+			if ($get["debug-wpquery"]) {
 				print_r($wp_query);
 				print_r("\n");
 			}
-			if ($_GET["debug-posts"]) {
+			if ($get["debug-posts"]) {
 				print_r($posts);
 				print_r("\n");
 			}
-			if ($_GET["debug-plugins"]) {
+			if ($get["debug-plugins"]) {
 				print_r(get_option("active_plugins"));
 				print_r("\n");
 			}
-			if ($_GET["debug-php"]) {
+			if ($get["debug-php"]) {
 				phpinfo();
 				exit();
 			}
@@ -77,7 +88,7 @@ class dsSearchAgent_Client {
 		$wp_query->is_singular = 1;
 
 		$apiParams = array();
-		foreach (array_merge($wp_query->query_vars, $_GET) as $key => $value) {
+		foreach (array_merge($wp_query->query_vars, $get) as $key => $value) {
 			if (strpos($key, "idx-q") === false && strpos($key, "idx-d") === false)
 				continue;
 
