@@ -48,6 +48,8 @@ require_once("widget-listings.php");
 require_once("rewrite.php");
 require_once("api-request.php");
 
+require_once("xml-sitemaps.php");
+
 if (is_admin()) {
 	// this is needed specifically for development as PHP seems to choke when 1) loading this in admin, 2) using windows, 3) using directory junctions
 	include_once(str_replace("\\", "/", WP_PLUGIN_DIR) . "/dsidxpress/admin.php");

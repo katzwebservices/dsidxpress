@@ -5,9 +5,6 @@ add_action("admin_menu", "dsSearchAgent_Admin::AddMenu");
 add_action("admin_notices", "dsSearchAgent_Admin::DisplayAdminNotices");
 add_action("wp_ajax_dsidxpress-dismiss-notification", "dsSearchAgent_Admin::DismissNotification");
 
-// hook into Google XML Sitemaps plugin http://wordpress.org/extend/plugins/google-sitemap-generator/
-add_action("sm_buildmap", "dsSearchAgent_Admin::GoogleXMLSitemaps");
-
 class dsSearchAgent_Admin {
 	static $HeaderLoaded = null;
 	static function AddMenu() {
@@ -474,31 +471,6 @@ HTML;
 			$result = dsSearchAgent_ApiRequest::FetchData("SaveAccountOptions", array("options" => $options_text), false, 0);
 		}
 		return $options;
-	}
-
-	static function GoogleXMLSitemaps() {
-		$options = get_option(DSIDXPRESS_CUSTOM_OPTIONS_NAME);
-
-		$urlBase = get_bloginfo("url");
-		if (substr($urlBase, strlen($urlBase), 1) != "/") $urlBase .= "/";
-		$urlBase .= dsSearchAgent_Rewrite::GetUrlSlug();
-
-		if (in_array('google-sitemap-generator/sitemap.php', get_settings('active_plugins'))) {
-			$generatorObject = &GoogleSitemapGenerator::GetInstance();
-
-			if ($generatorObject != null && isset($options["SitemapLocations"]) && is_array($options["SitemapLocations"])) {
-				$location_index = 0;
-
-				usort($options["SitemapLocations"], "dsSearchAgent_Admin::CompareListObjects");
-
-				foreach ($options["SitemapLocations"] as $key => $value) {
-					$location_sanitized = urlencode(strtolower(str_replace(array("-", " "), array("_", "-"), $value["value"])));
-					$url = $urlBase . $value["type"] .'/'. $location_sanitized;
-
-					$generatorObject->AddUrl($url, time(), $options["SitemapFrequency"], floatval($value["priority"]));
-				}
-			}
-   		}
 	}
 
 	static function CompareListObjects($a, $b)
