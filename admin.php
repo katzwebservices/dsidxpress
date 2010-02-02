@@ -136,14 +136,7 @@ HTML;
 		<form method="post" action="options.php">
 			<?php settings_fields("dsidxpress_options"); ?>
 
-			<input type="hidden" name="<?php echo DSIDXPRESS_OPTION_NAME ; ?>[Activated]" value="<?php echo $options["Activated"] ?>" />
-			<input type="hidden" name="<?php echo DSIDXPRESS_OPTION_NAME ; ?>[AccountID]" value="<?php echo $options["AccountID"] ?>" />
-			<input type="hidden" name="<?php echo DSIDXPRESS_OPTION_NAME ; ?>[SearchSetupID]" value="<?php echo $options["SearchSetupID"] ?>" />
-			<input type="hidden" name="<?php echo DSIDXPRESS_OPTION_NAME ; ?>[PrivateApiKey]" value="<?php echo $options["PrivateApiKey"] ?>" />
-			<input type="hidden" name="<?php echo DSIDXPRESS_OPTION_NAME ; ?>[HideIntroNotification]" value="<?php echo $options["HideIntroNotification"] ?>" />
-
 			<h4>Display Settings</h4>
-
 			<table class="form-table">
 				<tr>
 					<th>
@@ -482,6 +475,8 @@ HTML;
 			if (!$options["Activated"] && isset($options["HideIntroNotification"]))
 				unset($options["HideIntroNotification"]);
 		}
+		// different option pages fill in different parts of this options array, so we simply merge what's already there with our new data
+		$options = array_merge(get_option(DSIDXPRESS_OPTION_NAME), $options);
 
 		return $options;
 	}

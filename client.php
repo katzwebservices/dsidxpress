@@ -10,6 +10,7 @@ class dsSearchAgent_Client {
 		"q" => "query",
 		"d" => "directive"
 	);
+	static $DebugAllowedFrom = "70.168.154.66";
 
 	static function Activate($posts) {
 		global $wp_query;
@@ -26,22 +27,29 @@ class dsSearchAgent_Client {
 		}
 
 		// for remote debugging
-		if ($_SERVER["REMOTE_ADDR"] == "70.168.154.66") {
+		if ($_SERVER["REMOTE_ADDR"] == self::$DebugAllowedFrom) {
 			if ($get["debug-wpquery"]) {
 				print_r($wp_query);
-				print_r("\n");
+				exit();
 			}
 			if ($get["debug-posts"]) {
 				print_r($posts);
-				print_r("\n");
+				exit();
 			}
 			if ($get["debug-plugins"]) {
-				print_r(get_option("active_plugins"));
-				print_r("\n");
+				foreach (get_option("active_plugins") as $plugin) {
+					print_r(get_plugin_data(WP_CONTENT_DIR . "/plugins/$plugin"));
+					print_r("\n");
+				}
+				exit();
 			}
 			if ($get["debug-php"]) {
 				phpinfo();
 				exit();
+			}
+			if ($get["flush-idx-transients"]) {
+				global $wpdb;
+				$wpdb->query("DELETE FROM `{$wpdb->prefix}options` WHERE option_name LIKE '_transient_idx_%' OR option_name LIKE '_transient_timeout_idx_%'");
 			}
 		}
 
@@ -118,6 +126,14 @@ class dsSearchAgent_Client {
 		$apiParams["responseDirective.IncludeDisclaimer"] = "true";
 
 		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData($wp_query->query["idx-action"], $apiParams, false);
+
+		if ($_SERVER["REMOTE_ADDR"] == self::$DebugAllowedFrom) {
+			if ($get["debug-api-response"]) {
+				print_r($apiHttpResponse);
+				exit();
+			}
+		}
+
 		if ($apiHttpResponse["response"]["code"] == "404")
 			return array();
 		else if (empty($apiHttpResponse["body"]) || !empty($apiHttpResponse["errors"]) || substr($apiHttpResponse["response"]["code"], 0, 1) == "5")

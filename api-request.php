@@ -65,7 +65,8 @@ class dsSearchAgent_ApiRequest {
 		$response = (array)$request->post($requestUri, array(
 			"body"			=> $params,
 			"httpversion"	=> "1.1",
-			"redirection"	=> "0"
+			"redirection"	=> "0",
+			"timeout"		=> 15 // we look into anything that takes longer than 2 seconds to return
 		));
 
 		if (empty($response["errors"]) && substr($response["response"]["code"], 0, 1) != "5") {
