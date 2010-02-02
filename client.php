@@ -46,6 +46,7 @@ class dsSearchAgent_Client {
 		}
 
 		$options = get_option(DSIDXPRESS_OPTION_NAME);
+
 		if (!$options["Activated"])
 			return $posts;
 
@@ -55,7 +56,7 @@ class dsSearchAgent_Client {
 		if (!is_array($wp_query->query) || !isset($wp_query->query["idx-action"]))
 			return $posts;
 
-		$action = $wp_query->query["idx-action"];
+		$action = strtolower($wp_query->query["idx-action"]);
 		add_action("wp_head", "dsSearchAgent_Client::Header");
 
 		// keep wordpress from mucking up our HTML
@@ -81,6 +82,12 @@ class dsSearchAgent_Client {
 		remove_action("wp_head", "feed_links");
 		remove_action("wp_head", "feed_links_extra");
 
+		// allow wordpress to consume the page template option the user choose in the dsIDXpress settings
+		if ($action == "results" && $options["ResultsTemplate"])
+			wp_cache_set(0, array("_wp_page_template" => array($options["ResultsTemplate"])), "post_meta");
+		else if ($action == "details" && $options["DetailsTemplate"])
+			wp_cache_set(0, array("_wp_page_template" => array($options["DetailsTemplate"])), "post_meta");
+
 		$wp_query->found_posts = 0;
 		$wp_query->max_num_pages = 0;
 		$wp_query->is_page = 1;
@@ -99,7 +106,7 @@ class dsSearchAgent_Client {
 			$apiParams[(string)$key] = $value;
 		}
 
-		if (strtolower($wp_query->query["idx-action"]) == "results") {
+		if ($action == "results") {
 			if ($apiParams["query.LinkID"])
 				$apiParams["query.ForceUsePropertySearchConstraints"] = "true";
 			$apiParams["directive.ResultsPerPage"] = 25;
@@ -124,7 +131,8 @@ class dsSearchAgent_Client {
 		self::$CanonicalUri = self::ExtractValueFromApiData($apiData, "canonical");
 		self::EnsureBaseUri();
 
-		set_query_var("name", "dsidxpress-data"); // at least a few themes require _something_ to be set here to display a good <title> tag
+		set_query_var("name", "dsidxpress-{$action}"); // at least a few themes require _something_ to be set here to display a good <title> tag
+		set_query_var("pagename", "dsidxpress-{$action}"); // setting pagename in case someone wants to do a custom theme file for this "page"
 		$posts = array((object)array(
 			"ID"				=> 0,
 			"comment_count"		=> 0,
