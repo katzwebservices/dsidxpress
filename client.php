@@ -1,4 +1,5 @@
 <?php
+add_action("pre_get_posts", "dsSearchAgent_Client::PreActivate");
 add_filter("posts_request", "dsSearchAgent_Client::ClearQuery");
 add_filter("the_posts", "dsSearchAgent_Client::Activate");
 
@@ -12,6 +13,20 @@ class dsSearchAgent_Client {
 	);
 	static $DebugAllowedFrom = "70.168.154.66";
 
+	// this is a roundabout way to make sure that any other plugin / widget / etc that uses the WP_Query object doesn't get our IDX data
+	// in their query. since we don't actually get the query itself in the "the_posts" filter, we have to step around the issue by
+	// checking it BEFORE it gets to the the_posts filter. later, in the the_posts filter, we restore the previous state of things.
+	static function PreActivate($q) {
+		global $wp_query;
+
+		if (!is_array($q->query) || $q->query["suppress_filters"])
+			return;
+
+		if ($wp_query->query["idx-action"] && !$q->query["idx-action"]) {
+			$wp_query->query["idx-action-swap"] = $wp_query->query["idx-action"];
+			unset($wp_query->query["idx-action"]);
+		}
+	}
 	static function Activate($posts) {
 		global $wp_query;
 
@@ -61,8 +76,16 @@ class dsSearchAgent_Client {
 		add_action("wp_head", "dsSearchAgent_Client::HeaderUnconditional");
 		wp_enqueue_script("jquery");
 
-		if (!is_array($wp_query->query) || !isset($wp_query->query["idx-action"]))
+		// see comment above PreActivate
+		if (is_array($wp_query->query) && isset($wp_query->query["idx-action-swap"])) {
+			$wp_query->query["idx-action"] = $wp_query->query["idx-action-swap"];
+			unset($wp_query->query["idx-action-swap"]);
 			return $posts;
+		}
+
+		if (!is_array($wp_query->query) || !isset($wp_query->query["idx-action"])) {
+			return $posts;
+		}
 
 		$action = strtolower($wp_query->query["idx-action"]);
 		add_action("wp_head", "dsSearchAgent_Client::Header");
@@ -77,7 +100,7 @@ class dsSearchAgent_Client {
 		// we handle our own redirects and canonicals
 		add_filter("wp_redirect", "dsSearchAgent_Client::CancelAllRedirects");
 		add_filter("redirect_canonical", "dsSearchAgent_Client::CancelAllRedirects");
-		add_filter("page_link", "dsSearchAgent_Client::GetPermalink");
+		add_filter("page_link", "dsSearchAgent_Client::GetPermalink"); // for any plugin that needs it
 
 		// "All in One SEO Pack" tries to do its own canonical URLs as well. we disable them here only to prevent
 		// duplicate canonical elements. even if this fell through w/ another plugin though, the page_link filter would
@@ -150,7 +173,7 @@ class dsSearchAgent_Client {
 		set_query_var("name", "dsidxpress-{$action}"); // at least a few themes require _something_ to be set here to display a good <title> tag
 		set_query_var("pagename", "dsidxpress-{$action}"); // setting pagename in case someone wants to do a custom theme file for this "page"
 		$posts = array((object)array(
-			"ID"				=> 0,
+			"ID"				=> -1,
 			"comment_count"		=> 0,
 			"comment_status"	=> "closed",
 			"ping_status"		=> "closed",
@@ -239,7 +262,10 @@ class dsSearchAgent_Client {
 			return $incomingLink;
 	}
 	static function Header() {
-		if (self::$CanonicalUri)
+		global $thesis;
+
+		// let thesis handle the canonical
+		if (self::$CanonicalUri && !$thesis)
 			echo "<link rel=\"canonical\" href=\"" . self::GetPermalink() . "\" />\n";
 	}
 }
