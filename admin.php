@@ -359,56 +359,76 @@ HTML;
 ?>
 			<table class="form-table" style="margin-bottom: 15px;">
 				<tr>
-					<th style="width: 230px;">Account active?</th>
+					<th style="width: 230px;">
+						<a href="http://wiki.dsidxpress.com/wiki:installing?s[]=Account%20active#diagnostics" target="_blank">Account active?</a>
+					</th>
 					<td class="dsidx-status dsidx-<?php echo $diagnostics["IsAccountValid"] ? "success" : "failure" ?>">
 						<?php echo $diagnostics["IsAccountValid"] ? "Yes" : "No" ?>
 					</td>
 
-					<th style="width: 290px;">Activation key active?</th>
+					<th style="width: 290px;">
+						<a href="http://wiki.dsidxpress.com/wiki:installing?s[]=Activation%20key%20active#diagnostics" target="_blank">Activation key active?</a>
+					</th>
 					<td class="dsidx-status dsidx-<?php echo $diagnostics["IsApiKeyValid"] ? "success" : "failure" ?>">
 						<?php echo $diagnostics["IsApiKeyValid"] ? "Yes" : "No" ?>
 					</td>
 				</tr>
 				<tr>
-					<th>Account authorized for this MLS?</th>
+					<th>
+						<a href="http://wiki.dsidxpress.com/wiki:installing?s[]=Account%20authorized%20for%20this%20MLS#diagnostics" target="_blank">Account authorized for this MLS?</a>
+					</th>
 					<td class="dsidx-status dsidx-<?php echo $diagnostics["IsAccountAuthorizedToMLS"] ? "success" : "failure" ?>">
 						<?php echo $diagnostics["IsAccountAuthorizedToMLS"] ? "Yes" : "No" ?>
 					</td>
 
-					<th>Activation key authorized for this blog?</th>
+					<th>
+						<a href="http://wiki.dsidxpress.com/wiki:installing?s[]=Activation%20key%20authorized%20for%20this%20blog#diagnostics" target="_blank">Activation key authorized for this blog?</a>
+					</th>
 					<td class="dsidx-status dsidx-<?php echo $diagnostics["IsApiKeyAuthorizedToUri"] ? "success" : "failure" ?>">
 						<?php echo $diagnostics["IsApiKeyAuthorizedToUri"] ? "Yes" : "No" ?>
 					</td>
 				</tr>
 				<tr>
-					<th>Clock accurate on this server?</th>
+					<th>
+						<a href="http://wiki.dsidxpress.com/wiki:installing?s[]=Clock%20accurate%20on%20this%20server#diagnostics" target="_blank">Clock accurate on this server?</a>
+					</th>
 					<td class="dsidx-status dsidx-<?php echo $diagnostics["ClockIsAccurate"] ? "success" : "failure" ?>">
 						<?php echo $diagnostics["ClockIsAccurate"] ? "Yes" : "No" ?>
 					</td>
 
-					<th>Activation key authorized for this server?</th>
+					<th>
+						<a href="http://wiki.dsidxpress.com/wiki:installing?s[]=Activation%20key%20authorized%20for%20this%20server#diagnostics" target="_blank">Activation key authorized for this server?</a>
+					</th>
 					<td class="dsidx-status dsidx-<?php echo $diagnostics["IsApiKeyAuthorizedToIP"] ? "success" : "failure" ?>">
 						<?php echo $diagnostics["IsApiKeyAuthorizedToIP"] ? "Yes" : "No" ?>
 					</td>
 				</tr>
 				<tr>
-					<th>WordPress link structure ok?</th>
+					<th>
+						<a href="http://wiki.dsidxpress.com/wiki:installing?s[]=WordPress%20link%20structure%20ok#diagnostics" target="_blank">WordPress link structure ok?</a>
+					</th>
 					<td class="dsidx-status dsidx-<?php echo $diagnostics["UrlInterceptSet"] ? "success" : "failure" ?>">
 						<?php echo $diagnostics["UrlInterceptSet"] ? "Yes" : "No" ?>
 					</td>
 
-					<th>Under monthly API call limit?</th>
+					<th>
+						<a href="http://wiki.dsidxpress.com/wiki:installing?s[]=Under%20monthly%20API%20call%20limit#diagnostics" target="_blank">Under monthly API call limit?</a>
+					</th>
 					<td class="dsidx-status dsidx-<?php echo $diagnostics["UnderMonthlyCallLimit"] ? "success" : "failure" ?>">
 						<?php echo $diagnostics["UnderMonthlyCallLimit"] ? "Yes" : "No" ?>
 					</td>
 				</tr>
 				<tr>
-					<th>Server PHP version at least 5.2?</th>
+					<th>
+						<a href="http://wiki.dsidxpress.com/wiki:installing?s[]=Server%20PHP%20version%20at%20least%205.2#diagnostics" target="_blank">Server PHP version at least 5.2?</a>
+					</th>
 					<td class="dsidx-status dsidx-<?php echo $diagnostics["PhpVersionAcceptable"] ? "success" : "failure" ?>">
 						<?php echo $diagnostics["PhpVersionAcceptable"] ? "Yes" : "No" ?>
 					</td>
 
-					<th>Would you like fries with that?</th>
+					<th>
+						<a href="http://wiki.dsidxpress.com/wiki:installing?s[]=Would%20you%20like%20fries%20with%20that#diagnostics" target="_blank">Would you like fries with that?</a>
+					</th>
 					<td class="dsidx-status dsidx-success">
 						Yes <!-- you kidding? we ALWAYS want fries. mmmm, friessssss -->
 					</td>
