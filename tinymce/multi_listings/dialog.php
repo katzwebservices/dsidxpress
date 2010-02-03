@@ -80,7 +80,7 @@ $availableLinks = json_decode($availableLinks["body"]);
 			padding-bottom: 7px;
 		}
 		.panel_wrapper div.current {
-			height: 205px;
+			height: 220px;
 		}
 		#number-to-display-container {
 			margin:15px auto;
