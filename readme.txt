@@ -3,7 +3,7 @@ Contributors: Diverse Solutions
 Tags: mls, idx, rets, housing, real estate
 Requires at least: 2.8
 Tested up to: 2.9.1
-Stable tag: 1.0.3
+Stable tag: 1.0.3.1
 
 This plugin allows WordPress to embed live real estate data from an MLS directly into a blog. You MUST have a dsIDXpress account to use this plugin.
 
@@ -46,13 +46,15 @@ If you'd like to **see the plugin in action**, you can check out our [dsIDXpress
 
 == Installation ==
 
-[Diverse Solutions]: http://www.diversesolutions.com "Diverse Solutions, plugin author"
-
 1. Go to your WordPress admin area, then go to the "Plugins" area, then go to "Add New".
 2. Search for "dsidxpress" (sans quotes) in the plugin search box.
 3. Click "Install" on the right, then click "Install" at the top-right in the window that comes up.
 4. Go to the "Settings" -> "dsIDXpress" area.
-5. Fill in the activation key provided by [Diverse Solutions].
+5. Fill in the [dsIDXpress activation key](http://www.dsidxpress.com/tryit/).
+
+For a more detailed installation guide, please take a look at the [install wiki](http://wiki.dsidxpress.com/wiki:installing).
+
+**You should read the [getting started guide](http://wiki.dsidxpress.com/wiki:getting-started) after installing this plugin.**
 
 == Screenshots ==
 
