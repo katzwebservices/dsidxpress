@@ -496,7 +496,8 @@ HTML;
 				unset($options["HideIntroNotification"]);
 		}
 		// different option pages fill in different parts of this options array, so we simply merge what's already there with our new data
-		$options = array_merge(get_option(DSIDXPRESS_OPTION_NAME), $options);
+		if (get_option(DSIDXPRESS_OPTION_NAME))
+			$options = array_merge(get_option(DSIDXPRESS_OPTION_NAME), $options);
 
 		return $options;
 	}

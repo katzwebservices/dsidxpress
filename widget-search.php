@@ -108,7 +108,7 @@ HTML;
 		unset($new_instance["searchOptions"]["sortCities"]);
 
 		foreach ($new_instance["searchOptions"]["sortCities"] as &$area)
-			$area = str_replace("\r", "", $area);
+			$area = trim($area);
 
 		return $new_instance;
 	}

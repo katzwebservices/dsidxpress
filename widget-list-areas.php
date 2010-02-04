@@ -49,7 +49,7 @@ class dsSearchAgent_ListAreasWidget extends WP_Widget {
 		unset($new_instance["areaOptions"]["sortAreas"]);
 
 		foreach ($new_instance["areaOptions"]["areas"] as &$area)
-			$area = str_replace("\r", "", $area);
+			$area = trim($area);
 
 		return $new_instance;
 	}
@@ -66,7 +66,7 @@ class dsSearchAgent_ListAreasWidget extends WP_Widget {
 		$areas = htmlspecialchars(implode("\n", (array)$instance["areaOptions"]["areas"]));
 
 		$advancedId = $this->get_field_id("advanced");
-		
+
 		$titleFieldId = $this->get_field_id("title");
 		$titleFieldName = $this->get_field_name("title");
 		$areaOptionsFieldId = $this->get_field_id("areaOptions");
