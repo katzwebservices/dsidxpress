@@ -89,6 +89,7 @@ class dsSearchAgent_ApiRequest {
 		$blogUrlWithoutProtocol = str_replace("http://", "", get_bloginfo("url"));
 		$blogUrlDirIndex = strpos($blogUrlWithoutProtocol, "/");
 
+		$blogUrlDir = "";
 		if ($blogUrlDirIndex) // don't need to check for !== false here since WP prevents trailing /'s
 			$blogUrlDir = substr($blogUrlWithoutProtocol, strpos($blogUrlWithoutProtocol, "/"));
 		$data = str_replace('{$idxActivationPath}', $blogUrlDir . "/" . dsSearchAgent_Rewrite::GetUrlSlug(), $data);

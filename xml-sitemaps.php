@@ -11,7 +11,7 @@ class dsSearchAgent_XmlSitemaps {
 		if (substr($urlBase, strlen($urlBase), 1) != "/") $urlBase .= "/";
 		$urlBase .= dsSearchAgent_Rewrite::GetUrlSlug();
 
-		if (in_array('google-sitemap-generator/sitemap.php', get_settings('active_plugins'))) {
+		if (in_array('google-sitemap-generator/sitemap.php', get_option('active_plugins'))) {
 			$generatorObject = &GoogleSitemapGenerator::GetInstance();
 
 			if ($generatorObject != null && isset($options["SitemapLocations"]) && is_array($options["SitemapLocations"])) {

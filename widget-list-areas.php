@@ -26,7 +26,7 @@ class dsSearchAgent_ListAreasWidget extends WP_Widget {
 		echo "<ul class=\"dsidx-widget\">";
 		foreach ($areaOptions["areas"] as $area) {
 			$area = htmlentities($area);
-			$areaType = $areaOptions[areaType];
+			$areaType = $areaOptions["areaType"];
 			$area_pair = preg_split('/\|/', $area, -1);
 			$area_title = count($area_pair) == 2 ? $area_pair[0] : $area;
 			$areaUrl = count($area_pair) == 2 ?

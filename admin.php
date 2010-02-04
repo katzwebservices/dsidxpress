@@ -174,7 +174,7 @@ HTML;
 			</table>
 
 			<h4>XML Sitemaps Locations</h4>
-			<?php if ( in_array('google-sitemap-generator/sitemap.php', get_settings('active_plugins'))) {?>
+			<?php if ( in_array('google-sitemap-generator/sitemap.php', get_option('active_plugins'))) {?>
 			<span class="description">Add the Locations (City, Community, Tract, or Zip) to your XML Sitemap by adding them via the dialogs below.</span>
 			<div class="dsidxpress-SitemapLocations stuffbox">
 				<script>dsIDXpressOptions.UrlBase = '<?php echo $urlBase; ?>'; dsIDXpressOptions.OptionPrefix = '<?php echo DSIDXPRESS_OPTION_NAME; ?>';</script>
@@ -283,8 +283,10 @@ HTML;
 
 		if ($options["PrivateApiKey"]) {
 			$diagnostics = self::RunDiagnostics($options);
+			$previouslyActive = $options["Activated"];
 			$options["Activated"] = $diagnostics["DiagnosticsSuccessful"];
-			update_option(DSIDXPRESS_OPTION_NAME, $options);
+			if ($previouslyActive != $options["Activated"])
+				update_option(DSIDXPRESS_OPTION_NAME, $options);
 
 			$formattedApiKey = $options["AccountID"] . "/" . $options["SearchSetupID"] . "/" . $options["PrivateApiKey"];
 		}
@@ -347,7 +349,7 @@ HTML;
 ?>
 			<h3>Diagnostics</h3>
 <?php
-			if ($diagnostics["error"]) {
+			if (isset($diagnostics["error"])) {
 ?>
 			<p class="error">
 				It seems that there was an issue while trying to load the diagnostics from Diverse Solutions' servers. It's possible that our servers
@@ -479,7 +481,7 @@ HTML;
 		return $setDiagnostics;
 	}
 	static function SanitizeOptions($options) {
-		if ($options["FullApiKey"]) {
+		if (isset($options["FullApiKey"])) {
 			$options["FullApiKey"] = trim($options["FullApiKey"]);
 			$apiKeyParts = explode("/", $options["FullApiKey"]);
 			unset($options["FullApiKey"]);

@@ -19,10 +19,11 @@ class dsSearchAgent_Client {
 	static function PreActivate($q) {
 		global $wp_query;
 
-		if (!is_array($q->query) || $q->query["suppress_filters"])
+		if (!is_array($wp_query->query) || !is_array($q->query) || isset($wp_query->query["suppress_filters"]) || isset($q->query["suppress_filters"])) {
 			return;
+		}
 
-		if ($wp_query->query["idx-action"] && !$q->query["idx-action"]) {
+		if (isset($wp_query->query["idx-action"]) && !isset($q->query["idx-action"])) {
 			$wp_query->query["idx-action-swap"] = $wp_query->query["idx-action"];
 			unset($wp_query->query["idx-action"]);
 		}
@@ -36,33 +37,33 @@ class dsSearchAgent_Client {
 		// ends up becoming the entire request url up to the second query param
 		$get = $_GET;
 		$getKeys = array_keys($get);
-		if (strpos($getKeys[0], "404;") === 0) {
+		if (isset($getKeys[0]) && strpos($getKeys[0], "404;") === 0) {
 			$get[substr($getKeys[0], strpos($getKeys[0], "?") + 1)] = $get[$getKeys[0]];
 			unset($get[$getKeys[0]]);
 		}
 
 		// for remote debugging
 		if ($_SERVER["REMOTE_ADDR"] == self::$DebugAllowedFrom) {
-			if ($get["debug-wpquery"]) {
+			if (isset($get["debug-wpquery"])) {
 				print_r($wp_query);
 				exit();
 			}
-			if ($get["debug-posts"]) {
+			if (isset($get["debug-posts"])) {
 				print_r($posts);
 				exit();
 			}
-			if ($get["debug-plugins"]) {
+			if (isset($get["debug-plugins"])) {
 				foreach (get_option("active_plugins") as $plugin) {
 					print_r(get_plugin_data(WP_CONTENT_DIR . "/plugins/$plugin"));
 					print_r("\n");
 				}
 				exit();
 			}
-			if ($get["debug-php"]) {
+			if (isset($get["debug-php"])) {
 				phpinfo();
 				exit();
 			}
-			if ($get["flush-idx-transients"]) {
+			if (isset($get["flush-idx-transients"])) {
 				global $wpdb;
 				$wpdb->query("DELETE FROM `{$wpdb->prefix}options` WHERE option_name LIKE '_transient_idx_%' OR option_name LIKE '_transient_timeout_idx_%'");
 			}
@@ -70,7 +71,7 @@ class dsSearchAgent_Client {
 
 		$options = get_option(DSIDXPRESS_OPTION_NAME);
 
-		if (!$options["Activated"])
+		if (!isset($options["Activated"]))
 			return $posts;
 
 		add_action("wp_head", "dsSearchAgent_Client::HeaderUnconditional");
@@ -138,10 +139,10 @@ class dsSearchAgent_Client {
 		}
 
 		if ($action == "results") {
-			if ($apiParams["query.LinkID"])
+			if (isset($apiParams["query.LinkID"]))
 				$apiParams["query.ForceUsePropertySearchConstraints"] = "true";
 			$apiParams["directive.ResultsPerPage"] = 25;
-			if ($apiParams["directive.ResultPage"])
+			if (isset($apiParams["directive.ResultPage"]))
 				$apiParams["directive.ResultPage"] = $apiParams["directive.ResultPage"] - 1;
 			$apiParams["responseDirective.IncludeMetadata"] = "true";
 			$apiParams["responseDirective.IncludeLinkMetadata"] = "true";
@@ -151,7 +152,7 @@ class dsSearchAgent_Client {
 		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData($wp_query->query["idx-action"], $apiParams, false);
 
 		if ($_SERVER["REMOTE_ADDR"] == self::$DebugAllowedFrom) {
-			if ($get["debug-api-response"]) {
+			if (isset($get["debug-api-response"])) {
 				print_r($apiHttpResponse);
 				exit();
 			}
@@ -192,9 +193,11 @@ class dsSearchAgent_Client {
 	}
 	static function ExtractValueFromApiData(&$apiData, $key) {
 		preg_match('/^\<!\-\-\s*' . $key . ':\s*"(?P<value>[^"]+)"\s*\-\-\>/ms', $apiData, $matches);
-		if ($matches[0])
+		if (isset($matches[0])) {
 			$apiData = str_replace($matches[0], "", $apiData);
-		return $matches["value"];
+			return $matches["value"];
+		}
+		return "";
 	}
 	static function EnsureBaseUri() {
 		$urlSlug = dsSearchAgent_Rewrite::GetUrlSlug();
@@ -206,7 +209,7 @@ class dsSearchAgent_Client {
 
 		$requestedPath = $_SERVER["REQUEST_URI"];
 		$queryPosition = strrpos($requestedPath, "?");
-		if ($queryPosition)
+		if ($queryPosition !== false)
 			$requestedPath = substr($requestedPath, 0, $queryPosition);
 		else
 			$requestedPath = $requestedPath;
@@ -214,6 +217,7 @@ class dsSearchAgent_Client {
 		$blogUrlWithoutProtocol = str_replace("http://", "", get_bloginfo("url"));
 		$blogUrlDirIndex = strpos($blogUrlWithoutProtocol, "/");
 
+		$blogUrlDir = "";
 		if ($blogUrlDirIndex) // don't need to check for !== false here since WP prevents trailing /'s
 			$blogUrlDir = substr($blogUrlWithoutProtocol, strpos($blogUrlWithoutProtocol, "/"));
 
