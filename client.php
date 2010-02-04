@@ -116,9 +116,9 @@ class dsSearchAgent_Client {
 
 		// allow wordpress to consume the page template option the user choose in the dsIDXpress settings
 		if ($action == "results" && $options["ResultsTemplate"])
-			wp_cache_set(0, array("_wp_page_template" => array($options["ResultsTemplate"])), "post_meta");
+			wp_cache_set(-1, array("_wp_page_template" => array($options["ResultsTemplate"])), "post_meta");
 		else if ($action == "details" && $options["DetailsTemplate"])
-			wp_cache_set(0, array("_wp_page_template" => array($options["DetailsTemplate"])), "post_meta");
+			wp_cache_set(-1, array("_wp_page_template" => array($options["DetailsTemplate"])), "post_meta");
 
 		$wp_query->found_posts = 0;
 		$wp_query->max_num_pages = 0;
