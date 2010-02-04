@@ -221,7 +221,7 @@ class dsSearchAgent_Client {
 		if ($blogUrlDirIndex) // don't need to check for !== false here since WP prevents trailing /'s
 			$blogUrlDir = substr($blogUrlWithoutProtocol, strpos($blogUrlWithoutProtocol, "/"));
 
-		if ($requestedPath != $blogUrlDir . "/" . $urlSlug . $hardPermalink) {
+		if ($requestedPath != $blogUrlDir . "/" . $urlSlug . urldecode($hardPermalink)) {
 			$redirect = $blogUrlDir . "/" . $urlSlug . self::$CanonicalUri;
 			$sortColumnKey = "idx-d-SortColumn<0>";
 			$sortDirectionKey = "idx-d-SortDirection<0>";
