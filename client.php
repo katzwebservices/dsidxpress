@@ -23,10 +23,15 @@ class dsSearchAgent_Client {
 			return;
 		}
 
-		if (isset($wp_query->query["idx-action"]) && !isset($q->query["idx-action"])) {
-			$wp_query->query["idx-action-swap"] = $wp_query->query["idx-action"];
-			unset($wp_query->query["idx-action"]);
+		if (isset($wp_query->query["idx-action"])) {
+			if (!isset($q->query["idx-action"])) {
+				$wp_query->query["idx-action-swap"] = $wp_query->query["idx-action"];
+				unset($wp_query->query["idx-action"]);
+			} else {
+				$q->query_vars["caller_get_posts"] = true;
+			}
 		}
+
 	}
 	static function Activate($posts) {
 		global $wp_query;
@@ -127,7 +132,7 @@ class dsSearchAgent_Client {
 		$wp_query->is_singular = 1;
 
 		$apiParams = array();
-		foreach (array_merge($wp_query->query_vars, $get) as $key => $value) {
+		foreach (array_merge($wp_query->query, $get) as $key => $value) {
 			if (strpos($key, "idx-q") === false && strpos($key, "idx-d") === false)
 				continue;
 

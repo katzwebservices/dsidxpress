@@ -36,9 +36,11 @@ class dsSearchAgent_SearchWidget extends WP_Widget {
 								<option value="">- All property types -</option>
 HTML;
 
-		foreach ($propertyTypes as $propertyType) {
-			$name = htmlentities($propertyType->DisplayName);
-			echo "<option value=\"{$propertyType->SearchSetupPropertyTypeID}\">{$name}</option>";
+		if (is_array($propertyTypes)) {
+			foreach ($propertyTypes as $propertyType) {
+				$name = htmlentities($propertyType->DisplayName);
+				echo "<option value=\"{$propertyType->SearchSetupPropertyTypeID}\">{$name}</option>";
+			}
 		}
 
 		echo <<<HTML
@@ -51,7 +53,8 @@ HTML;
 							<select id="idx-q-Cities" name="idx-q-Cities">
 HTML;
 		foreach ($searchOptions["cities"] as $city) {
-			$city = htmlentities($city);
+			// there's an extra trim here in case the data was corrupted before the trim was added in the update code below
+			$city = htmlentities(trim($city));
 			echo "<option value=\"{$city}\">{$city}</option>";
 		}
 
