@@ -5,13 +5,13 @@ add_action("sm_buildmap", "dsSearchAgent_XmlSitemaps::BuildSitemap");
 
 class dsSearchAgent_XmlSitemaps {
 	static function BuildSitemap() {
-		$options = get_option(DSIDXPRESS_CUSTOM_OPTIONS_NAME);
+		$options = get_option(DSIDXPRESS_OPTION_NAME);
 
 		$urlBase = get_bloginfo("url");
 		if (substr($urlBase, strlen($urlBase), 1) != "/") $urlBase .= "/";
 		$urlBase .= dsSearchAgent_Rewrite::GetUrlSlug();
 
-		if (in_array('google-sitemap-generator/sitemap.php', get_option('active_plugins'))) {
+		if ( class_exists('GoogleSitemapGenerator') ) {
 			$generatorObject = &GoogleSitemapGenerator::GetInstance();
 
 			if ($generatorObject != null && isset($options["SitemapLocations"]) && is_array($options["SitemapLocations"])) {
