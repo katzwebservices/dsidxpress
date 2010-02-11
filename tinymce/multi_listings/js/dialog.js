@@ -7,7 +7,7 @@ var dsidxMultiListings = (function() {
 	returnObj = {
 		init: function() {
 			var startNode = tinyMCEPopup.editor.selection.getStart();
-			var nodeTextContent = startNode.innerText;
+			var nodeTextContent = startNode.textContent || startNode.innerText;
 			var linkId, area, minPrice, maxPrice, checkedPropertyTypes, sortColumn, sortDirection, count;
 			
 			if (/^\[idx-listings /.test(nodeTextContent) && startNode.tagName == 'P') {

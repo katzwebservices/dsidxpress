@@ -22,6 +22,7 @@ class dsSearchAgent_Admin {
 
 		add_filter("mce_external_plugins", array("dsSearchAgent_Admin", "AddTinyMcePlugin"));
 		add_filter("mce_buttons", array("dsSearchAgent_Admin", "RegisterTinyMceButton"));
+		add_filter("tiny_mce_before_init", "dsSearchAgent_Admin::ModifyTinyMceSettings");
 	}
 	static function AddTinyMcePlugin($plugins) {
 		$plugins["idxlisting"] = DSIDXPRESS_PLUGIN_URL . "tinymce/single_listing/editor_plugin.js";
@@ -31,6 +32,10 @@ class dsSearchAgent_Admin {
 	static function RegisterTinyMceButton($buttons) {
 		array_push($buttons, "separator", "idxlisting", "idxlistings");
 		return $buttons;
+	}
+	static function ModifyTinyMceSettings($settings) {
+		$settings["wordpress_adv_hidden"] = 0;
+		return $settings;
 	}
 	static function Initialize() {
 		register_setting("dsidxpress_activation", DSIDXPRESS_OPTION_NAME, array("dsSearchAgent_Admin", "SanitizeOptions"));
