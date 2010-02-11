@@ -37,13 +37,13 @@ $availableLinks = json_decode($availableLinks["body"]);
 	<script src="<?php echo $localJsUri ?>tinymce/utils/mctabs.js?ver=<?php echo urlencode($tinymce_version) ?>"></script>
 	<!-- jsonpCallback $.ajax arg didn't seem to work w/ WP's version of jquery... -->
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.0/jquery.min.js"></script>
-	<script src="js/dialog.js?ver=<?php echo urlencode(DSIDXPRESS_PLUGIN_VERSION) ?>"></script>
 	<script>
 		var ApiRequest = {
 			uriBase: '<?php echo dsSearchAgent_ApiRequest::$ApiEndPoint ?>',
-			searchSetupID: <?php echo $options["SearchSetupID"] ?>,
+			searchSetupID: <?php echo $options["SearchSetupID"] ?>
 		};
 	</script>
+	<script src="js/dialog.js?ver=<?php echo urlencode(DSIDXPRESS_PLUGIN_VERSION) ?>"></script>
 
 	<style type="text/css">
 		* {
@@ -119,8 +119,8 @@ $availableLinks = json_decode($availableLinks["body"]);
 		<div id="custom_search_panel" class="panel current">
 			<table style="width: 100%;">
 				<tr>
-					<th style="width: 110px;">Area type</th>
-					<td>
+					<th style="width: 110px !important;">Area type</th>
+					<td style="width: 220px;">
 						<select id="area-type">
 							<option value="city">City</option>
 							<option value="community">Community</option>

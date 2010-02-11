@@ -16,7 +16,7 @@ tinymce.create('tinymce.plugins.dsidxListing', {
 			image : url + '/img/single_listing.png'
 		});
 		ed.onNodeChange.add(function(ed, cm, n) {
-			cm.setActive('idxlisting', /^\[idx-listing /.test(n.innerHTML));
+			cm.setActive('idxlisting', !tinymce.isIE && /^\[idx-listing /.test(n.innerHTML));
 		});
 	},
 	createControl : function(n, cm) {

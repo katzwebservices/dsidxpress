@@ -7,7 +7,7 @@ var dsidxMultiListings = (function() {
 	returnObj = {
 		init: function() {
 			var startNode = tinyMCEPopup.editor.selection.getStart();
-			var nodeTextContent = startNode.textContent;
+			var nodeTextContent = startNode.innerText;
 			var linkId, area, minPrice, maxPrice, checkedPropertyTypes, sortColumn, sortDirection, count;
 			
 			if (/^\[idx-listings /.test(nodeTextContent) && startNode.tagName == 'P') {
@@ -46,7 +46,7 @@ var dsidxMultiListings = (function() {
 						$('#number-to-display').val(count[1]);
 				}
 				
-				this.changeTab(/^[^\]]+ linkid=['"]?\d/.test(nodeTextContent) ? 'pre-saved-links' : 'quick-search');
+				this.changeTab(linkId ? 'pre-saved-links' : 'quick-search');
 			}
 			
 			$('#area-type').change(this.loadAreasByType);
@@ -125,7 +125,7 @@ var dsidxMultiListings = (function() {
 			
 			tinyMCEPopup.editor.execCommand(nodeEditing ? 'mceReplaceContent' : 'mceInsertContent', false, shortcode);
 			tinyMCEPopup.close();
-		},
+		}
 	};
 	
 	return returnObj;

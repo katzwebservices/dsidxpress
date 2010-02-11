@@ -6,7 +6,7 @@ var dsidxSingleListing = (function() {
 	returnObj = {
 		init: function() {
 			var startNode = tinyMCEPopup.editor.selection.getStart();
-			var nodeTextContent = startNode.textContent; 
+			var nodeTextContent = startNode.innerText; 
 			var showAllIsSet;
 			
 			if (/^\[idx-listing /.test(nodeTextContent) && startNode.tagName == 'P') {
