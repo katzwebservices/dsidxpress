@@ -1,6 +1,6 @@
 <?php
-add_filter("rewrite_rules_array", "dsSearchAgent_Rewrite::InsertRules");
-add_filter("query_vars", "dsSearchAgent_Rewrite::SaveQueryVars");
+add_filter("rewrite_rules_array", array("dsSearchAgent_Rewrite", "InsertRules"));
+add_filter("query_vars", array("dsSearchAgent_Rewrite", "SaveQueryVars"));
 
 class dsSearchAgent_Rewrite {
 	private static $UrlSlug = "idx/";

@@ -1,7 +1,7 @@
 <?php
 
 // hook into Google XML Sitemaps plugin http://wordpress.org/extend/plugins/google-sitemap-generator/
-add_action("sm_buildmap", "dsSearchAgent_XmlSitemaps::BuildSitemap");
+add_action("sm_buildmap", array("dsSearchAgent_XmlSitemaps", "BuildSitemap"));
 
 class dsSearchAgent_XmlSitemaps {
 	static function BuildSitemap() {
@@ -17,7 +17,7 @@ class dsSearchAgent_XmlSitemaps {
 			if ($generatorObject != null && isset($options["SitemapLocations"]) && is_array($options["SitemapLocations"])) {
 				$location_index = 0;
 
-				usort($options["SitemapLocations"], "dsSearchAgent_XmlSitemaps::CompareListObjects");
+				usort($options["SitemapLocations"], array("dsSearchAgent_XmlSitemaps", "CompareListObjects"));
 
 				foreach ($options["SitemapLocations"] as $key => $value) {
 					$location_sanitized = urlencode(strtolower(str_replace(array("-", " "), array("_", "-"), $value["value"])));

@@ -32,7 +32,7 @@ class dsSearchAgent_Shortcodes {
 		}
 		
 		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("Details", $apiRequestParams);
-		add_action("wp_footer", "dsSearchAgent_Shortcodes::InsertDisclaimer");
+		add_action("wp_footer", array("dsSearchAgent_Shortcodes", "InsertDisclaimer"));
 		
 		if ($apiHttpResponse["response"]["code"] == "404") {
 			return "<p class=\"dsidx-error\">We're sorry, but we couldn't find MLS # {$atts[mlsnumber]} in our database. This property was most likely taken off the market.</p>";
@@ -86,7 +86,7 @@ class dsSearchAgent_Shortcodes {
 		$apiRequestParams["directive.SortOrders[0].Direction"] = $atts["orderdir"];
 		
 		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("Results", $apiRequestParams);
-		add_action("wp_footer", "dsSearchAgent_Shortcodes::InsertDisclaimer");
+		add_action("wp_footer", array("dsSearchAgent_Shortcodes", "InsertDisclaimer"));
 		
 		if (empty($apiHttpResponse["errors"]) && $apiHttpResponse["response"]["code"] == "200") {
 			return $apiHttpResponse["body"];
@@ -100,6 +100,6 @@ class dsSearchAgent_Shortcodes {
 	}
 }
 
-add_shortcode("idx-listing", "dsSearchAgent_ShortCodes::Listing");
-add_shortcode("idx-listings", "dsSearchAgent_ShortCodes::Listings");
+add_shortcode("idx-listing", array("dsSearchAgent_ShortCodes", "Listing"));
+add_shortcode("idx-listings", array("dsSearchAgent_ShortCodes", "Listings"));
 ?>

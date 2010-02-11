@@ -1,7 +1,7 @@
 <?php
-add_action("pre_get_posts", "dsSearchAgent_Client::PreActivate");
-add_filter("posts_request", "dsSearchAgent_Client::ClearQuery");
-add_filter("the_posts", "dsSearchAgent_Client::Activate");
+add_action("pre_get_posts", array("dsSearchAgent_Client", "PreActivate"));
+add_filter("posts_request", array("dsSearchAgent_Client", "ClearQuery"));
+add_filter("the_posts", array("dsSearchAgent_Client", "Activate"));
 
 class dsSearchAgent_Client {
 	static $Options = null;
@@ -79,7 +79,7 @@ class dsSearchAgent_Client {
 		if (!isset($options["Activated"]))
 			return $posts;
 
-		add_action("wp_head", "dsSearchAgent_Client::HeaderUnconditional");
+		add_action("wp_head", array("dsSearchAgent_Client", "HeaderUnconditional"));
 		wp_enqueue_script("jquery");
 
 		// see comment above PreActivate
@@ -94,7 +94,7 @@ class dsSearchAgent_Client {
 		}
 
 		$action = strtolower($wp_query->query["idx-action"]);
-		add_action("wp_head", "dsSearchAgent_Client::Header");
+		add_action("wp_head", array("dsSearchAgent_Client", "Header"));
 
 		// keep wordpress from mucking up our HTML
 		remove_filter("the_content", "wptexturize");
@@ -104,9 +104,9 @@ class dsSearchAgent_Client {
 		remove_filter("the_content", "prepend_attachment");
 
 		// we handle our own redirects and canonicals
-		add_filter("wp_redirect", "dsSearchAgent_Client::CancelAllRedirects");
-		add_filter("redirect_canonical", "dsSearchAgent_Client::CancelAllRedirects");
-		add_filter("page_link", "dsSearchAgent_Client::GetPermalink"); // for any plugin that needs it
+		add_filter("wp_redirect", array("dsSearchAgent_Client", "CancelAllRedirects"));
+		add_filter("redirect_canonical", array("dsSearchAgent_Client", "CancelAllRedirects"));
+		add_filter("page_link", array("dsSearchAgent_Client", "GetPermalink")); // for any plugin that needs it
 
 		// "All in One SEO Pack" tries to do its own canonical URLs as well. we disable them here only to prevent
 		// duplicate canonical elements. even if this fell through w/ another plugin though, the page_link filter would

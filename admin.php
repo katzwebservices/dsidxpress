@@ -1,9 +1,9 @@
 <?php
 
-add_action("admin_init", "dsSearchAgent_Admin::Initialize");
-add_action("admin_menu", "dsSearchAgent_Admin::AddMenu");
-add_action("admin_notices", "dsSearchAgent_Admin::DisplayAdminNotices");
-add_action("wp_ajax_dsidxpress-dismiss-notification", "dsSearchAgent_Admin::DismissNotification");
+add_action("admin_init", array("dsSearchAgent_Admin", "Initialize"));
+add_action("admin_menu", array("dsSearchAgent_Admin", "AddMenu"));
+add_action("admin_notices", array("dsSearchAgent_Admin", "DisplayAdminNotices"));
+add_action("wp_ajax_dsidxpress-dismiss-notification", array("dsSearchAgent_Admin", "DismissNotification"));
 
 class dsSearchAgent_Admin {
 	static $HeaderLoaded = null;
@@ -12,16 +12,16 @@ class dsSearchAgent_Admin {
 
 		add_menu_page('dsIDXpress', 'dsIDXpress', "manage_options", "dsidxpress", "", DSIDXPRESS_PLUGIN_URL . 'assets/idxpress_LOGOicon.png');
 
-		$activationPage = add_submenu_page("dsidxpress", "dsIDXpress Activation", "Activation", "manage_options", "dsidxpress", "dsSearchAgent_Admin::Activation");
-		add_action("admin_print_scripts-{$activationPage}", "dsSearchAgent_Admin::LoadHeader");
+		$activationPage = add_submenu_page("dsidxpress", "dsIDXpress Activation", "Activation", "manage_options", "dsidxpress", array("dsSearchAgent_Admin", "Activation"));
+		add_action("admin_print_scripts-{$activationPage}", array("dsSearchAgent_Admin", "LoadHeader"));
 
 		if (isset($options["Activated"])) {
-			$optionsPage = add_submenu_page("dsidxpress", "dsIDXpress Options", "Options", "manage_options", "dsidxpress-options", "dsSearchAgent_Admin::EditOptions");
-			add_action("admin_print_scripts-{$optionsPage}", "dsSearchAgent_Admin::LoadHeader");
+			$optionsPage = add_submenu_page("dsidxpress", "dsIDXpress Options", "Options", "manage_options", "dsidxpress-options", array("dsSearchAgent_Admin", "EditOptions"));
+			add_action("admin_print_scripts-{$optionsPage}", array("dsSearchAgent_Admin", "LoadHeader"));
 		}
 
-		add_filter("mce_external_plugins", "dsSearchAgent_Admin::AddTinyMcePlugin");
-		add_filter("mce_buttons", "dsSearchAgent_Admin::RegisterTinyMceButton");
+		add_filter("mce_external_plugins", array("dsSearchAgent_Admin", "AddTinyMcePlugin"));
+		add_filter("mce_buttons", array("dsSearchAgent_Admin", "RegisterTinyMceButton"));
 	}
 	static function AddTinyMcePlugin($plugins) {
 		$plugins["idxlisting"] = DSIDXPRESS_PLUGIN_URL . "tinymce/single_listing/editor_plugin.js";
@@ -33,9 +33,9 @@ class dsSearchAgent_Admin {
 		return $buttons;
 	}
 	static function Initialize() {
-		register_setting("dsidxpress_activation", DSIDXPRESS_OPTION_NAME, "dsSearchAgent_Admin::SanitizeOptions");
-		register_setting("dsidxpress_options", DSIDXPRESS_OPTION_NAME, "dsSearchAgent_Admin::SanitizeOptions");
-		register_setting("dsidxpress_options", DSIDXPRESS_API_OPTIONS_NAME, "dsSearchAgent_Admin::SanitizeApiOptions");
+		register_setting("dsidxpress_activation", DSIDXPRESS_OPTION_NAME, array("dsSearchAgent_Admin", "SanitizeOptions"));
+		register_setting("dsidxpress_options", DSIDXPRESS_OPTION_NAME, array("dsSearchAgent_Admin", "SanitizeOptions"));
+		register_setting("dsidxpress_options", DSIDXPRESS_API_OPTIONS_NAME, array("dsSearchAgent_Admin", "SanitizeApiOptions"));
 
 		wp_enqueue_script('dsidxpress_admin_options', DSIDXPRESS_PLUGIN_URL . 'js/admin-options.js', array('jquery','jquery-ui-sortable'), DSIDXPRESS_PLUGIN_VERSION);
 	}
@@ -185,7 +185,7 @@ HTML;
 						if (isset($options["SitemapLocations"]) && is_array($options["SitemapLocations"])) {
 							$location_index = 0;
 
-							usort($options["SitemapLocations"], "dsSearchAgent_Admin::CompareListObjects");
+							usort($options["SitemapLocations"], array("dsSearchAgent_Admin", "CompareListObjects"));
 
 							foreach ($options["SitemapLocations"] as $key => $value) {
 								$location_sanitized = urlencode(strtolower(str_replace(array("-", " "), array("_", "-"), $value["value"])));
