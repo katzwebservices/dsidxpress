@@ -22,7 +22,8 @@ class dsSearchAgent_Admin {
 
 		add_filter("mce_external_plugins", array("dsSearchAgent_Admin", "AddTinyMcePlugin"));
 		add_filter("mce_buttons", array("dsSearchAgent_Admin", "RegisterTinyMceButton"));
-		add_filter("tiny_mce_before_init", "dsSearchAgent_Admin::ModifyTinyMceSettings");
+		// won't work until this <http://core.trac.wordpress.org/ticket/12207> is fixed
+		//add_filter("tiny_mce_before_init", array("dsSearchAgent_Admin", "ModifyTinyMceSettings"));
 	}
 	static function AddTinyMcePlugin($plugins) {
 		$plugins["idxlisting"] = DSIDXPRESS_PLUGIN_URL . "tinymce/single_listing/editor_plugin.js";

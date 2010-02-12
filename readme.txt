@@ -3,7 +3,7 @@ Contributors: Diverse Solutions
 Tags: mls, idx, rets, housing, real estate
 Requires at least: 2.8
 Tested up to: 2.9.1
-Stable tag: 1.0.5
+Stable tag: 1.0.5.1
 
 This plugin allows WordPress to embed live real estate data from an MLS directly into a blog. You MUST have a dsIDXpress account to use this plugin.
 
@@ -43,6 +43,13 @@ With the [dsIDXpress plugin](http://www.dsidxpress.com), bloggers can embed **li
 If you'd like to **see the plugin in action**, you can check out our [dsIDXpress demo site](http://wp.idx.diversesolutions.com/). If you'd like to read more or purchase this plugin, please take a look at our [dsIDXpress site](http://www.dsidxpress.com/). Finally, if you'd like to obtain a **demo activation key** to use this plugin on your own blog, you can request one on our ["Try It Out!"](http://www.dsidxpress.com/tryit/) page.
 
 *Note: If you're searching for idx press, idxpress, ds idxpress, id xpress, or id express, this is the plugin you're probably looking for.*
+
+== Changelog ==
+
+= 1.0.5.1 =
+
+* Fixed issue with Live Listings editor not working in Internet Explorer.
+* Added fixes to ensure better compatibility with PHP > 5.2 but < 5.3. 
 
 == Installation ==
 
