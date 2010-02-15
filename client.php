@@ -11,7 +11,7 @@ class dsSearchAgent_Client {
 		"q" => "query",
 		"d" => "directive"
 	);
-	static $DebugAllowedFrom = "70.168.154.66";
+	static $DebugAllowedFrom = "98.189.239.221";
 
 	// this is a roundabout way to make sure that any other plugin / widget / etc that uses the WP_Query object doesn't get our IDX data
 	// in their query. since we don't actually get the query itself in the "the_posts" filter, we have to step around the issue by
