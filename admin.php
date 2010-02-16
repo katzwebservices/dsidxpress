@@ -465,6 +465,7 @@ HTML;
 		$setDiagnostics = array();
 		$timeDiff = time() - strtotime($diagnostics["CurrentServerTimeUtc"]);
 		$secondsIn2Hrs = 60 * 60 * 2;
+		$permalinkStructure = get_option("permalink_structure");
 
 		$setDiagnostics["IsApiKeyValid"] = $diagnostics["IsApiKeyValid"];
 		$setDiagnostics["IsAccountAuthorizedToMLS"] = $diagnostics["IsAccountAuthorizedToMLS"];
@@ -473,7 +474,7 @@ HTML;
 		$setDiagnostics["IsApiKeyAuthorizedToIP"] = $diagnostics["IsApiKeyAuthorizedToIP"];
 
 		$setDiagnostics["PhpVersionAcceptable"] = version_compare(phpversion(), DSIDXPRESS_MIN_VERSION_PHP) != -1;
-		$setDiagnostics["UrlInterceptSet"] = get_option("permalink_structure") != "";
+		$setDiagnostics["UrlInterceptSet"] = get_option("permalink_structure") != "" && !preg_match("/index\.php/", $permalinkStructure);
 		$setDiagnostics["ClockIsAccurate"] = $timeDiff < $secondsIn2Hrs && $timeDiff > -1 * $secondsIn2Hrs;
 		$setDiagnostics["UnderMonthlyCallLimit"] = $diagnostics["AllowedApiRequestCount"] === 0 || $diagnostics["AllowedApiRequestCount"] > $diagnostics["CurrentApiRequestCount"];
 
