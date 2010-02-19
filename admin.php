@@ -5,6 +5,11 @@ add_action("admin_menu", array("dsSearchAgent_Admin", "AddMenu"));
 add_action("admin_notices", array("dsSearchAgent_Admin", "DisplayAdminNotices"));
 add_action("wp_ajax_dsidxpress-dismiss-notification", array("dsSearchAgent_Admin", "DismissNotification"));
 
+define('SCRIPT_DEBUG', true); 
+wp_enqueue_script('jquery');
+add_thickbox();
+wp_enqueue_script('dsidxpress_admin_options', DSIDXPRESS_PLUGIN_URL . 'js/admin-options.js', array(), DSIDXPRESS_PLUGIN_VERSION);
+
 class dsSearchAgent_Admin {
 	static $HeaderLoaded = null;
 	static function AddMenu() {
@@ -42,8 +47,16 @@ class dsSearchAgent_Admin {
 		register_setting("dsidxpress_activation", DSIDXPRESS_OPTION_NAME, array("dsSearchAgent_Admin", "SanitizeOptions"));
 		register_setting("dsidxpress_options", DSIDXPRESS_OPTION_NAME, array("dsSearchAgent_Admin", "SanitizeOptions"));
 		register_setting("dsidxpress_options", DSIDXPRESS_API_OPTIONS_NAME, array("dsSearchAgent_Admin", "SanitizeApiOptions"));
-
-		wp_enqueue_script('dsidxpress_admin_options', DSIDXPRESS_PLUGIN_URL . 'js/admin-options.js', array('jquery','jquery-ui-sortable'), DSIDXPRESS_PLUGIN_VERSION);
+		/*
+		wp_enqueue_script('jquery');
+		wp_enqueue_script('utils');
+		wp_enqueue_script('core');
+		wp_enqueue_script('jquery-ui-core');
+		wp_enqueue_script('jquery-ui-sortable');
+		wp_enqueue_script('common');
+		wp_enqueue_script('thickbox');
+		wp_enqueue_style('thickbox');
+		*/
 	}
 	static function LoadHeader() {
 		if (self::$HeaderLoaded)
@@ -275,7 +288,7 @@ HTML;
 				</tr>
 			</table>
 			<?php } else { ?>
-				<span class="description">To enable this functionality, install and activate this plugin: <a href="http://wordpress.org/extend/plugins/google-sitemap-generator/" target="_blank">Google XML Sitemaps</a></span>
+				<span class="description">To enable this functionality, install and activate this plugin: <a class="thickbox onclick" title="Google XML Sitemaps" href="<?php echo admin_url('plugin-install.php?tab=plugin-information&plugin=google-sitemap-generator&TB_iframe=true&width=640')?>" target="_blank">Google XML Sitemaps</a></span>
 			<?php }?>
 			<p class="submit">
 				<input type="submit" class="button-primary" name="Submit" value="Save Options and Sitemaps" />
