@@ -1,6 +1,6 @@
 <?php
 class dsSearchAgent_ApiRequest {
-	public static $ApiEndPoint = "http://api.idx.diversesolutions.com/api/";
+	public static $ApiEndPoint = "http://localhost/api/";
 	// do NOT change this value or you will be automatically banned from the API. since the data is only updated every two hours, and
 	// since these API calls are computationally intensive on our servers, we need to set a reasonable cache duration.
 	private static $CacheSeconds = 7200;
@@ -35,7 +35,7 @@ class dsSearchAgent_ApiRequest {
 		ksort($params);
 		$transientKey = "idx_" . sha1($action . "_" . implode("", $params));
 
-		if ($cacheSecondsOverride !== 0) {
+		if (false && $cacheSecondsOverride !== 0) {
 			$cachedRequestData = get_transient($transientKey);
 			if ($cachedRequestData) {
 				$cachedRequestData = $compressCache ? unserialize(gzinflate(base64_decode($cachedRequestData))) : $cachedRequestData;
