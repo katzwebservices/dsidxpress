@@ -81,18 +81,24 @@ class dsSearchAgent_ApiRequest {
 	}
 	private static function FilterData($data) {
 		global $wp_version;
+		
+		$blog_url = get_bloginfo("url");
+		$idxActivationPath = $blogUrlDir . "/" . dsSearchAgent_Rewrite::GetUrlSlug();
 
 		$data = str_replace('{$pluginUrlPath}', DSIDXPRESS_PLUGIN_URL, $data);
 		$data = str_replace('{$pluginVersion}', DSIDXPRESS_PLUGIN_VERSION, $data);
 		$data = str_replace('{$wordpressVersion}', $wp_version, $data);
+		$data = str_replace('{$wordpressBlogUrl}', $blog_url, $data);
+		$data = str_replace('{$wordpressBlogUrlEncoded}', urlencode($blog_url), $data);
 
-		$blogUrlWithoutProtocol = str_replace("http://", "", get_bloginfo("url"));
+		$blogUrlWithoutProtocol = str_replace("http://", "", $blog_url);
 		$blogUrlDirIndex = strpos($blogUrlWithoutProtocol, "/");
 
 		$blogUrlDir = "";
 		if ($blogUrlDirIndex) // don't need to check for !== false here since WP prevents trailing /'s
 			$blogUrlDir = substr($blogUrlWithoutProtocol, strpos($blogUrlWithoutProtocol, "/"));
-		$data = str_replace('{$idxActivationPath}', $blogUrlDir . "/" . dsSearchAgent_Rewrite::GetUrlSlug(), $data);
+		$data = str_replace('{$idxActivationPath}', $idxActivationPath, $data);
+		$data = str_replace('{$idxActivationPathEncoded}', urlencode($idxActivationPath), $data);
 
 		return $data;
 	}

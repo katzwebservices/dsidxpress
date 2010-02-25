@@ -12,16 +12,22 @@ while (!file_exists($bootstrapSearchDir . "/wp-load.php")) {
 require_once($bootstrapSearchDir . "/wp-load.php");
 require_once($bootstrapSearchDir . "/wp-admin/admin.php");
 
-$options = get_option(DSIDXPRESS_OPTION_NAME);
-$request = new WP_Http();
-$requestUri = dsSearchAgent_ApiRequest::$ApiEndPoint . "ContactForm";
-$apiHttpResponse = (array)$request->post($requestUri, array(
-	"body"			=> array(
-		/*searchSetupID	=> $options["SearchSetupID"],
-		type			=> $_REQUEST["type"]*/
-	),
-	"httpversion"	=> "1.1",
-	"redirection"	=> "0"
-));
-$locations = json_decode($apiHttpResponse["body"]);
+$referring_url = $_SERVER['HTTP_REFERER'];
+$post_vars = $_POST;
+$post_vars["referringURL"] = $referring_url;
+
+$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("ContactForm", $post_vars, false, 0);
+
+if (false && $_POST["returnToReferrer"] == "1") {
+	$post_response = json_decode($apiHttpResponse["body"]);
+	
+	if ($post_response->Error == 1)
+		$redirect_url = $referring_url .'?dsformerror='. $post_response->Message;
+	else 
+		$redirect_url = $referring_url;
+	
+	header( 'Location: '. $redirect_url ) ;
+} else {
+	echo $apiHttpResponse["body"];
+}
 ?>

@@ -40,6 +40,7 @@ class dsSearchAgent_Client {
 		// the reason for this is because the URL that handles the request becomes wp-404-handler.php and _SERVER["QUERY_STRING"] subsequently ends up
 		// being in the format of 404;http://<domain>:<port>/<url>?<query-arg-1>&<query-arg-2>. the result of that problem is that the first query arg
 		// ends up becoming the entire request url up to the second query param
+				
 		$get = $_GET;
 		$getKeys = array_keys($get);
 		if (isset($getKeys[0]) && strpos($getKeys[0], "404;") === 0) {
@@ -81,6 +82,8 @@ class dsSearchAgent_Client {
 
 		add_action("wp_head", array("dsSearchAgent_Client", "HeaderUnconditional"));
 		wp_enqueue_script("jquery");
+		wp_enqueue_script("jquery-ui-core");
+		wp_enqueue_script("jquery-ui-dialog");
 
 		// see comment above PreActivate
 		if (is_array($wp_query->query) && isset($wp_query->query["idx-action-swap"])) {
@@ -194,6 +197,13 @@ class dsSearchAgent_Client {
 			"post_title"		=> $title,
 			"post_type"			=> "page"
 		));
+
+		if(
+			!self::IsStyleUrlEnqueued('jqueryui') &&
+			!self::IsStyleUrlEnqueued('jquery.ui') &&
+			!self::IsStyleUrlEnqueued('jquery-ui')
+		) wp_enqueue_style('jqueryui', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.7/themes/smoothness/jquery-ui.css');
+		
 		return $posts;
 	}
 	static function ExtractValueFromApiData(&$apiData, $key) {
@@ -276,6 +286,19 @@ class dsSearchAgent_Client {
 		// let thesis handle the canonical
 		if (self::$CanonicalUri && !$thesis)
 			echo "<link rel=\"canonical\" href=\"" . self::GetPermalink() . "\" />\n";
+	}
+	static function IsStyleUrlEnqueued($partial_url){
+		global $wp_styles;
+		$enqueued = false;
+		if ( is_a($wp_styles, 'WP_Styles') ){
+			foreach($wp_styles->registered as $handle => $style){
+				if(strrpos($style->src, $partial_url) !== false){
+					$enqueued = true;
+				}
+			}
+		}
+		
+		return $enqueued;
 	}
 }
 ?>
