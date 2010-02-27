@@ -15,20 +15,8 @@ $referring_url = $_SERVER['HTTP_REFERER'];
 $post_vars = $_POST;
 $post_vars["referringURL"] = $referring_url;
 
-$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("ContactForm", $post_vars, false, 0);
+$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("EmailFriendForm", $post_vars, false, 0);
 
-if (false && $_POST["returnToReferrer"] == "1") {
-	$post_response = json_decode($apiHttpResponse["body"]);
-	
-	if ($post_response->Error == 1)
-		$redirect_url = $referring_url .'?dsformerror='. $post_response->Message;
-	else 
-		$redirect_url = $referring_url;
-	
-	header( 'Location: '. $redirect_url ) ;
-	die();
-} else {
-	echo $apiHttpResponse["body"];
-	die();
-}
+echo $apiHttpResponse["body"];
+die();
 ?>
