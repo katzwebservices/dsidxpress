@@ -44,7 +44,7 @@ class dsSearchAgent_ApiRequest {
 				return $cachedRequestData;
 			}
 		}
-
+		
 		// these params need to be beneath the caching stuff since otherwise the cache will be useless
 		$params["requester.ClientIpAddress"] = $_SERVER["REMOTE_ADDR"];
 		$params["requester.ClientUserAgent"] = $_SERVER["HTTP_USER_AGENT"];
