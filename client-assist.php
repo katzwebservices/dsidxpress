@@ -19,5 +19,5 @@ class dsSearchAgent_ClientAssist {
 		echo '</album></gallery>';
 	}
 }
-call_user_func('dsSearchAgent_ClientAssist::' . $_REQUEST['action']);
+call_user_func(array('dsSearchAgent_ClientAssist',  $_REQUEST['action']));
 ?>
