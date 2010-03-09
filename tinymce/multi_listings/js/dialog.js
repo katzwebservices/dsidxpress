@@ -15,6 +15,8 @@ var dsidxMultiListings = (function() {
 				tinyMCEPopup.editor.execCommand('mceSelectNode', false, nodeEditing);
 				
 				linkId = /^[^\]]+ linkid=['"]?(\d+)/.exec(nodeTextContent);
+				count = /^[^\]]+ count=['"]?(\d+)/.exec(nodeTextContent);
+				showlargerphotos = /^[^\]]+ showlargerphotos=['"]?true/.exec(nodeTextContent);
 				
 				if (linkId) {
 					$('#saved-link').val(linkId[1]);
@@ -25,7 +27,6 @@ var dsidxMultiListings = (function() {
 					checkedPropertyTypes = /^[^\]]+ propertytypes=['"]?([\d,]+)/.exec(nodeTextContent);
 					sortColumn = /^[^\]]+ orderby=['"]?([^'" ]+)/.exec(nodeTextContent);
 					sortDirection = /^[^\]]+ orderdir=['"]?([^'" ]+)/.exec(nodeTextContent);
-					count = /^[^\]]+ count=['"]?(\d+)/.exec(nodeTextContent);
 					
 					if (area)
 						$('#area-type').val(area[1]);
@@ -42,9 +43,12 @@ var dsidxMultiListings = (function() {
 						sortDirection = sortDirection ? sortDirection[1] : 'DESC';
 						$('#display-order-column').val(sortColumn[1] + '|' + sortDirection);
 					}
-					if (count)
-						$('#number-to-display').val(count[1]);
 				}
+
+				if (count)
+					$('#number-to-display').val(count[1]);
+				if (showlargerphotos)
+					$('#larger-photos').attr("checked", "checked");
 				
 				this.changeTab(linkId ? 'pre-saved-links' : 'quick-search');
 			}
@@ -104,6 +108,7 @@ var dsidxMultiListings = (function() {
 			checkedPropertyTypes = $('#property-type-container input:checked').map(function() { return this.value; }).get().join(',');
 			sortOrder = $('#display-order-column').val().split('|');
 			count = parseInt($('#number-to-display').val());
+			largerPhotos = !!$('#larger-photos:checked').length;
 			
 			if (multiListingType == 'quick-search') {
 				shortcode += ' ' + $('#area-type').val() + '="' + unescape($('#area-name').val()) + '"';
@@ -120,6 +125,8 @@ var dsidxMultiListings = (function() {
 
 			if (!isNaN(count) && count > 0)
 				shortcode += ' count="' + count + '"';
+			if (largerPhotos)
+				shortcode += ' showlargerphotos="true"';
 			
 			shortcode += ']</p>';
 			

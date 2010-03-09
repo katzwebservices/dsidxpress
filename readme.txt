@@ -46,6 +46,13 @@ If you'd like to **see the plugin in action**, you can check out our [dsIDXpress
 
 == Changelog ==
 
+= 1.0.6 =
+
+* Fixed issue with some text values (cities, communities, etc) in the url not being passed correctly to the API.
+* Changed slideshow for compliance reasons w/ some of the more picky MLS's.
+* Added option to "Live Listings" results to show the larger photos that show up in the normal results.
+* Fixed bug where "Live Listings" results "count" wasn't saving correctly in editor when editing a pre-saved link.
+
 = 1.0.5.2 =
 
 * Changed debuggable-from IP.

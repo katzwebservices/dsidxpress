@@ -82,14 +82,13 @@ $availableLinks = json_decode($availableLinks["body"]);
 		.panel_wrapper div.current {
 			height: 220px;
 		}
-		#number-to-display-container {
-			margin:15px auto;
-			text-align:center;
-			width:250px;
+		#universal-options {
+			margin:10px auto 0;
 		}
-		#number-to-display-container label {
+		#universal-options th {
 			font-weight: bold;
 			margin-right: 10px;
+			width: 175px;
 		}
 		#number-to-display {
 			width: 30px;
@@ -198,10 +197,16 @@ foreach ($availableLinks as $link) {
 		</div>
 	</div>
 
-	<div id="number-to-display-container">
-		<label for="number-to-display">Number of listings to display</label>
-		<input type="text" id="number-to-display" />
-	</div>
+	<table id="universal-options">
+		<tr>
+			<th><label for="number-to-display">Number of listings to display</label></th>
+			<td><input type="text" id="number-to-display" /></td>
+		</tr>
+		<tr>
+			<th><label for="larger-photos">Show larger photos?</label></th>
+			<td><input type="checkbox" id="larger-photos" /></td>
+		</tr>
+	</table>
 
 	<div class="mceActionPanel">
 		<div style="float: left">
