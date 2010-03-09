@@ -181,7 +181,7 @@ class dsSearchAgent_Client {
 		set_query_var("name", "dsidxpress-{$action}"); // at least a few themes require _something_ to be set here to display a good <title> tag
 		set_query_var("pagename", "dsidxpress-{$action}"); // setting pagename in case someone wants to do a custom theme file for this "page"
 		$posts = array((object)array(
-			"ID"				=> -1,
+			"ID"				=> time(),
 			"comment_count"		=> 0,
 			"comment_status"	=> "closed",
 			"ping_status"		=> "closed",
