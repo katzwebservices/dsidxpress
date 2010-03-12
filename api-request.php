@@ -84,13 +84,24 @@ class dsSearchAgent_ApiRequest {
 		
 		$blog_url = get_bloginfo("url");
 		$idxActivationPath = $blogUrlDir . "/" . dsSearchAgent_Rewrite::GetUrlSlug();
+		
+		$dsidxpress_options = get_option(DSIDXPRESS_OPTION_NAME);
+		$dsidxpress_option_keys_to_output = array("ResultsMapDefaultState");
+		$dsidxpress_options_to_output = array();
+		
+		foreach($dsidxpress_options as $key => $value)
+		{
+			if(in_array($key, $dsidxpress_option_keys_to_output))
+				$dsidxpress_options_to_output[$key] = $value; 
+		}
 
 		$data = str_replace('{$pluginUrlPath}', DSIDXPRESS_PLUGIN_URL, $data);
 		$data = str_replace('{$pluginVersion}', DSIDXPRESS_PLUGIN_VERSION, $data);
 		$data = str_replace('{$wordpressVersion}', $wp_version, $data);
 		$data = str_replace('{$wordpressBlogUrl}', $blog_url, $data);
 		$data = str_replace('{$wordpressBlogUrlEncoded}', urlencode($blog_url), $data);
-
+		$data = str_replace('{$wpOptions}', json_encode($dsidxpress_options_to_output), $data);
+	
 		$blogUrlWithoutProtocol = str_replace("http://", "", $blog_url);
 		$blogUrlDirIndex = strpos($blogUrlWithoutProtocol, "/");
 

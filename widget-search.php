@@ -5,6 +5,9 @@ class dsSearchAgent_SearchWidget extends WP_Widget {
 			"classname" => "dsidx-widget-search",
 			"description" => "A real estate search form"
 		));
+		
+		if (is_admin())
+			wp_enqueue_script('dsidxpress_widget_search', DSIDXPRESS_PLUGIN_URL . 'js/widget-search.js', array('jquery'), DSIDXPRESS_PLUGIN_VERSION);
 	}
 	function widget($args, $instance) {
 		extract($args);
@@ -47,21 +50,92 @@ HTML;
 							</select>
 						</td>
 					</tr>
+HTML;
+		if($searchOptions["show_cities"] == "yes" || !isset($instance["searchOptions"]["show_cities"])) { 
+			echo <<<HTML
 					<tr>
 						<th><label for="idx-q-Cities">City</label></th>
 						<td>
 							<select id="idx-q-Cities" name="idx-q-Cities">
 HTML;
-		foreach ($searchOptions["cities"] as $city) {
-			// there's an extra trim here in case the data was corrupted before the trim was added in the update code below
-			$city = htmlentities(trim($city));
-			echo "<option value=\"{$city}\">{$city}</option>";
-		}
+			foreach ($searchOptions["cities"] as $city) {
+				// there's an extra trim here in case the data was corrupted before the trim was added in the update code below
+				$city = htmlentities(trim($city));
+				echo "<option value=\"{$city}\">{$city}</option>";
+			}
 
-		echo <<<HTML
+			echo <<<HTML
 							</select>
 						</td>
 					</tr>
+HTML;
+		}
+		if($searchOptions["show_communities"] == "yes") { 
+			echo <<<HTML
+					<tr>
+						<th><label for="idx-q-Communities">Community</label></th>
+						<td>
+							<select id="idx-q-Communities" name="idx-q-Communities">
+HTML;
+			foreach ($searchOptions["communities"] as $community) {
+				// there's an extra trim here in case the data was corrupted before the trim was added in the update code below
+				$community = htmlentities(trim($community));
+				echo "<option value=\"{$community}\">{$community}</option>";
+			}
+
+			echo <<<HTML
+							</select>
+						</td>
+					</tr>
+HTML;
+		}
+		if($searchOptions["show_tracts"] == "yes") { 
+			echo <<<HTML
+					<tr>
+						<th><label for="idx-q-Tracts">Tract</label></th>
+						<td>
+							<select id="idx-q-Tracts" name="idx-q-Tracts">
+HTML;
+			foreach ($searchOptions["tracts"] as $tract) {
+				// there's an extra trim here in case the data was corrupted before the trim was added in the update code below
+				$tract = htmlentities(trim($tract));
+				echo "<option value=\"{$tract}\">{$tract}</option>";
+			}
+	
+			echo <<<HTML
+							</select>
+						</td>
+					</tr>
+HTML;
+		}
+		if($searchOptions["show_zips"] == "yes") { 
+			echo <<<HTML
+					<tr>
+						<th><label for="idx-q-Zips">Zip</label></th>
+						<td>
+							<select id="idx-q-Zips" name="idx-q-Zips">
+HTML;
+			foreach ($searchOptions["zips"] as $zip) {
+				// there's an extra trim here in case the data was corrupted before the trim was added in the update code below
+				$zip = htmlentities(trim($zip));
+				echo "<option value=\"{$zip}\">{$zip}</option>";
+			}
+
+			echo <<<HTML
+							</select>
+						</td>
+					</tr>
+HTML;
+		}
+		if($searchOptions["show_mlsnumber"] == "yes") { 
+			echo <<<HTML
+					<tr>
+						<th><label for="idx-q-MlsNumber">MLS #</label></th>
+						<td><input id="idx-q-MlsNumber" name="idx-q-MlsNumber" type="text" class="dsidx-mlsnumber" /></td>
+					</tr>
+HTML;
+		}
+		echo <<<HTML
 					<tr>
 						<th><label for="idx-q-PriceMin">Min price</label></th>
 						<td><input id="idx-q-PriceMin" name="idx-q-PriceMin" type="text" class="dsidx-price" /></td>
@@ -103,19 +177,59 @@ HTML;
 	function update($new_instance, $old_instance) {
 		$new_instance["title"] = strip_tags($new_instance["title"]);
 		$new_instance["searchOptions"]["cities"] = explode("\n", $new_instance["searchOptions"]["cities"]);
+		$new_instance["searchOptions"]["zips"] = explode("\n", $new_instance["searchOptions"]["zips"]);
+		$new_instance["searchOptions"]["tracts"] = explode("\n", $new_instance["searchOptions"]["tracts"]);
+		$new_instance["searchOptions"]["communities"] = explode("\n", $new_instance["searchOptions"]["communities"]);
 
+		if ($new_instance["searchOptions"]["sortZips"])
+			sort($new_instance["searchOptions"]["zips"]);
+			
 		if ($new_instance["searchOptions"]["sortCities"])
 			sort($new_instance["searchOptions"]["cities"]);
+			
+		if ($new_instance["searchOptions"]["sortTracts"])
+			sort($new_instance["searchOptions"]["tracts"]);
+			
+		if ($new_instance["searchOptions"]["sortCommunities"])
+			sort($new_instance["searchOptions"]["communities"]);
 
 		// we don't need to store this option
 		unset($new_instance["searchOptions"]["sortCities"]);
+		unset($new_instance["searchOptions"]["sortTracts"]);
+		unset($new_instance["searchOptions"]["sortCommunities"]);
+		unset($new_instance["searchOptions"]["sortZips"]);
 
-		foreach ($new_instance["searchOptions"]["sortCities"] as &$area)
+		foreach ($new_instance["searchOptions"]["cities"] as &$area)
 			$area = trim($area);
+		foreach ($new_instance["searchOptions"]["tracts"] as &$area)
+			$area = trim($area);
+		foreach ($new_instance["searchOptions"]["communities"] as &$area)
+			$area = trim($area);
+		foreach ($new_instance["searchOptions"]["zips"] as &$area)
+			$area = trim($area);
+		
+		/* we're doing this conversion from on/null to yes/no so that we can detect if the show_cities has never been
+		 * set, because if it's never been set we want it to show */
+		if($new_instance["searchOptions"]["show_cities"] == "on") $new_instance["searchOptions"]["show_cities"] = "yes";
+		else $new_instance["searchOptions"]["show_cities"] = "no";
+		
+		if($new_instance["searchOptions"]["show_communities"] == "on") $new_instance["searchOptions"]["show_communities"] = "yes";
+		else $new_instance["searchOptions"]["show_communities"] = "no";
+		
+		if($new_instance["searchOptions"]["show_tracts"] == "on") $new_instance["searchOptions"]["show_tracts"] = "yes";
+		else $new_instance["searchOptions"]["show_tracts"] = "no";
+		
+		if($new_instance["searchOptions"]["show_zips"] == "on") $new_instance["searchOptions"]["show_zips"] = "yes";
+		else $new_instance["searchOptions"]["show_zips"] = "no";
+		
+		if($new_instance["searchOptions"]["show_mlsnumber"] == "on") $new_instance["searchOptions"]["show_mlsnumber"] = "yes";
+		else $new_instance["searchOptions"]["show_mlsnumber"] = "no";
 
 		return $new_instance;
 	}
 	function form($instance) {
+		$pluginUrl = DSIDXPRESS_PLUGIN_URL;
+		
 		$instance = wp_parse_args($instance, array(
 			"title" => "Real Estate Search",
 			"searchOptions" => array(
@@ -125,27 +239,99 @@ HTML;
 
 		$title = htmlspecialchars($instance["title"]);
 		$cities = htmlspecialchars(implode("\n", (array)$instance["searchOptions"]["cities"]));
+		$communities = htmlspecialchars(implode("\n", (array)$instance["searchOptions"]["communities"]));
+		$tracts = htmlspecialchars(implode("\n", (array)$instance["searchOptions"]["tracts"]));
+		$zips = htmlspecialchars(implode("\n", (array)$instance["searchOptions"]["zips"]));
 
 		$titleFieldId = $this->get_field_id("title");
 		$titleFieldName = $this->get_field_name("title");
 		$searchOptionsFieldId = $this->get_field_id("searchOptions");
 		$searchOptionsFieldName = $this->get_field_name("searchOptions");
-
+		
+		$show_cities = $instance["searchOptions"]["show_cities"] == "yes" || !isset($instance["searchOptions"]["show_cities"]) ? "checked=\"checked\" " : "";
+		$show_communities = $instance["searchOptions"]["show_communities"] == "yes" ? "checked=\"checked\" " : "";
+		$show_tracts = $instance["searchOptions"]["show_tracts"] == "yes" ? "checked=\"checked\" " : "";
+		$show_zips = $instance["searchOptions"]["show_zips"] == "yes" ? "checked=\"checked\" " : "";
+		$show_mlsnumber = $instance["searchOptions"]["show_mlsnumber"] == "yes" ? "checked=\"checked\" " : "";
+		
 		echo <<<HTML
 			<p>
 				<label for="{$titleFieldId}">Widget title</label>
 				<input id="{$titleFieldId}" name="{$titleFieldName}" value="{$title}" class="widefat" type="text" />
 			</p>
-
+			
 			<p>
-				<label for="{$searchOptionsFieldId}[cities]">Cities (one per line)</label>
-				<textarea id="{$searchOptionsFieldId}[cities]" name="{$searchOptionsFieldName}[cities]" class="widefat" rows="10">{$cities}</textarea>
+				<h3>Fields to Display</h3>
+				<div id="{$searchOptionsFieldId}-show_checkboxes">
+					<input type="checkbox" id="{$searchOptionsFieldId}-show_cities" name="{$searchOptionsFieldName}[show_cities]" {$show_cities}/>
+					<label for="{$searchOptionsFieldId}[show_cities]">Cities</label><br />
+					<input type="checkbox" id="{$searchOptionsFieldId}-show_communities" name="{$searchOptionsFieldName}[show_communities]" {$show_communities}/>
+					<label for="{$searchOptionsFieldId}[show_communities]">Communities</label><br />
+					<input type="checkbox" id="{$searchOptionsFieldId}-show_tracts" name="{$searchOptionsFieldName}[show_tracts]" {$show_tracts}/>
+					<label for="{$searchOptionsFieldId}[show_tracts]">Tracts</label><br />
+					<input type="checkbox" id="{$searchOptionsFieldId}-show_zips" name="{$searchOptionsFieldName}[show_zips]" {$show_zips}/>
+					<label for="{$searchOptionsFieldId}[show_zips]">Zips</label><br />
+					<input type="checkbox" id="{$searchOptionsFieldId}-show_mlsnumber" name="{$searchOptionsFieldName}[show_mlsnumber]" {$show_mlsnumber}/>
+					<label for="{$searchOptionsFieldId}[show_mlsnumber]">Mls #</label>
+				</div>
 			</p>
 
-			<p>
-				<label for="{$searchOptionsFieldId}[sortCities]">Sort cities?</label>
-				<input id="{$searchOptionsFieldId}[sortCities]" name="{$searchOptionsFieldName}[sortCities]" class="checkbox" type="checkbox" />
-			</p>
+			<div id="{$searchOptionsFieldId}-cities_block">
+				<h3>Cities (one per line)</h3>
+				<p>
+					<textarea id="{$searchOptionsFieldId}[cities]" name="{$searchOptionsFieldName}[cities]" class="widefat" rows="10">{$cities}</textarea>
+				</p>
+				<p>
+					<label for="{$searchOptionsFieldId}[sortCities]">Sort Cities</label>
+					<input id="{$searchOptionsFieldId}[sortCities]" name="{$searchOptionsFieldName}[sortCities]" class="checkbox" type="checkbox" />
+				</p>
+				<p>
+					<span class="description">See all City Names <a href="javascript:void(0);" onclick="dsWidgetSearch.LaunchLookupList('{$pluginUrl}locations.php?type=city')">here</a></span>
+				</p>
+			</div>
+
+			<div id="{$searchOptionsFieldId}-communities_block">
+				<h3>Communities (one per line)</h3>
+				<p>
+					<textarea id="{$searchOptionsFieldId}[communities]" name="{$searchOptionsFieldName}[communities]" class="widefat" rows="10">{$communities}</textarea>
+				</p>
+				<p>
+					<label for="{$searchOptionsFieldId}[sortCommunities]">Sort Communities</label>
+					<input id="{$searchOptionsFieldId}[sortCommunities]" name="{$searchOptionsFieldName}[sortCommunities]" class="checkbox" type="checkbox" />
+				</p>
+				<p>
+					<span class="description">See all Community Names <a href="javascript:void(0);" onclick="dsWidgetSearch.LaunchLookupList('{$pluginUrl}locations.php?type=community')">here</a></span>
+				</p>
+			</div>
+
+			<div id="{$searchOptionsFieldId}-tracts_block">
+				<h3>Tracts (one per line)</h3>
+				<p>
+					<textarea id="{$searchOptionsFieldId}[tracts]" name="{$searchOptionsFieldName}[tracts]" class="widefat" rows="10">{$tracts}</textarea>
+				</p>
+				<p class="alignright">
+					<label for="{$searchOptionsFieldId}[sortTracts]">Sort Tracts</label>
+					<input id="{$searchOptionsFieldId}[sortTracts]" name="{$searchOptionsFieldName}[sortTracts]" class="checkbox" type="checkbox" />
+				</p>
+				<p>
+					<span class="description">See all Tract Names <a href="javascript:void(0);" onclick="dsWidgetSearch.LaunchLookupList('{$pluginUrl}locations.php?type=tract')">here</a></span>
+				</p>
+			</div>
+
+			<div id="{$searchOptionsFieldId}-zips_block">
+				<h3>Zips (one per line)</h3>
+				<p>
+					<textarea id="{$searchOptionsFieldId}[zips]" name="{$searchOptionsFieldName}[zips]" class="widefat" rows="10">{$zips}</textarea>
+				</p>
+				<p class="alignright">
+					<label for="{$searchOptionsFieldId}[sortZips]">Sort Zips</label>
+					<input id="{$searchOptionsFieldId}[sortZips]" name="{$searchOptionsFieldName}[sortZips]" class="checkbox" type="checkbox" />
+				</p>
+				<p>
+					<span class="description">See all Zips <a href="javascript:void(0);" onclick="dsWidgetSearch.LaunchLookupList('{$pluginUrl}locations.php?type=zip')">here</a></span>
+				</p>
+			</div>
+			<script> dsWidgetSearch.InitFields('{$searchOptionsFieldId}'); </script>
 HTML;
 	}
 }

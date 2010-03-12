@@ -5,6 +5,9 @@ class dsSearchAgent_ListingsWidget extends WP_Widget {
 			"classname" => "dsidx-widget-listings",
 			"description" => "Show a list of real estate listings"
 		));
+		
+		if (is_admin())
+			wp_enqueue_script('dsidxpress_widget_listings', DSIDXPRESS_PLUGIN_URL . 'js/widget-listings.js', array('jquery'), DSIDXPRESS_PLUGIN_VERSION);
 	}
 	function widget($args, $instance) {
 		extract($args);
@@ -93,11 +96,13 @@ class dsSearchAgent_ListingsWidget extends WP_Widget {
 		$checkedDefaultDisplay = array($instance["defaultDisplay"] => "checked=\"checked\"");
 		$checkedQuerySource = array($instance["querySource"] => "checked=\"checked\"");
 		$selectedAreaType = array($instance["areaSourceConfig"]["type"] => "selected=\"selected\"");
+		$selectedAreaTypeNormalized = ucwords($instance["areaSourceConfig"]["type"]);
 		$selectedSortOrder = array(str_replace("|", "", $instance["areaSourceConfig"]["sort"]) => "selected=\"selected\"");
 		$selectedLink = array($instance["linkSourceConfig"]["linkId"] => "selected=\"selected\"");
 
 		$availableLinks = dsSearchAgent_ApiRequest::FetchData("AccountAvailableLinks", array(), true, 0);
 		$availableLinks = json_decode($availableLinks["body"]);
+		$pluginUrl = DSIDXPRESS_PLUGIN_URL;
 
 		echo <<<HTML
 			<p>
@@ -131,7 +136,7 @@ class dsSearchAgent_ListingsWidget extends WP_Widget {
 					<td>
 						<p>
 							<label for="{$baseFieldId}[areaSourceConfig][type]">Area type</label>
-							<select id="{$baseFieldId}[areaSourceConfig][type]" name="{$baseFieldName}[areaSourceConfig][type]" class="widefat">
+							<select id="{$baseFieldId}_areaSourceConfig_type" name="{$baseFieldName}[areaSourceConfig][type]" class="widefat" onchange="dsWidgetListings.SwitchType(this, '{$baseFieldId}_areaSourceConfig_title')">
 								<option value="city" {$selectedAreaType[city]}>City</option>
 								<option value="community" {$selectedAreaType[community]}>Community</option>
 								<option value="tract" {$selectedAreaType[tract]}>Tract</option>
@@ -142,6 +147,10 @@ class dsSearchAgent_ListingsWidget extends WP_Widget {
 						<p>
 							<label for="{$baseFieldId}[areaSourceConfig][name]">Area name</label>
 							<input id="{$baseFieldId}[areaSourceConfig][name]" name="{$baseFieldName}[areaSourceConfig][name]" class="widefat" type="text" value="{$instance[areaSourceConfig][name]}" />
+						</p>
+						
+						<p>
+							<span class="description">See all <span id="{$baseFieldId}_areaSourceConfig_title">{$selectedAreaTypeNormalized}</span> Names <a href="javascript:void(0);" onclick="dsWidgetListings.LaunchLookupList('{$pluginUrl}locations.php', '{$baseFieldId}_areaSourceConfig_type')">here</a></span>
 						</p>
 
 						<p>

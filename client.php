@@ -134,13 +134,20 @@ class dsSearchAgent_Client {
 		$wp_query->is_singular = 1;
 
 		$apiParams = array();
-		foreach (array_merge($wp_query->query, $get) as $key => $value) {
+		foreach ($wp_query->query as $key => $value) {
 			if (strpos($key, "idx-q") === false && strpos($key, "idx-d") === false)
 				continue;
 
 			$key = str_replace(array("-", "<", ">"), array(".", "[", "]"), substr($key, 4));
 			$key = self::$QueryStringTranslations[substr($key, 0, 1)] . substr($key, strpos($key, "."));
-			$value = str_replace("_", "-", str_replace("-", " ", $value));
+			$apiParams[(string)$key] = str_replace("_", "-", str_replace("-", " ", $value));
+		}
+		foreach ($get as $key => $value) {
+			if (strpos($key, "idx-q") === false && strpos($key, "idx-d") === false)
+				continue;
+
+			$key = str_replace(array("-", "<", ">"), array(".", "[", "]"), substr($key, 4));
+			$key = self::$QueryStringTranslations[substr($key, 0, 1)] . substr($key, strpos($key, "."));
 
 			$apiParams[(string)$key] = $value;
 		}

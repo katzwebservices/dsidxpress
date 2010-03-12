@@ -4,7 +4,7 @@ class dsSearchAgent_Shortcodes {
 		$options = get_option(DSIDXPRESS_OPTION_NAME);
 			if (!$options["Activated"])
 				return "";
-		
+
 		$atts = shortcode_atts(array(
 			"mlsnumber"			=> "",
 			"showall"			=> "false",
@@ -22,7 +22,7 @@ class dsSearchAgent_Shortcodes {
 		$apiRequestParams["responseDirective.ShowAdditionalDetails"] = $atts["showextradetails"];
 		$apiRequestParams["responseDirective.ShowFeatures"] = $atts["showfeatures"];
 		$apiRequestParams["responseDirective.ShowLocation"] = $atts["showlocation"];
-		
+
 		if ($atts["showall"] == "true") {
 			$apiRequestParams["responseDirective.ShowSchools"] = "true";
 			$apiRequestParams["responseDirective.ShowPriceHistory"] = "true";
@@ -30,10 +30,10 @@ class dsSearchAgent_Shortcodes {
 			$apiRequestParams["responseDirective.ShowFeatures"] = "true";
 			$apiRequestParams["responseDirective.ShowLocation"] = "true";
 		}
-		
+
 		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("Details", $apiRequestParams);
 		add_action("wp_footer", array("dsSearchAgent_Shortcodes", "InsertDisclaimer"));
-		
+
 		if ($apiHttpResponse["response"]["code"] == "404") {
 			return "<p class=\"dsidx-error\">We're sorry, but we couldn't find MLS # {$atts[mlsnumber]} in our database. This property was most likely taken off the market.</p>";
 		}
@@ -47,7 +47,7 @@ class dsSearchAgent_Shortcodes {
 		$options = get_option(DSIDXPRESS_OPTION_NAME);
 			if (!$options["Activated"])
 				return "";
-		
+
 		$atts = shortcode_atts(array(
 			"city"			=> "",
 			"community"		=> "",
@@ -59,12 +59,14 @@ class dsSearchAgent_Shortcodes {
 			"linkid"		=> "",
 			"count"			=> "5",
 			"orderby"		=> "DateAdded",
-			"orderdir"		=> "DESC"
+			"orderdir"		=> "DESC",
+			"showlargerphotos"	=> "false"
 		), $atts);
 		$apiRequestParams = array();
 		$apiRequestParams["responseDirective.ViewNameSuffix"] = "shortcode";
 		$apiRequestParams["responseDirective.IncludeMetadata"] = "true";
 		$apiRequestParams["responseDirective.IncludeLinkMetadata"] = "true";
+		$apiRequestParams["responseDirective.ShowLargerPhotos"] = $atts["showlargerphotos"];
 		$apiRequestParams["query.Cities"] = $atts["city"];
 		$apiRequestParams["query.Communities"] = $atts["community"];
 		$apiRequestParams["query.TractIdentifiers"] = $atts["tract"];
@@ -84,10 +86,10 @@ class dsSearchAgent_Shortcodes {
 		$apiRequestParams["directive.ResultsPerPage"] = $atts["count"];
 		$apiRequestParams["directive.SortOrders[0].Column"] = $atts["orderby"];
 		$apiRequestParams["directive.SortOrders[0].Direction"] = $atts["orderdir"];
-		
+
 		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("Results", $apiRequestParams);
 		add_action("wp_footer", array("dsSearchAgent_Shortcodes", "InsertDisclaimer"));
-		
+
 		if (empty($apiHttpResponse["errors"]) && $apiHttpResponse["response"]["code"] == "200") {
 			return $apiHttpResponse["body"];
 		} else {

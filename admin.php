@@ -190,6 +190,15 @@ HTML;
 						<span class="description">By default, the titles are auto-generated based on the type of area searched. You can override this above; use <code>%title%</code> to designate where you want the location title. For example, you could use <code>Real estate in the %title%</code>.</span>
 					</td>
 				</tr>
+				<tr>
+					<th>
+						<label for="dsidxpress-ResultsMapDefaultState">Default for the Results Map:</label>
+					</th>
+					<td>
+						Open <input type="radio" id="dsidxpress-ResultsMapDefaultState-Open" name="<?php echo DSIDXPRESS_OPTION_NAME; ?>[ResultsMapDefaultState]" value="open" <?php echo $options["ResultsMapDefaultState"] == "open" ? "checked=\"checked\"" : "" ?> /><br />
+						Closed <input type="radio" id="dsidxpress-ResultsMapDefaultState-Closed" name="<?php echo DSIDXPRESS_OPTION_NAME; ?>[ResultsMapDefaultState]" value="closed" <?php echo $options["ResultsMapDefaultState"] == "closed" || !isset($options["ResultsMapDefaultState"]) ? "checked=\"checked\"" : "" ?>/>
+					</td>
+				</tr>
 			</table>
 
 			<h4>XML Sitemaps Locations</h4>
