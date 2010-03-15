@@ -313,6 +313,7 @@ HTML;
 			$diagnostics = self::RunDiagnostics($options);
 			$previouslyActive = $options["Activated"];
 			$options["Activated"] = $diagnostics["DiagnosticsSuccessful"];
+			$options["HasSearchAgentPro"] = $diagnostics["HasSearchAgentPro"];
 			if ($previouslyActive != $options["Activated"])
 				update_option(DSIDXPRESS_OPTION_NAME, $options);
 
@@ -499,6 +500,8 @@ HTML;
 		$setDiagnostics["UrlInterceptSet"] = get_option("permalink_structure") != "" && !preg_match("/index\.php/", $permalinkStructure);
 		$setDiagnostics["ClockIsAccurate"] = $timeDiff < $secondsIn2Hrs && $timeDiff > -1 * $secondsIn2Hrs;
 		$setDiagnostics["UnderMonthlyCallLimit"] = $diagnostics["AllowedApiRequestCount"] === 0 || $diagnostics["AllowedApiRequestCount"] > $diagnostics["CurrentApiRequestCount"];
+		
+		$setDiagnostics["HasSearchAgentPro"] = $diagnostics["HasSearchAgentPro"];
 
 		$setDiagnostics["DiagnosticsSuccessful"] = true;
 		foreach ($setDiagnostics as $key => $value) {
@@ -521,6 +524,7 @@ HTML;
 
 			dsSearchAgent_ApiRequest::FetchData("BindToRequester", array(), false, 0, $options);
 			$diagnostics = self::RunDiagnostics($options);
+			$options["HasSearchAgentPro"] = $diagnostics["HasSearchAgentPro"];
 			$options["Activated"] = $diagnostics["DiagnosticsSuccessful"];
 
 			if (!$options["Activated"] && isset($options["HideIntroNotification"]))
