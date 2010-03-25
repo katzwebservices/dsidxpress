@@ -167,7 +167,8 @@ HTML;
 					</tr>
 				</table>
 				<div class="dsidx-search-button">
-					<input type="submit" value="Search for properties" />
+					<input type="submit" value="Search for properties" /><br /><br />
+					or&nbsp;<a href="{$formAction}advanced/"><img src="http://localhost/images/dsidxpress/icons/adv_search-16.png" /> Advanced Search</a>
 				</div>
 			</form>
 			</div>

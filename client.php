@@ -83,6 +83,8 @@ class dsSearchAgent_Client {
 		wp_enqueue_script("jquery");
 		wp_enqueue_script("jquery-ui-core");
 		wp_enqueue_script("jquery-ui-dialog");
+		wp_enqueue_script("thickbox");
+		wp_enqueue_style("thickbox");
 
 		// see comment above PreActivate
 		if (is_array($wp_query->query) && isset($wp_query->query["idx-action-swap"])) {
@@ -94,10 +96,9 @@ class dsSearchAgent_Client {
 		if (!is_array($wp_query->query) || !isset($wp_query->query["idx-action"])) {
 			return $posts;
 		}
-
+		
 		$action = strtolower($wp_query->query["idx-action"]);
-		add_action("wp_head", array("dsSearchAgent_Client", "Header"));
-
+		
 		// keep wordpress from mucking up our HTML
 		remove_filter("the_content", "wptexturize");
 		remove_filter("the_content", "convert_smilies");
@@ -120,6 +121,49 @@ class dsSearchAgent_Client {
 		// we don't support RSS feeds just yet
 		remove_action("wp_head", "feed_links");
 		remove_action("wp_head", "feed_links_extra");
+		
+		if($action == "framed")
+			return self::FrameAction($action, $get);
+		else
+			return self::ApiAction($action, $get);
+	}
+	
+	static function FrameAction($action, $get){
+		global $wp_query;
+		$options = get_option(DSIDXPRESS_OPTION_NAME);
+				
+		$description = NULL;
+		$title = NULL;
+		$script_code = '<script src="http://idx.diversesolutions.com/scripts/controls/Remote-Frame.aspx?MasterAccountID='. $options['AccountID'] .'&amp;SearchSetupID='. $options['SearchSetupID'] .'&amp;LinkID=0&amp;Height=2000"></script>';
+		
+		set_query_var("name", "dsidxpress-{$action}"); // at least a few themes require _something_ to be set here to display a good <title> tag
+		set_query_var("pagename", "dsidxpress-{$action}"); // setting pagename in case someone wants to do a custom theme file for this "page"
+		
+		$posts = array((object)array(
+			"ID"				=> time(),
+			"comment_count"		=> 0,
+			"comment_status"	=> "closed",
+			"ping_status"		=> "closed",
+			"post_author"		=> 1,
+			"post_content"		=> $script_code,
+			"post_date"			=> NULL,
+			"post_date_gmt"		=> NULL,
+			"post_excerpt"		=> $description,
+			"post_name"			=> "dsidxpress-data",
+			"post_parent"		=> 0,
+			"post_status"		=> "publish",
+			"post_title"		=> $title,
+			"post_type"			=> "page"
+		));
+		
+		return $posts;
+	}
+	
+	static function ApiAction($action, $get) {
+		global $wp_query;
+		$options = get_option(DSIDXPRESS_OPTION_NAME);
+		
+		add_action("wp_head", array("dsSearchAgent_Client", "Header"));
 
 		// allow wordpress to consume the page template option the user choose in the dsIDXpress settings
 		if ($action == "results" && $options["ResultsTemplate"])

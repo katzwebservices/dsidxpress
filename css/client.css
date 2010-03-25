@@ -26,3 +26,13 @@ p.dsidx-error
 {
 	width: 25px;
 }
+
+.dsidx-search-widget .dsidx-search-button
+{
+	font-size: 12px;
+}
+
+.dsidx-search-widget .dsidx-search-button img
+{
+	vertical-align:-3px;
+}

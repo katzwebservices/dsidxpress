@@ -24,11 +24,25 @@ class dsSearchAgent_ClientAssist {
 		$urlBase = str_replace(array('&', '"'), array('&amp;', '&quot;'), $urlBase);
 		
 		header('Content-Type: text/xml');
-		echo '<?xml version="1.0"?><gallery><album lgpath="' . $urlBase . '" fspath="' . $urlBase . '">';
+		echo '<?xml version="1.0"?><gallery><album lgpath="' . $urlBase . '" tnpath="' . $urlBase . '">';
 		for($i = 0; $i < (int)$_GET['count']; $i++) {
-			echo '<img src="' . $i . '-medium.jpg' . $uriSuffix . '" fs="' . $i . '-full.jpg' . $uriSuffix . '" />';
+			echo '<img src="' . $i . '-medium.jpg' . $uriSuffix . '" tn="' . $i . '-tiny.jpg' . $uriSuffix . '" link="javascript:dsidx.details.LaunchLargePhoto('. $i .','. $_GET['count'] .',\''. $urlBase .'\',\''. $uriSuffix .'\')" target="_blank" />';
 		}
 		echo '</album></gallery>';
+	}
+	static function SlideshowParams() {
+		$count = $_GET['count'];
+		$uriSuffix = $_GET['uriSuffix'];
+		$uriBase = $_GET['uriBase'];
+		
+		$slideshow_xml_url = DSIDXPRESS_PLUGIN_URL . "client-assist.php?action=SlideshowXml&count=$count&uriSuffix=$uriSuffix&uriBase=$uriBase";
+		$param_xml = file_get_contents('assets/slideshowpro-generic-params.xml');
+		
+		$param_xml = str_replace("{xmlFilePath}", $slideshow_xml_url, $param_xml);
+		$param_xml = str_replace("{imageTitle}", "", $param_xml);
+		
+		header('Content-Type: text/xml');
+		echo($param_xml);
 	}
 	static function EmailFriendForm() {
 		$referring_url = $_SERVER['HTTP_REFERER'];
