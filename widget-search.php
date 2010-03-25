@@ -24,6 +24,8 @@ class dsSearchAgent_SearchWidget extends WP_Widget {
 
 		$propertyTypes = dsSearchAgent_ApiRequest::FetchData("AccountSearchSetupPropertyTypes", array(), false, 60 * 60 * 24);
 		$propertyTypes = $propertyTypes["response"]["code"] == "200" ? json_decode($propertyTypes["body"]) : null;
+		
+		$options = get_option(DSIDXPRESS_OPTION_NAME);
 
 		echo $before_widget;
 		if ($title)
@@ -168,7 +170,13 @@ HTML;
 				</table>
 				<div class="dsidx-search-button">
 					<input type="submit" value="Search for properties" /><br /><br />
+HTML;
+		if($options["HasSearchAgentPro"] == "yes" && $searchOptions["show_advanced"] == "yes"){
+			echo <<<HTML
 					or&nbsp;<a href="{$formAction}advanced/"><img src="http://localhost/images/dsidxpress/icons/adv_search-16.png" /> Advanced Search</a>
+HTML;
+		}
+		echo <<<HTML
 				</div>
 			</form>
 			</div>
@@ -225,11 +233,16 @@ HTML;
 		
 		if($new_instance["searchOptions"]["show_mlsnumber"] == "on") $new_instance["searchOptions"]["show_mlsnumber"] = "yes";
 		else $new_instance["searchOptions"]["show_mlsnumber"] = "no";
+		
+		if($new_instance["searchOptions"]["show_advanced"] == "on") $new_instance["searchOptions"]["show_advanced"] = "yes";
+		else $new_instance["searchOptions"]["show_advanced"] = "no";
 
 		return $new_instance;
 	}
 	function form($instance) {
 		$pluginUrl = DSIDXPRESS_PLUGIN_URL;
+		
+		$options = get_option(DSIDXPRESS_OPTION_NAME);
 		
 		$instance = wp_parse_args($instance, array(
 			"title" => "Real Estate Search",
@@ -254,6 +267,7 @@ HTML;
 		$show_tracts = $instance["searchOptions"]["show_tracts"] == "yes" ? "checked=\"checked\" " : "";
 		$show_zips = $instance["searchOptions"]["show_zips"] == "yes" ? "checked=\"checked\" " : "";
 		$show_mlsnumber = $instance["searchOptions"]["show_mlsnumber"] == "yes" ? "checked=\"checked\" " : "";
+		$show_advanced = $instance["searchOptions"]["show_advanced"] == "yes" ? "checked=\"checked\" " : "";
 		
 		echo <<<HTML
 			<p>
@@ -332,6 +346,16 @@ HTML;
 					<span class="description">See all Zips <a href="javascript:void(0);" onclick="dsWidgetSearch.LaunchLookupList('{$pluginUrl}locations.php?type=zip')">here</a></span>
 				</p>
 			</div>
+HTML;
+		if($options["HasSearchAgentPro"] == "yes"){
+			echo <<<HTML
+			<p>
+				<label for="{$searchOptionsFieldId}[show_advanced]">Show Advanced Option</label>
+				<input id="{$searchOptionsFieldId}[show_advanced]" name="{$searchOptionsFieldName}[show_advanced]" class="checkbox" type="checkbox" {$show_advanced}/>
+			</p>
+HTML;
+		}
+		echo <<<HTML
 			<script> dsWidgetSearch.InitFields('{$searchOptionsFieldId}'); </script>
 HTML;
 	}

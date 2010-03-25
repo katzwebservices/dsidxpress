@@ -505,7 +505,7 @@ HTML;
 
 		$setDiagnostics["DiagnosticsSuccessful"] = true;
 		foreach ($setDiagnostics as $key => $value) {
-			if (!$value)
+			if (!$value && $key != "HasSearchAgentPro")
 				$setDiagnostics["DiagnosticsSuccessful"] = false;
 		}
 		$wp_rewrite->flush_rules();
