@@ -17,6 +17,26 @@ p.dsidx-error
 {
 	width: 80px;
 }
+.dsidx-search-widget .dsidx-mlsnumber
+{
+	width: 80px;
+}
+.dsidx-search-widget td, .dsidx-search-widget  th{
+	padding: 2px 0;
+} 
+.dsidx-search-widget select
+{
+	width: 90px;
+}
+.dsidx-widget.dsidx-search-widget .dsidx-search-button
+{
+	padding-top: 6px;
+	text-align:center;
+}
+.dsidx-search-widget  th{
+	background-color: #F3F3F3;
+	padding-left: 7px;
+}
 .dsidx-improvedsqft
 {
 	width: 50px;

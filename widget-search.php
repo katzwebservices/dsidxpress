@@ -37,7 +37,7 @@ class dsSearchAgent_SearchWidget extends WP_Widget {
 				<table>
 					<tr>
 						<td colspan="2">
-							<select name="idx-q-PropertyTypes" style="width: 100%;">
+							<select name="idx-q-PropertyTypes" class="dsidx-search-widget-propertyTypes">
 								<option value="">- All property types -</option>
 HTML;
 
