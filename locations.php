@@ -16,9 +16,8 @@ if (!current_user_can("edit_pages"))
 	wp_die("You can't do anything destructive in here, but you shouldn't be playing around with this anyway.");
 
 $options = get_option(DSIDXPRESS_OPTION_NAME);
-$request = new WP_Http();
 $requestUri = dsSearchAgent_ApiRequest::$ApiEndPoint . "LocationsByType";
-$apiHttpResponse = (array)$request->post($requestUri, array(
+$apiHttpResponse = (array)wp_remote_post($requestUri, array(
 	"body"			=> array(
 		searchSetupID	=> $options["SearchSetupID"],
 		type			=> $_REQUEST["type"]
