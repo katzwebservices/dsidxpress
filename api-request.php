@@ -61,8 +61,7 @@ class dsSearchAgent_ApiRequest {
 		$stringToSign = rtrim($stringToSign, "\n");
 
 		$params["requester.Signature"] = hash_hmac("sha1", $stringToSign, $privateApiKey);
-		$request = new WP_Http();
-		$response = (array)$request->post($requestUri, array(
+		$response = (array)wp_remote_post($requestUri, array(
 			"body"			=> $params,
 			"httpversion"	=> "1.1",
 			"redirection"	=> "0",
