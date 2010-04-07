@@ -18,7 +18,7 @@ class dsSearchAgent_Shortcodes {
 		$apiRequestParams["responseDirective.ViewNameSuffix"] = "shortcode";
 		$apiRequestParams["query.MlsNumber"] = $atts["mlsnumber"];
 		$apiRequestParams["responseDirective.ShowSchools"] = $atts["showschools"];
-		$apiRequestParams["responseDirective.ShowPriceHistory"] = $atts["showextradetails"];
+		$apiRequestParams["responseDirective.ShowPriceHistory"] = $atts["showpricehistory"];
 		$apiRequestParams["responseDirective.ShowAdditionalDetails"] = $atts["showextradetails"];
 		$apiRequestParams["responseDirective.ShowFeatures"] = $atts["showfeatures"];
 		$apiRequestParams["responseDirective.ShowLocation"] = $atts["showlocation"];
