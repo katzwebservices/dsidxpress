@@ -46,6 +46,10 @@ If you'd like to **see the plugin in action**, you can check out our [dsIDXpress
 
 == Changelog ==
 
+= 1.0.6.1 = 
+
+* Added fix for wordpress 3.0 beta 1
+
 = 1.0.6 =
 
 * Fixed issue with some text values (cities, communities, etc) in the url not being passed correctly to the API.
