@@ -13,6 +13,8 @@ class dsSearchAgent_SearchWidget extends WP_Widget {
 		extract($args);
 		extract($instance);
 		$title = apply_filters("widget_title", $title);
+		
+		$pluginUrl = DSIDXPRESS_PLUGIN_URL;
 
 		$formAction = get_bloginfo("url");
 		if (substr($formAction, strlen($formAction), 1) != "/")
@@ -173,7 +175,7 @@ HTML;
 HTML;
 		if($options["HasSearchAgentPro"] == "yes" && $searchOptions["show_advanced"] == "yes"){
 			echo <<<HTML
-					try our&nbsp;<a href="{$formAction}advanced/"><img src="http://localhost/images/dsidxpress/icons/adv_search-16.png" /> Advanced Search</a>
+					try our&nbsp;<a href="{$formAction}advanced/"><img src="{$pluginUrl}assets/adv_search-16.png" /> Advanced Search</a>
 HTML;
 		}
 		echo <<<HTML
