@@ -183,6 +183,18 @@ HTML;
 				</tr>
 				<tr>
 					<th>
+						<label for="dsidxpress-AdvancedTemplate">Template for dsSearchAgent:</label>
+					</th>
+					<td>
+						<select id="dsidxpress-AdvancedTemplate" name="<?php echo DSIDXPRESS_OPTION_NAME ; ?>[AdvancedTemplate]">
+							<option value="">- Default -</option>
+							<?php page_template_dropdown($options["AdvancedTemplate"]) ?>
+						</select><br />
+						<span class="description">See above.</span>
+					</td>
+				</tr>
+				<tr>
+					<th>
 						<label for="dsidxpress-CustomTitleText">Title for results pages:</label>
 					</th>
 					<td>
@@ -195,8 +207,40 @@ HTML;
 						<label for="dsidxpress-ResultsMapDefaultState">Default for the Results Map:</label>
 					</th>
 					<td>
-						Open <input type="radio" id="dsidxpress-ResultsMapDefaultState-Open" name="<?php echo DSIDXPRESS_OPTION_NAME; ?>[ResultsMapDefaultState]" value="open" <?php echo $options["ResultsMapDefaultState"] == "open" ? "checked=\"checked\"" : "" ?> /><br />
+						Open <input type="radio" id="dsidxpress-ResultsMapDefaultState-Open" name="<?php echo DSIDXPRESS_OPTION_NAME; ?>[ResultsMapDefaultState]" value="open" <?php echo $options["ResultsMapDefaultState"] == "open" ? "checked=\"checked\"" : "" ?> />&nbsp;or&nbsp;
 						Closed <input type="radio" id="dsidxpress-ResultsMapDefaultState-Closed" name="<?php echo DSIDXPRESS_OPTION_NAME; ?>[ResultsMapDefaultState]" value="closed" <?php echo $options["ResultsMapDefaultState"] == "closed" || !isset($options["ResultsMapDefaultState"]) ? "checked=\"checked\"" : "" ?>/>
+					</td>
+				</tr>
+			</table>
+			
+			<h4>Contact Information</h4>
+			<span class="description">This information is used in identifying you to the website visitor. For example: Listing PDF Printouts, Contact Forms, and Dwellicious</span>
+			<table class="form-table">
+				<tr>
+					<th>
+						<label for="dsidxpress-FirstName">First Name:</label>
+					</th>
+					<td>
+						<input type="text" id="dsidxpress-FirstName" maxlength="49" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[FirstName]" value="<?php echo $account_options->FirstName; ?>" /><br />
+						<span class="description"></span>
+					</td>
+				</tr>
+				<tr>
+					<th>
+						<label for="dsidxpress-LastName">Last Name:</label>
+					</th>
+					<td>
+						<input type="text" id="dsidxpress-LastName" maxlength="49" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[LastName]" value="<?php echo $account_options->LastName; ?>" /><br />
+						<span class="description"></span>
+					</td>
+				</tr>
+				<tr>
+					<th>
+						<label for="dsidxpress-Email">Email:</label>
+					</th>
+					<td>
+						<input type="text" id="dsidxpress-Email" maxlength="49" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[Email]" value="<?php echo $account_options->Email; ?>" /><br />
+						<span class="description"></span>
 					</td>
 				</tr>
 			</table>

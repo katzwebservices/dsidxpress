@@ -122,6 +122,12 @@ class dsSearchAgent_Client {
 		remove_action("wp_head", "feed_links");
 		remove_action("wp_head", "feed_links_extra");
 		
+		$wp_query->found_posts = 0;
+		$wp_query->max_num_pages = 0;
+		$wp_query->is_page = 1;
+		$wp_query->is_home = null;
+		$wp_query->is_singular = 1;
+		
 		if($action == "framed")
 			return self::FrameAction($action, $get);
 		else
@@ -131,6 +137,10 @@ class dsSearchAgent_Client {
 	static function FrameAction($action, $get){
 		global $wp_query;
 		$options = get_option(DSIDXPRESS_OPTION_NAME);
+		$post_id = time();
+		
+		if ($options["AdvancedTemplate"])
+			wp_cache_set($post_id, array("_wp_page_template" => array($options["AdvancedTemplate"])), "post_meta");
 				
 		$description = NULL;
 		$title = NULL;
@@ -140,14 +150,14 @@ class dsSearchAgent_Client {
 		set_query_var("pagename", "dsidxpress-{$action}"); // setting pagename in case someone wants to do a custom theme file for this "page"
 		
 		$posts = array((object)array(
-			"ID"				=> time(),
+			"ID"				=> $post_id,
 			"comment_count"		=> 0,
 			"comment_status"	=> "closed",
 			"ping_status"		=> "closed",
 			"post_author"		=> 1,
 			"post_content"		=> $script_code,
-			"post_date"			=> NULL,
-			"post_date_gmt"		=> NULL,
+			"post_date"			=> date("c"),
+			"post_date_gmt"		=> gmdate("c"),
 			"post_excerpt"		=> $description,
 			"post_name"			=> "dsidxpress-data",
 			"post_parent"		=> 0,
@@ -162,20 +172,15 @@ class dsSearchAgent_Client {
 	static function ApiAction($action, $get) {
 		global $wp_query;
 		$options = get_option(DSIDXPRESS_OPTION_NAME);
+		$post_id = time();
 		
 		add_action("wp_head", array("dsSearchAgent_Client", "Header"));
-
+		
 		// allow wordpress to consume the page template option the user choose in the dsIDXpress settings
 		if ($action == "results" && $options["ResultsTemplate"])
-			wp_cache_set(-1, array("_wp_page_template" => array($options["ResultsTemplate"])), "post_meta");
+			wp_cache_set($post_id, array("_wp_page_template" => array($options["ResultsTemplate"])), "post_meta");
 		else if ($action == "details" && $options["DetailsTemplate"])
-			wp_cache_set(-1, array("_wp_page_template" => array($options["DetailsTemplate"])), "post_meta");
-
-		$wp_query->found_posts = 0;
-		$wp_query->max_num_pages = 0;
-		$wp_query->is_page = 1;
-		$wp_query->is_home = null;
-		$wp_query->is_singular = 1;
+			wp_cache_set($post_id, array("_wp_page_template" => array($options["DetailsTemplate"])), "post_meta");
 
 		$apiParams = array();
 		foreach ($wp_query->query as $key => $value) {
@@ -232,7 +237,7 @@ class dsSearchAgent_Client {
 		set_query_var("name", "dsidxpress-{$action}"); // at least a few themes require _something_ to be set here to display a good <title> tag
 		set_query_var("pagename", "dsidxpress-{$action}"); // setting pagename in case someone wants to do a custom theme file for this "page"
 		$posts = array((object)array(
-			"ID"				=> time(),
+			"ID"				=> $post_id,
 			"comment_count"		=> 0,
 			"comment_status"	=> "closed",
 			"ping_status"		=> "closed",

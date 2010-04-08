@@ -173,7 +173,7 @@ HTML;
 HTML;
 		if($options["HasSearchAgentPro"] == "yes" && $searchOptions["show_advanced"] == "yes"){
 			echo <<<HTML
-					or&nbsp;<a href="{$formAction}advanced/"><img src="http://localhost/images/dsidxpress/icons/adv_search-16.png" /> Advanced Search</a>
+					try our&nbsp;<a href="{$formAction}advanced/"><img src="http://localhost/images/dsidxpress/icons/adv_search-16.png" /> Advanced Search</a>
 HTML;
 		}
 		echo <<<HTML

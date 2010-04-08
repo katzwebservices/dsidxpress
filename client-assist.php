@@ -81,7 +81,7 @@ class dsSearchAgent_ClientAssist {
 		if($_REQUEST["MlsNumber"]) $apiParams["query.MlsNumber"] = $_REQUEST["MlsNumber"];
 		$apiParams["responseDirective.ViewNameSuffix"] = "printpdf";
 		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("Details", $apiParams, false);
-		
+
 		header('Content-type: application/pdf');
 		echo($apiHttpResponse["body"]);	
 		
