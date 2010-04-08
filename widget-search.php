@@ -311,8 +311,8 @@ HTML;
 				<p>
 					<span class="description">See all City Names <a href="javascript:void(0);" onclick="dsWidgetSearch.LaunchLookupList('{$pluginUrl}locations.php?type=city')">here</a></span>
 				</p>
+				<hr noshade="noshade" />
 			</div>
-
 			<div id="{$searchOptionsFieldId}-communities_block">
 				<h3>Communities (one per line)</h3>
 				<p>
@@ -325,6 +325,7 @@ HTML;
 				<p>
 					<span class="description">See all Community Names <a href="javascript:void(0);" onclick="dsWidgetSearch.LaunchLookupList('{$pluginUrl}locations.php?type=community')">here</a></span>
 				</p>
+				<hr noshade="noshade" />
 			</div>
 
 			<div id="{$searchOptionsFieldId}-tracts_block">
@@ -339,6 +340,7 @@ HTML;
 				<p>
 					<span class="description">See all Tract Names <a href="javascript:void(0);" onclick="dsWidgetSearch.LaunchLookupList('{$pluginUrl}locations.php?type=tract')">here</a></span>
 				</p>
+				<hr noshade="noshade" />
 			</div>
 
 			<div id="{$searchOptionsFieldId}-zips_block">
