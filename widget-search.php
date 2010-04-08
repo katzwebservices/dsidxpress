@@ -332,7 +332,7 @@ HTML;
 				<p>
 					<textarea id="{$searchOptionsFieldId}[tracts]" name="{$searchOptionsFieldName}[tracts]" class="widefat" rows="10">{$tracts}</textarea>
 				</p>
-				<p class="alignright">
+				<p>
 					<label for="{$searchOptionsFieldId}[sortTracts]">Sort Tracts</label>
 					<input id="{$searchOptionsFieldId}[sortTracts]" name="{$searchOptionsFieldName}[sortTracts]" class="checkbox" type="checkbox" />
 				</p>
@@ -346,7 +346,7 @@ HTML;
 				<p>
 					<textarea id="{$searchOptionsFieldId}[zips]" name="{$searchOptionsFieldName}[zips]" class="widefat" rows="10">{$zips}</textarea>
 				</p>
-				<p class="alignright">
+				<p>
 					<label for="{$searchOptionsFieldId}[sortZips]">Sort Zips</label>
 					<input id="{$searchOptionsFieldId}[sortZips]" name="{$searchOptionsFieldName}[sortZips]" class="checkbox" type="checkbox" />
 				</p>
