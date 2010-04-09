@@ -72,7 +72,7 @@ class dsSearchAgent_ListAreasWidget extends WP_Widget {
 		$areaOptionsFieldId = $this->get_field_id("areaOptions");
 		$areaOptionsFieldName = $this->get_field_name("areaOptions");
 		$selectedAreaType = array($instance["areaOptions"]["areaType"] => "selected=\"selected\"");
-		$type_normalized = ucwords($instance["areaOptions"]["areaType"]);
+		$type_normalized = $instance["areaOptions"]["areaType"];
 		$pluginUrl = DSIDXPRESS_PLUGIN_URL;
 
 		echo <<<HTML
@@ -96,11 +96,18 @@ class dsSearchAgent_ListAreasWidget extends WP_Widget {
 				<textarea id="{$areaOptionsFieldId}_areas" name="{$areaOptionsFieldName}[areas]" class="widefat" rows="10">{$areas}</textarea>
 			</p>
 
+			<div style="float: right">
+				<a href="javascript:void(0);" onclick="dsWidgetListAreas.LaunchLookupList('{$pluginUrl}locations.php', '{$areaOptionsFieldId}_areaType')">See <span class="{$areaOptionsFieldId}_link_title">{$type_normalized}</span> names</a>
+			</div>
+
 			<p>
-				<label for="{$areaOptionsFieldId}[sortAreas]">Sort areas?</label>
+				<label for="{$areaOptionsFieldId}[sortAreas]" style="font-size: 11px">Sort areas?</label>
 				<input id="{$areaOptionsFieldId}_sortAreas" name="{$areaOptionsFieldName}[sortAreas]" class="checkbox" type="checkbox" />
 			</p>
-			<a href="javascript:void(0);" onclick="jQuery('#{$advancedId}_advanced').slideDown(500); jQuery(this).hide()">Advanced</a>
+
+			<div style="clear: both"></div>
+
+			<p><a href="javascript:void(0);" onclick="jQuery('#{$advancedId}_advanced').slideDown(500); jQuery(this).hide()">Advanced</a></p>
 			<div id="{$advancedId}_advanced" style="display:none">
 				<hr />
 				<h3>Add an Area w/ a Custom Title</h3>
@@ -111,7 +118,7 @@ class dsSearchAgent_ListAreasWidget extends WP_Widget {
 				<p>
 					<label for="{$advancedId}_lookup">Actual Area Name</label>
 					<input id="{$advancedId}_lookup" value="" class="widefat" type="text" />
-					<span class="description">See all <span id="{$areaOptionsFieldId}_link_title">{$type_normalized}</span> Names <a href="javascript:void(0);" onclick="dsWidgetListAreas.LaunchLookupList('{$pluginUrl}locations.php', '{$areaOptionsFieldId}_areaType')">here</a></span>
+					<span class="description">See all <span class="{$areaOptionsFieldId}_link_title">{$type_normalized}</span> Names <a href="javascript:void(0);" onclick="dsWidgetListAreas.LaunchLookupList('{$pluginUrl}locations.php', '{$areaOptionsFieldId}_areaType')">here</a></span>
 				</p>
 
 				<input type="button" class="button" value="Add This Area" onclick="dsWidgetListAreas.AddArea('{$advancedId}_title', '{$advancedId}_lookup', '{$areaOptionsFieldId}_areas')"/>

@@ -5,6 +5,11 @@ add_action("admin_menu", array("dsSearchAgent_Admin", "AddMenu"));
 add_action("admin_notices", array("dsSearchAgent_Admin", "DisplayAdminNotices"));
 add_action("wp_ajax_dsidxpress-dismiss-notification", array("dsSearchAgent_Admin", "DismissNotification"));
 
+define('SCRIPT_DEBUG', true); 
+wp_enqueue_script('jquery');
+add_thickbox();
+wp_enqueue_script('dsidxpress_admin_options', DSIDXPRESS_PLUGIN_URL . 'js/admin-options.js', array(), DSIDXPRESS_PLUGIN_VERSION);
+
 class dsSearchAgent_Admin {
 	static $HeaderLoaded = null;
 	static function AddMenu() {
@@ -42,8 +47,16 @@ class dsSearchAgent_Admin {
 		register_setting("dsidxpress_activation", DSIDXPRESS_OPTION_NAME, array("dsSearchAgent_Admin", "SanitizeOptions"));
 		register_setting("dsidxpress_options", DSIDXPRESS_OPTION_NAME, array("dsSearchAgent_Admin", "SanitizeOptions"));
 		register_setting("dsidxpress_options", DSIDXPRESS_API_OPTIONS_NAME, array("dsSearchAgent_Admin", "SanitizeApiOptions"));
-
-		wp_enqueue_script('dsidxpress_admin_options', DSIDXPRESS_PLUGIN_URL . 'js/admin-options.js', array('jquery','jquery-ui-sortable'), DSIDXPRESS_PLUGIN_VERSION);
+		/*
+		wp_enqueue_script('jquery');
+		wp_enqueue_script('utils');
+		wp_enqueue_script('core');
+		wp_enqueue_script('jquery-ui-core');
+		wp_enqueue_script('jquery-ui-sortable');
+		wp_enqueue_script('common');
+		wp_enqueue_script('thickbox');
+		wp_enqueue_style('thickbox');
+		*/
 	}
 	static function LoadHeader() {
 		if (self::$HeaderLoaded)
@@ -170,11 +183,64 @@ HTML;
 				</tr>
 				<tr>
 					<th>
+						<label for="dsidxpress-AdvancedTemplate">Template for dsSearchAgent:</label>
+					</th>
+					<td>
+						<select id="dsidxpress-AdvancedTemplate" name="<?php echo DSIDXPRESS_OPTION_NAME ; ?>[AdvancedTemplate]">
+							<option value="">- Default -</option>
+							<?php page_template_dropdown($options["AdvancedTemplate"]) ?>
+						</select><br />
+						<span class="description">See above.</span>
+					</td>
+				</tr>
+				<tr>
+					<th>
 						<label for="dsidxpress-CustomTitleText">Title for results pages:</label>
 					</th>
 					<td>
 						<input type="text" id="dsidxpress-CustomTitleText" maxlength="49" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[CustomTitleText]" value="<?php echo $account_options->CustomTitleText; ?>" /><br />
 						<span class="description">By default, the titles are auto-generated based on the type of area searched. You can override this above; use <code>%title%</code> to designate where you want the location title. For example, you could use <code>Real estate in the %title%</code>.</span>
+					</td>
+				</tr>
+				<tr>
+					<th>
+						<label for="dsidxpress-ResultsMapDefaultState">Default for the Results Map:</label>
+					</th>
+					<td>
+						Open <input type="radio" id="dsidxpress-ResultsMapDefaultState-Open" name="<?php echo DSIDXPRESS_OPTION_NAME; ?>[ResultsMapDefaultState]" value="open" <?php echo $options["ResultsMapDefaultState"] == "open" ? "checked=\"checked\"" : "" ?> />&nbsp;or&nbsp;
+						Closed <input type="radio" id="dsidxpress-ResultsMapDefaultState-Closed" name="<?php echo DSIDXPRESS_OPTION_NAME; ?>[ResultsMapDefaultState]" value="closed" <?php echo $options["ResultsMapDefaultState"] == "closed" || !isset($options["ResultsMapDefaultState"]) ? "checked=\"checked\"" : "" ?>/>
+					</td>
+				</tr>
+			</table>
+			
+			<h4>Contact Information</h4>
+			<span class="description">This information is used in identifying you to the website visitor. For example: Listing PDF Printouts, Contact Forms, and Dwellicious</span>
+			<table class="form-table">
+				<tr>
+					<th>
+						<label for="dsidxpress-FirstName">First Name:</label>
+					</th>
+					<td>
+						<input type="text" id="dsidxpress-FirstName" maxlength="49" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[FirstName]" value="<?php echo $account_options->FirstName; ?>" /><br />
+						<span class="description"></span>
+					</td>
+				</tr>
+				<tr>
+					<th>
+						<label for="dsidxpress-LastName">Last Name:</label>
+					</th>
+					<td>
+						<input type="text" id="dsidxpress-LastName" maxlength="49" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[LastName]" value="<?php echo $account_options->LastName; ?>" /><br />
+						<span class="description"></span>
+					</td>
+				</tr>
+				<tr>
+					<th>
+						<label for="dsidxpress-Email">Email:</label>
+					</th>
+					<td>
+						<input type="text" id="dsidxpress-Email" maxlength="49" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[Email]" value="<?php echo $account_options->Email; ?>" /><br />
+						<span class="description"></span>
 					</td>
 				</tr>
 			</table>
@@ -275,7 +341,7 @@ HTML;
 				</tr>
 			</table>
 			<?php } else { ?>
-				<span class="description">To enable this functionality, install and activate this plugin: <a href="http://wordpress.org/extend/plugins/google-sitemap-generator/" target="_blank">Google XML Sitemaps</a></span>
+				<span class="description">To enable this functionality, install and activate this plugin: <a class="thickbox onclick" title="Google XML Sitemaps" href="<?php echo admin_url('plugin-install.php?tab=plugin-information&plugin=google-sitemap-generator&TB_iframe=true&width=640')?>" target="_blank">Google XML Sitemaps</a></span>
 			<?php }?>
 			<p class="submit">
 				<input type="submit" class="button-primary" name="Submit" value="Save Options and Sitemaps" />
@@ -291,6 +357,7 @@ HTML;
 			$diagnostics = self::RunDiagnostics($options);
 			$previouslyActive = $options["Activated"];
 			$options["Activated"] = $diagnostics["DiagnosticsSuccessful"];
+			$options["HasSearchAgentPro"] = $diagnostics["HasSearchAgentPro"];
 			if ($previouslyActive != $options["Activated"])
 				update_option(DSIDXPRESS_OPTION_NAME, $options);
 
@@ -477,10 +544,12 @@ HTML;
 		$setDiagnostics["UrlInterceptSet"] = get_option("permalink_structure") != "" && !preg_match("/index\.php/", $permalinkStructure);
 		$setDiagnostics["ClockIsAccurate"] = $timeDiff < $secondsIn2Hrs && $timeDiff > -1 * $secondsIn2Hrs;
 		$setDiagnostics["UnderMonthlyCallLimit"] = $diagnostics["AllowedApiRequestCount"] === 0 || $diagnostics["AllowedApiRequestCount"] > $diagnostics["CurrentApiRequestCount"];
+		
+		$setDiagnostics["HasSearchAgentPro"] = $diagnostics["HasSearchAgentPro"];
 
 		$setDiagnostics["DiagnosticsSuccessful"] = true;
 		foreach ($setDiagnostics as $key => $value) {
-			if (!$value)
+			if (!$value && $key != "HasSearchAgentPro")
 				$setDiagnostics["DiagnosticsSuccessful"] = false;
 		}
 		$wp_rewrite->flush_rules();
@@ -499,6 +568,7 @@ HTML;
 
 			dsSearchAgent_ApiRequest::FetchData("BindToRequester", array(), false, 0, $options);
 			$diagnostics = self::RunDiagnostics($options);
+			$options["HasSearchAgentPro"] = $diagnostics["HasSearchAgentPro"];
 			$options["Activated"] = $diagnostics["DiagnosticsSuccessful"];
 
 			if (!$options["Activated"] && isset($options["HideIntroNotification"]))

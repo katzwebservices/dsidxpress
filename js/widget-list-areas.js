@@ -22,6 +22,6 @@ dsWidgetListAreas = {
 	SwitchType : function (drop_down, link_title_id){
 		var value = jQuery(drop_down).val();
 
-		jQuery('#'+link_title_id).text(value.substr(0, 1).toUpperCase() + value.substr(1));
+		jQuery('.'+link_title_id).text(value);
 	}
 }

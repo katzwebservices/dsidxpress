@@ -39,6 +39,7 @@ class dsSearchAgent_Client {
 		// the reason for this is because the URL that handles the request becomes wp-404-handler.php and _SERVER["QUERY_STRING"] subsequently ends up
 		// being in the format of 404;http://<domain>:<port>/<url>?<query-arg-1>&<query-arg-2>. the result of that problem is that the first query arg
 		// ends up becoming the entire request url up to the second query param
+				
 		$get = $_GET;
 		$getKeys = array_keys($get);
 		if (isset($getKeys[0]) && strpos($getKeys[0], "404;") === 0) {
@@ -80,6 +81,11 @@ class dsSearchAgent_Client {
 
 		add_action("wp_head", array("dsSearchAgent_Client", "HeaderUnconditional"));
 		wp_enqueue_script("jquery");
+		wp_enqueue_script("jquery-ui-core");
+		wp_enqueue_script("jquery-ui-dialog");
+		wp_enqueue_script("thickbox");
+		wp_enqueue_style("thickbox");
+		wp_enqueue_script('jquery-scrollto', DSIDXPRESS_PLUGIN_URL . 'js/jquery.scrollTo-min.js', array(), DSIDXPRESS_PLUGIN_VERSION);
 
 		// see comment above PreActivate
 		if (is_array($wp_query->query) && isset($wp_query->query["idx-action-swap"])) {
@@ -91,10 +97,9 @@ class dsSearchAgent_Client {
 		if (!is_array($wp_query->query) || !isset($wp_query->query["idx-action"])) {
 			return $posts;
 		}
-
+		
 		$action = strtolower($wp_query->query["idx-action"]);
-		add_action("wp_head", array("dsSearchAgent_Client", "Header"));
-
+		
 		// keep wordpress from mucking up our HTML
 		remove_filter("the_content", "wptexturize");
 		remove_filter("the_content", "convert_smilies");
@@ -117,18 +122,66 @@ class dsSearchAgent_Client {
 		// we don't support RSS feeds just yet
 		remove_action("wp_head", "feed_links");
 		remove_action("wp_head", "feed_links_extra");
-
-		// allow wordpress to consume the page template option the user choose in the dsIDXpress settings
-		if ($action == "results" && $options["ResultsTemplate"])
-			wp_cache_set(-1, array("_wp_page_template" => array($options["ResultsTemplate"])), "post_meta");
-		else if ($action == "details" && $options["DetailsTemplate"])
-			wp_cache_set(-1, array("_wp_page_template" => array($options["DetailsTemplate"])), "post_meta");
-
+		
 		$wp_query->found_posts = 0;
 		$wp_query->max_num_pages = 0;
 		$wp_query->is_page = 1;
 		$wp_query->is_home = null;
 		$wp_query->is_singular = 1;
+		
+		if($action == "framed")
+			return self::FrameAction($action, $get);
+		else
+			return self::ApiAction($action, $get);
+	}
+	
+	static function FrameAction($action, $get){
+		global $wp_query;
+		$options = get_option(DSIDXPRESS_OPTION_NAME);
+		$post_id = time();
+		
+		if ($options["AdvancedTemplate"])
+			wp_cache_set($post_id, array("_wp_page_template" => array($options["AdvancedTemplate"])), "post_meta");
+				
+		$description = NULL;
+		$title = NULL;
+		$script_code = '<script src="http://idx.diversesolutions.com/scripts/controls/Remote-Frame.aspx?MasterAccountID='. $options['AccountID'] .'&amp;SearchSetupID='. $options['SearchSetupID'] .'&amp;LinkID=0&amp;Height=2000"></script>';
+		
+		set_query_var("name", "dsidxpress-{$action}"); // at least a few themes require _something_ to be set here to display a good <title> tag
+		set_query_var("pagename", "dsidxpress-{$action}"); // setting pagename in case someone wants to do a custom theme file for this "page"
+		
+		$posts = array((object)array(
+			"ID"				=> $post_id,
+			"comment_count"		=> 0,
+			"comment_status"	=> "closed",
+			"ping_status"		=> "closed",
+			"post_author"		=> 1,
+			"post_content"		=> $script_code,
+			"post_date"			=> date("c"),
+			"post_date_gmt"		=> gmdate("c"),
+			"post_excerpt"		=> $description,
+			"post_name"			=> "dsidxpress-data",
+			"post_parent"		=> 0,
+			"post_status"		=> "publish",
+			"post_title"		=> $title,
+			"post_type"			=> "page"
+		));
+		
+		return $posts;
+	}
+	
+	static function ApiAction($action, $get) {
+		global $wp_query;
+		$options = get_option(DSIDXPRESS_OPTION_NAME);
+		$post_id = time();
+		
+		add_action("wp_head", array("dsSearchAgent_Client", "Header"));
+		
+		// allow wordpress to consume the page template option the user choose in the dsIDXpress settings
+		if ($action == "results" && $options["ResultsTemplate"])
+			wp_cache_set($post_id, array("_wp_page_template" => array($options["ResultsTemplate"])), "post_meta");
+		else if ($action == "details" && $options["DetailsTemplate"])
+			wp_cache_set($post_id, array("_wp_page_template" => array($options["DetailsTemplate"])), "post_meta");
 
 		$apiParams = array();
 		foreach ($wp_query->query as $key => $value) {
@@ -185,7 +238,7 @@ class dsSearchAgent_Client {
 		set_query_var("name", "dsidxpress-{$action}"); // at least a few themes require _something_ to be set here to display a good <title> tag
 		set_query_var("pagename", "dsidxpress-{$action}"); // setting pagename in case someone wants to do a custom theme file for this "page"
 		$posts = array((object)array(
-			"ID"				=> -1,
+			"ID"				=> $post_id,
 			"comment_count"		=> 0,
 			"comment_status"	=> "closed",
 			"ping_status"		=> "closed",
@@ -200,6 +253,13 @@ class dsSearchAgent_Client {
 			"post_title"		=> $title,
 			"post_type"			=> "page"
 		));
+
+		if(
+			!self::IsStyleUrlEnqueued('jqueryui') &&
+			!self::IsStyleUrlEnqueued('jquery.ui') &&
+			!self::IsStyleUrlEnqueued('jquery-ui')
+		) wp_enqueue_style('jqueryui', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.7/themes/smoothness/jquery-ui.css');
+		
 		return $posts;
 	}
 	static function ExtractValueFromApiData(&$apiData, $key) {
@@ -282,6 +342,19 @@ class dsSearchAgent_Client {
 		// let thesis handle the canonical
 		if (self::$CanonicalUri && !$thesis)
 			echo "<link rel=\"canonical\" href=\"" . self::GetPermalink() . "\" />\n";
+	}
+	static function IsStyleUrlEnqueued($partial_url){
+		global $wp_styles;
+		$enqueued = false;
+		if ( is_a($wp_styles, 'WP_Styles') ){
+			foreach($wp_styles->registered as $handle => $style){
+				if(strrpos($style->src, $partial_url) !== false){
+					$enqueued = true;
+				}
+			}
+		}
+		
+		return $enqueued;
 	}
 }
 ?>
