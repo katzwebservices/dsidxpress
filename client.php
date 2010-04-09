@@ -85,6 +85,7 @@ class dsSearchAgent_Client {
 		wp_enqueue_script("jquery-ui-dialog");
 		wp_enqueue_script("thickbox");
 		wp_enqueue_style("thickbox");
+		wp_enqueue_script('jquery-scrollto', DSIDXPRESS_PLUGIN_URL . 'js/jquery.scrollTo-min.js', array(), DSIDXPRESS_PLUGIN_VERSION);
 
 		// see comment above PreActivate
 		if (is_array($wp_query->query) && isset($wp_query->query["idx-action-swap"])) {
