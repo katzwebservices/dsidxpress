@@ -3,7 +3,7 @@ Contributors: Diverse Solutions
 Tags: mls, idx, rets, housing, real estate
 Requires at least: 2.8
 Tested up to: 2.9.2
-Stable tag: 1.0.6.2
+Stable tag: 1.1
 
 This plugin allows WordPress to embed live real estate data from an MLS directly into a blog. You MUST have a dsIDXpress account to use this plugin.
 
@@ -45,6 +45,23 @@ If you'd like to **see the plugin in action**, you can check out our [dsIDXpress
 *Note: If you're searching for idx press, idxpress, ds idxpress, id xpress, or id express, this is the plugin you're probably looking for.*
 
 == Changelog ==
+
+= 1.1 =
+
+* Added Contact form to Details page and Buttons in header for calls to action
+* Added sharing ability to Twitter, Facebook, Dwellicious, Google Buzz, Email
+* Added print / PDF to Details listing
+* Added ability to have Community, Tract, Zip and MLS Number to Search Widget
+* Added ability to have map auto-open on results pages
+* Added tracking to results map being opened or close between pages
+* Added icon for results map link
+* Improved slideshow look & feel on details
+* Added better full-size photos (just click on the photo in the slideshow to see full size photo)
+* If account has dsSearchAgent Pro: Added ability to have an "advanced" link in Search Widget which leads to a new page with the dsSearchAgent frame auto generated
+* Added ability to set the Template for dsSearchAgent page
+* Added Bing Birds-Eye View to Details pages
+* Numerous CSS/UI improvements
+* Added ability to set first/last name and email in wp-admin (necessary for pdf and contact form, shares values with dsSearchAgent)
 
 = 1.0.6.2 = 
 
