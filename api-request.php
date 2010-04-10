@@ -82,6 +82,13 @@ class dsSearchAgent_ApiRequest {
 		global $wp_version;
 		
 		$blog_url = get_bloginfo("url");
+	
+		$blogUrlWithoutProtocol = str_replace("http://", "", $blog_url);
+		$blogUrlDirIndex = strpos($blogUrlWithoutProtocol, "/");
+		$blogUrlDir = "";
+		if ($blogUrlDirIndex) // don't need to check for !== false here since WP prevents trailing /'s
+			$blogUrlDir = substr($blogUrlWithoutProtocol, strpos($blogUrlWithoutProtocol, "/"));
+			
 		$idxActivationPath = $blogUrlDir . "/" . dsSearchAgent_Rewrite::GetUrlSlug();
 		
 		$dsidxpress_options = get_option(DSIDXPRESS_OPTION_NAME);
@@ -100,13 +107,7 @@ class dsSearchAgent_ApiRequest {
 		$data = str_replace('{$wordpressBlogUrl}', $blog_url, $data);
 		$data = str_replace('{$wordpressBlogUrlEncoded}', urlencode($blog_url), $data);
 		$data = str_replace('{$wpOptions}', json_encode($dsidxpress_options_to_output), $data);
-	
-		$blogUrlWithoutProtocol = str_replace("http://", "", $blog_url);
-		$blogUrlDirIndex = strpos($blogUrlWithoutProtocol, "/");
 
-		$blogUrlDir = "";
-		if ($blogUrlDirIndex) // don't need to check for !== false here since WP prevents trailing /'s
-			$blogUrlDir = substr($blogUrlWithoutProtocol, strpos($blogUrlWithoutProtocol, "/"));
 		$data = str_replace('{$idxActivationPath}', $idxActivationPath, $data);
 		$data = str_replace('{$idxActivationPathEncoded}', urlencode($idxActivationPath), $data);
 
