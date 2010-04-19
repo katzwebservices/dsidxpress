@@ -67,9 +67,9 @@ class dsSearchAgent_Shortcodes {
 		$apiRequestParams["responseDirective.IncludeMetadata"] = "true";
 		$apiRequestParams["responseDirective.IncludeLinkMetadata"] = "true";
 		$apiRequestParams["responseDirective.ShowLargerPhotos"] = $atts["showlargerphotos"];
-		$apiRequestParams["query.Cities"] = $atts["city"];
-		$apiRequestParams["query.Communities"] = $atts["community"];
-		$apiRequestParams["query.TractIdentifiers"] = $atts["tract"];
+		$apiRequestParams["query.Cities"] = htmlspecialchars_decode($atts["city"]);
+		$apiRequestParams["query.Communities"] = htmlspecialchars_decode($atts["community"]);
+		$apiRequestParams["query.TractIdentifiers"] = htmlspecialchars_decode($atts["tract"]);
 		$apiRequestParams["query.ZipCodes"] = $atts["zip"];
 		$apiRequestParams["query.PriceMin"] = $atts["minprice"];
 		$apiRequestParams["query.PriceMax"] = $atts["maxprice"];
