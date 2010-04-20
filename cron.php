@@ -11,17 +11,17 @@ class dsIDXpress_Cron {
 	static function FlushCache() {
 		global $wpdb;
 		$wpdb->query("
-			SELECT *
-			FROM wp_options
+			DELETE
+			FROM `{$wpdb->prefix}options`
 			WHERE
-			  option_name LIKE '_transient_%idx_%'
-			  AND RIGHT(option_name, 40) IN (
-			    SELECT RIGHT(option_name, 40) AS HashedKey
-			    FROM wp_options
-			    WHERE
-			      option_name LIKE '_transient_timeout_idx_%'
-			      AND option_value < UNIX_TIMESTAMP()
-			  )
+				option_name LIKE '_transient_%idx_%'
+				AND RIGHT(option_name, 40) IN (
+					SELECT options_to_clear.HashedKey FROM (SELECT RIGHT(option_name, 40) AS HashedKey
+					FROM `{$wpdb->prefix}options`
+					WHERE
+						option_name LIKE '_transient_timeout_idx_%'
+						AND option_value < UNIX_TIMESTAMP()
+				) options_to_clear)
 		");
 	}
 }
