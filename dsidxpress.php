@@ -55,7 +55,7 @@ require_once("widget-list-areas.php");
 require_once("widget-listings.php");
 require_once("rewrite.php");
 require_once("api-request.php");
-
+require_once("cron.php");
 require_once("xml-sitemaps.php");
 
 if (is_admin()) {
