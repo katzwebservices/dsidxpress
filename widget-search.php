@@ -115,9 +115,9 @@ HTML;
 		if($searchOptions["show_zips"] == "yes") {
 			echo <<<HTML
 					<tr>
-						<th><label for="idx-q-Zips">Zip</label></th>
+						<th><label for="idx-q-ZipCodes">Zip</label></th>
 						<td>
-							<select id="idx-q-Zips" name="idx-q-Zips">
+							<select id="idx-q-ZipCodes" name="idx-q-ZipCodes">
 HTML;
 			foreach ($searchOptions["zips"] as $zip) {
 				// there's an extra trim here in case the data was corrupted before the trim was added in the update code below

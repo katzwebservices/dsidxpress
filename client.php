@@ -197,6 +197,9 @@ class dsSearchAgent_Client {
 		foreach ($get as $key => $value) {
 			if (strpos($key, "idx-q") === false && strpos($key, "idx-d") === false)
 				continue;
+				
+			if(!$value)
+				continue;
 
 			$key = str_replace(array("-", "<", ">"), array(".", "[", "]"), substr($key, 4));
 			$key = self::$QueryStringTranslations[substr($key, 0, 1)] . substr($key, strpos($key, "."));
