@@ -134,8 +134,8 @@ HTML;
 		if($searchOptions["show_mlsnumber"] == "yes") {
 			echo <<<HTML
 					<tr>
-						<th><label for="idx-q-MlsNumber">MLS #</label></th>
-						<td><input id="idx-q-MlsNumber" name="idx-q-MlsNumber" type="text" class="dsidx-mlsnumber" /></td>
+						<th><label for="idx-q-MlsNumbers">MLS #</label></th>
+						<td><input id="idx-q-MlsNumbers" name="idx-q-MlsNumbers" type="text" class="dsidx-mlsnumber" /></td>
 					</tr>
 HTML;
 		}
