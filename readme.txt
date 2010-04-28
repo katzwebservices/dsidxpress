@@ -17,7 +17,7 @@ With the [dsIDXpress plugin](http://www.dsidxpress.com), bloggers can embed **li
 
 * You must be an active member with a multiple listing service (MLS). This means that anyone other than real estate agents and brokers (and, in some MLS's, even agents are excluded) cannot use this plugin.
 * The executives at the MLS must be progressive enough to allow the data to be syndicated to your blog from our ([Diverse Solutions]) API.
-* You must have a dsIDXpress account in order to get the required activation key. You can visit the [dsIDXpress product site](http://www.dsidxpress.com/) to purchase a key or get a demo key.
+* Downloading and installing the dsIDXpress plugin is 100% free, but getting the data from your MLS is not. You can use the free demo data (see here: http://www.dsidxpress.com/tryit/) or see about obtaining your MLS's data here: http://www.dsidxpress.com/
 * Your web host must be running at least PHP 5.2. PHP 5.2 has been out for 3 years at this point, so if they aren't using PHP 5.2, they're quite a ways behind the times. This is almost never an issue nowadays.
 * You must be using at least WordPress 2.8. It will run faster on WordPress 2.9.1 and later.
 
