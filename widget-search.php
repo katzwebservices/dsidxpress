@@ -28,6 +28,16 @@ class dsSearchAgent_SearchWidget extends WP_Widget {
 		$propertyTypes = $propertyTypes["response"]["code"] == "200" ? json_decode($propertyTypes["body"]) : null;
 
 		$options = get_option(DSIDXPRESS_OPTION_NAME);
+		
+		$num_location_dropdowns = 0;
+		if($searchOptions["show_cities"] == "yes" || !isset($instance["searchOptions"]["show_cities"])) 
+			$num_location_dropdowns++;
+		if($searchOptions["show_communities"] == "yes") 
+			$num_location_dropdowns++;
+		if($searchOptions["show_tracts"] == "yes") 
+			$num_location_dropdowns++;
+		if($searchOptions["show_zips"] == "yes") 
+			$num_location_dropdowns++;
 
 		echo $before_widget;
 		if ($title)
@@ -62,6 +72,8 @@ HTML;
 						<td>
 							<select id="idx-q-Cities" name="idx-q-Cities">
 HTML;
+			if($num_location_dropdowns > 1)
+				echo "<option value=\"\">- Any -</option>";
 			foreach ($searchOptions["cities"] as $city) {
 				// there's an extra trim here in case the data was corrupted before the trim was added in the update code below
 				$city = htmlentities(trim($city));
@@ -81,6 +93,8 @@ HTML;
 						<td>
 							<select id="idx-q-Communities" name="idx-q-Communities">
 HTML;
+			if($num_location_dropdowns > 1)
+				echo "<option value=\"\">- Any -</option>";
 			foreach ($searchOptions["communities"] as $community) {
 				// there's an extra trim here in case the data was corrupted before the trim was added in the update code below
 				$community = htmlentities(trim($community));
@@ -100,6 +114,8 @@ HTML;
 						<td>
 							<select id="idx-q-Tracts" name="idx-q-Tracts">
 HTML;
+			if($num_location_dropdowns > 1)
+				echo "<option value=\"\">- Any -</option>";
 			foreach ($searchOptions["tracts"] as $tract) {
 				// there's an extra trim here in case the data was corrupted before the trim was added in the update code below
 				$tract = htmlentities(trim($tract));
@@ -119,6 +135,8 @@ HTML;
 						<td>
 							<select id="idx-q-ZipCodes" name="idx-q-ZipCodes">
 HTML;
+			if($num_location_dropdowns > 1)
+				echo "<option value=\"\">- Any -</option>";
 			foreach ($searchOptions["zips"] as $zip) {
 				// there's an extra trim here in case the data was corrupted before the trim was added in the update code below
 				$zip = htmlentities(trim($zip));
