@@ -6,8 +6,10 @@ $docRoot = dirname(isset($appPhysicalPath) ? $appPhysicalPath : $_SERVER["DOCUME
 
 while (!file_exists($bootstrapSearchDir . "/wp-load.php")) {
 	$bootstrapSearchDir = dirname($bootstrapSearchDir);
-	if (strpos($bootstrapSearchDir, $docRoot) === false)
+	if (strpos($bootstrapSearchDir, $docRoot) === false){
+		$bootstrapSearchDir = "../../.."; // critical failure in our directory finding, so fall back to relative
 		break;
+	}
 }
 require_once($bootstrapSearchDir . "/wp-load.php");
 
