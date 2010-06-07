@@ -38,6 +38,8 @@ class dsSearchAgent_SearchWidget extends WP_Widget {
 			$num_location_dropdowns++;
 		if($searchOptions["show_zips"] == "yes") 
 			$num_location_dropdowns++;
+		if($searchOptions["show_mlsnumber"] == "yes") 
+			$num_location_dropdowns++;
 
 		echo $before_widget;
 		if ($title)
