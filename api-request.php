@@ -1,6 +1,6 @@
 <?php
 class dsSearchAgent_ApiRequest {
-	public static $ApiEndPoint = "http://apiv1-1.idx.diversesolutions.com/api/";
+	public static $ApiEndPoint = "http://api.idx.diversesolutions.com/api/";
 	// do NOT change this value or you will be automatically banned from the API. since the data is only updated every two hours, and
 	// since these API calls are computationally intensive on our servers, we need to set a reasonable cache duration.
 	private static $CacheSeconds = 7200;
@@ -44,7 +44,7 @@ class dsSearchAgent_ApiRequest {
 				return $cachedRequestData;
 			}
 		}
-		
+
 		// these params need to be beneath the caching stuff since otherwise the cache will be useless
 		$params["requester.ClientIpAddress"] = $_SERVER["REMOTE_ADDR"];
 		$params["requester.ClientUserAgent"] = $_SERVER["HTTP_USER_AGENT"];
@@ -80,25 +80,25 @@ class dsSearchAgent_ApiRequest {
 	}
 	private static function FilterData($data) {
 		global $wp_version;
-		
+
 		$blog_url = get_bloginfo("url");
-	
+
 		$blogUrlWithoutProtocol = str_replace("http://", "", $blog_url);
 		$blogUrlDirIndex = strpos($blogUrlWithoutProtocol, "/");
 		$blogUrlDir = "";
 		if ($blogUrlDirIndex) // don't need to check for !== false here since WP prevents trailing /'s
 			$blogUrlDir = substr($blogUrlWithoutProtocol, strpos($blogUrlWithoutProtocol, "/"));
-			
+
 		$idxActivationPath = $blogUrlDir . "/" . dsSearchAgent_Rewrite::GetUrlSlug();
-		
+
 		$dsidxpress_options = get_option(DSIDXPRESS_OPTION_NAME);
 		$dsidxpress_option_keys_to_output = array("ResultsMapDefaultState");
 		$dsidxpress_options_to_output = array();
-		
+
 		foreach($dsidxpress_options as $key => $value)
 		{
 			if(in_array($key, $dsidxpress_option_keys_to_output))
-				$dsidxpress_options_to_output[$key] = $value; 
+				$dsidxpress_options_to_output[$key] = $value;
 		}
 
 		$data = str_replace('{$pluginUrlPath}', DSIDXPRESS_PLUGIN_URL, $data);
