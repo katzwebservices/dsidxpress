@@ -35,7 +35,7 @@ class dsSearchAgent_Shortcodes {
 		add_action("wp_footer", array("dsSearchAgent_Shortcodes", "InsertDisclaimer"));
 
 		if ($apiHttpResponse["response"]["code"] == "404") {
-			return "<p class=\"dsidx-error\">We're sorry, but we couldn't find MLS # {$atts[mlsnumber]} in our database. This property was most likely taken off the market.</p>";
+			return "<p class=\"dsidx-error\">We're sorry, but we couldn't find MLS # {$atts[mlsnumber]} in our database. This property may be a new listing or possibly taken off the market. Please check back again.</p>";
 		}
 		else if (empty($apiHttpResponse["errors"]) && $apiHttpResponse["response"]["code"] == "200") {
 			return $apiHttpResponse["body"];
