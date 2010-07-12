@@ -112,9 +112,9 @@ HTML;
 		if($searchOptions["show_tracts"] == "yes") {
 			echo <<<HTML
 					<tr>
-						<th><label for="idx-q-Tracts">Tract</label></th>
+						<th><label for="idx-q-TractIdentifiers">Tract</label></th>
 						<td>
-							<select id="idx-q-Tracts" name="idx-q-Tracts">
+							<select id="idx-q-TractIdentifiers" name="idx-q-TractIdentifiers">
 HTML;
 			if($num_location_dropdowns > 1)
 				echo "<option value=\"\">- Any -</option>";
