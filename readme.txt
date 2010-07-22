@@ -40,11 +40,16 @@ With the [dsIDXpress plugin](http://www.dsidxpress.com), bloggers can embed **li
 	* Canonical URLs are set for every IDX page to ensure search engines know the "true" url for the content -- even when the base URL is correct.
 * ... and so much more!
 
-If you'd like to **see the plugin in action**, you can check out our [dsIDXpress demo site](http://wp.idx.diversesolutions.com/). If you'd like to read more or purchase this plugin, please take a look at our [dsIDXpress site](http://www.dsidxpress.com/). Finally, if you'd like to obtain a **demo activation key** to use this plugin on your own blog, you can request one on our ["Try It Out!"](http://www.dsidxpress.com/tryit/) page.
+If you'd like to **see the plugin in action**, you can check out our [dsIDXpress demo site](http://www.daniellecordova.com/). If you'd like to read more or purchase this plugin, please take a look at our [dsIDXpress site](http://www.dsidxpress.com/). Finally, if you'd like to obtain a **demo activation key** to use this plugin on your own blog, you can request one on our ["Try It Out!"](http://www.dsidxpress.com/tryit/) page.
 
 *Note: If you're searching for idx press, idxpress, ds idxpress, id xpress, or id express, this is the plugin you're probably looking for.*
 
 == Changelog ==
+
+= <next version> =
+
+* Minor change with the way API requests are made in order to increase the speed in some circumstances.
+* Changed some JavaScript to only load when a dsIDXpress-generated page is loaded (instead of on ALL pages).
 
 = 1.1.8 =
 

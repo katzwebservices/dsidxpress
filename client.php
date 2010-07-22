@@ -81,11 +81,6 @@ class dsSearchAgent_Client {
 
 		add_action("wp_head", array("dsSearchAgent_Client", "HeaderUnconditional"));
 		wp_enqueue_script("jquery");
-		wp_enqueue_script("jquery-ui-core");
-		wp_enqueue_script("jquery-ui-dialog");
-		wp_enqueue_script("thickbox");
-		wp_enqueue_style("thickbox");
-		wp_enqueue_script('jquery-scrollto', DSIDXPRESS_PLUGIN_URL . 'js/jquery.scrollTo-min.js', array(), DSIDXPRESS_PLUGIN_VERSION);
 
 		// see comment above PreActivate
 		if (is_array($wp_query->query) && isset($wp_query->query["idx-action-swap"])) {
@@ -175,6 +170,12 @@ class dsSearchAgent_Client {
 		$options = get_option(DSIDXPRESS_OPTION_NAME);
 		$post_id = time();
 
+		wp_enqueue_script("jquery-ui-core");
+		wp_enqueue_script("jquery-ui-dialog");
+		wp_enqueue_script("thickbox");
+		wp_enqueue_style("thickbox");
+		wp_enqueue_script('jquery-scrollto', DSIDXPRESS_PLUGIN_URL . 'js/jquery.scrollTo-min.js', array(), DSIDXPRESS_PLUGIN_VERSION);
+
 		add_action("wp_head", array("dsSearchAgent_Client", "Header"));
 
 		// allow wordpress to consume the page template option the user choose in the dsIDXpress settings
@@ -197,7 +198,7 @@ class dsSearchAgent_Client {
 		foreach ($get as $key => $value) {
 			if (strpos($key, "idx-q") === false && strpos($key, "idx-d") === false)
 				continue;
-				
+
 			if(!$value)
 				continue;
 
