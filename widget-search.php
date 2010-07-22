@@ -13,7 +13,11 @@ class dsSearchAgent_SearchWidget extends WP_Widget {
 		extract($args);
 		extract($instance);
 		$title = apply_filters("widget_title", $title);
-		
+		$options = get_option(DSIDXPRESS_OPTION_NAME);
+
+		if (!$options["Activated"])
+			return;
+
 		$pluginUrl = DSIDXPRESS_PLUGIN_URL;
 
 		$formAction = get_bloginfo("url");
@@ -27,18 +31,16 @@ class dsSearchAgent_SearchWidget extends WP_Widget {
 		$propertyTypes = dsSearchAgent_ApiRequest::FetchData("AccountSearchSetupPropertyTypes", array(), false, 60 * 60 * 24);
 		$propertyTypes = $propertyTypes["response"]["code"] == "200" ? json_decode($propertyTypes["body"]) : null;
 
-		$options = get_option(DSIDXPRESS_OPTION_NAME);
-		
 		$num_location_dropdowns = 0;
-		if($searchOptions["show_cities"] == "yes" || !isset($instance["searchOptions"]["show_cities"])) 
+		if($searchOptions["show_cities"] == "yes" || !isset($instance["searchOptions"]["show_cities"]))
 			$num_location_dropdowns++;
-		if($searchOptions["show_communities"] == "yes") 
+		if($searchOptions["show_communities"] == "yes")
 			$num_location_dropdowns++;
-		if($searchOptions["show_tracts"] == "yes") 
+		if($searchOptions["show_tracts"] == "yes")
 			$num_location_dropdowns++;
-		if($searchOptions["show_zips"] == "yes") 
+		if($searchOptions["show_zips"] == "yes")
 			$num_location_dropdowns++;
-		if($searchOptions["show_mlsnumber"] == "yes") 
+		if($searchOptions["show_mlsnumber"] == "yes")
 			$num_location_dropdowns++;
 
 		echo $before_widget;

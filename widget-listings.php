@@ -5,7 +5,7 @@ class dsSearchAgent_ListingsWidget extends WP_Widget {
 			"classname" => "dsidx-widget-listings",
 			"description" => "Show a list of real estate listings"
 		));
-		
+
 		if (is_admin())
 			wp_enqueue_script('dsidxpress_widget_listings', DSIDXPRESS_PLUGIN_URL . 'js/widget-listings.js', array('jquery'), DSIDXPRESS_PLUGIN_VERSION);
 	}
@@ -13,6 +13,10 @@ class dsSearchAgent_ListingsWidget extends WP_Widget {
 		extract($args);
 		extract($instance);
 		$title = apply_filters("widget_title", $title);
+		$options = get_option(DSIDXPRESS_OPTION_NAME);
+
+		if (!$options["Activated"])
+			return;
 
 		echo $before_widget;
 		if ($title)
@@ -148,7 +152,7 @@ class dsSearchAgent_ListingsWidget extends WP_Widget {
 							<label for="{$baseFieldId}[areaSourceConfig][name]">Area name</label>
 							<input id="{$baseFieldId}[areaSourceConfig][name]" name="{$baseFieldName}[areaSourceConfig][name]" class="widefat" type="text" value="{$instance[areaSourceConfig][name]}" />
 						</p>
-						
+
 						<p>
 							<span class="description">See all <span id="{$baseFieldId}_areaSourceConfig_title">{$selectedAreaTypeNormalized}</span> Names <a href="javascript:void(0);" onclick="dsWidgetListings.LaunchLookupList('{$pluginUrl}locations.php', '{$baseFieldId}_areaSourceConfig_type')">here</a></span>
 						</p>

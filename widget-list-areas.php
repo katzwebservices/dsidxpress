@@ -13,6 +13,10 @@ class dsSearchAgent_ListAreasWidget extends WP_Widget {
 		extract($args);
 		extract($instance);
 		$title = apply_filters("widget_title", $title);
+		$options = get_option(DSIDXPRESS_OPTION_NAME);
+
+		if (!$options["Activated"])
+			return;
 
 		$urlBase = get_bloginfo("url");
 		if (substr($urlBase, strlen($urlBase), 1) != "/")

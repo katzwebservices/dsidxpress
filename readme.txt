@@ -53,7 +53,7 @@ If you'd like to **see the plugin in action**, you can check out our [dsIDXpress
 
 = 1.1.7 =
 
-* for for search forms with mls# in them
+* Fix for search forms with mls# in them
 
 = 1.1.6 =
 

@@ -63,7 +63,6 @@ class dsSearchAgent_ApiRequest {
 		$params["requester.Signature"] = hash_hmac("sha1", $stringToSign, $privateApiKey);
 		$response = (array)wp_remote_post($requestUri, array(
 			"body"			=> $params,
-			"httpversion"	=> "1.1",
 			"redirection"	=> "0",
 			"timeout"		=> 15 // we look into anything that takes longer than 2 seconds to return
 		));
