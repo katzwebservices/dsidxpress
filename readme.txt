@@ -51,7 +51,7 @@ If you'd like to **see the plugin in action**, you can check out our [dsIDXpress
 * Minor change with the way API requests are made in order to increase the speed in some circumstances.
 * Changed some JavaScript to only load when a dsIDXpress-generated page is loaded (instead of on ALL pages).
 * Prevent requests to /idx/ from working since the results on that page were showing a lot of properties outside the area and were diluting indexing results.
-* Removed unmaintained ThickBox in favor of customized ColorBox for better photo viewing experience.
+* Removed unmaintained ThickBox lightbox-style photo viewer in favor of customized ColorBox for better photo viewing experience.
 
 = 1.1.8 =
 
