@@ -172,8 +172,6 @@ class dsSearchAgent_Client {
 
 		wp_enqueue_script("jquery-ui-core");
 		wp_enqueue_script("jquery-ui-dialog");
-		wp_enqueue_script("thickbox");
-		wp_enqueue_style("thickbox");
 		wp_enqueue_script('jquery-scrollto', DSIDXPRESS_PLUGIN_URL . 'js/jquery.scrollTo-min.js', array(), DSIDXPRESS_PLUGIN_VERSION);
 
 		add_action("wp_head", array("dsSearchAgent_Client", "Header"));
