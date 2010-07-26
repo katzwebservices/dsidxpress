@@ -93,6 +93,11 @@ class dsSearchAgent_Client {
 			return $posts;
 		}
 
+		$apiParams = self::GetApiParams($get);
+		if (count($apiParams) == 0) {
+			return $posts;
+		}
+
 		$action = strtolower($wp_query->query["idx-action"]);
 
 		// keep wordpress from mucking up our HTML
@@ -165,22 +170,8 @@ class dsSearchAgent_Client {
 		return $posts;
 	}
 
-	static function ApiAction($action, $get) {
+	static function GetApiParams($get) {
 		global $wp_query;
-		$options = get_option(DSIDXPRESS_OPTION_NAME);
-		$post_id = time();
-
-		wp_enqueue_script("jquery-ui-core");
-		wp_enqueue_script("jquery-ui-dialog");
-		wp_enqueue_script('jquery-scrollto', DSIDXPRESS_PLUGIN_URL . 'js/jquery.scrollTo-min.js', array(), DSIDXPRESS_PLUGIN_VERSION);
-
-		add_action("wp_head", array("dsSearchAgent_Client", "Header"));
-
-		// allow wordpress to consume the page template option the user choose in the dsIDXpress settings
-		if ($action == "results" && $options["ResultsTemplate"])
-			wp_cache_set($post_id, array("_wp_page_template" => array($options["ResultsTemplate"])), "post_meta");
-		else if ($action == "details" && $options["DetailsTemplate"])
-			wp_cache_set($post_id, array("_wp_page_template" => array($options["DetailsTemplate"])), "post_meta");
 
 		$apiParams = array();
 		foreach ($wp_query->query as $key => $value) {
@@ -205,7 +196,26 @@ class dsSearchAgent_Client {
 
 			$apiParams[(string)$key] = $value;
 		}
+		return $apiParams;
+	}
+	static function ApiAction($action, $get) {
+		global $wp_query;
+		$options = get_option(DSIDXPRESS_OPTION_NAME);
+		$post_id = time();
 
+		wp_enqueue_script("jquery-ui-core");
+		wp_enqueue_script("jquery-ui-dialog");
+		wp_enqueue_script('jquery-scrollto', DSIDXPRESS_PLUGIN_URL . 'js/jquery.scrollTo-min.js', array(), DSIDXPRESS_PLUGIN_VERSION);
+
+		add_action("wp_head", array("dsSearchAgent_Client", "Header"));
+
+		// allow wordpress to consume the page template option the user choose in the dsIDXpress settings
+		if ($action == "results" && $options["ResultsTemplate"])
+			wp_cache_set($post_id, array("_wp_page_template" => array($options["ResultsTemplate"])), "post_meta");
+		else if ($action == "details" && $options["DetailsTemplate"])
+			wp_cache_set($post_id, array("_wp_page_template" => array($options["DetailsTemplate"])), "post_meta");
+
+		$apiParams = self::GetApiParams($get);
 		if ($action == "results") {
 			if (isset($apiParams["query.LinkID"]))
 				$apiParams["query.ForceUsePropertySearchConstraints"] = "true";

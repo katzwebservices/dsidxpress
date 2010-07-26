@@ -17,7 +17,8 @@ class dsSearchAgent_Rewrite {
 			$slug . "zip/(\\d+)(?:/page\-(\\d+))?"			=> 'index.php?idx-action=results&idx-q-ZipCodes=$matches[1]&idx-d-ResultPage=$matches[2]',
 			$slug . "(\\d+)[^/]*(?:/page\-(\\d+))?"			=> 'index.php?idx-action=results&idx-q-LinkID=$matches[1]&idx-d-ResultPage=$matches[2]',
 			$slug . "mls-(.+)-.*"							=> 'index.php?idx-action=details&idx-q-MlsNumber=$matches[1]',
-			$slug . "advanced.*"								=> 'index.php?idx-action=framed'
+			$slug . "advanced.*"								=> 'index.php?idx-action=framed',
+			substr($slug, 0, strlen($slug) - 1) . "(?:/page\-(\\d+))?"	=> 'index.php?idx-action=results&idx-d-ResultPage=$matches[1]'
 		);
 
 		return $idxRules + $incomingRules;
