@@ -8,4 +8,4 @@ $flushCacheTask = "cron-dsidxpress-flush-cache";
 function dsidxpressRemoveCacheFlush() {
 	wp_clear_scheduled_hook($flushCacheTask);
 }
-delete_action($flushCacheTask, "dsidxpressRemoveCacheFlush");
+remove_action($flushCacheTask, "dsidxpressRemoveCacheFlush");
