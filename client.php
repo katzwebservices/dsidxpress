@@ -267,13 +267,13 @@ class dsSearchAgent_Client {
 			"post_title"		=> $title,
 			"post_type"			=> "page"
 		));
-/*
+
 		if(
 			!self::IsStyleUrlEnqueued('jqueryui') &&
 			!self::IsStyleUrlEnqueued('jquery.ui') &&
 			!self::IsStyleUrlEnqueued('jquery-ui')
 		) wp_enqueue_style('jqueryui', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.7/themes/smoothness/jquery-ui.css');
-*/
+
 		return $posts;
 	}
 	static function ExtractValueFromApiData(&$apiData, $key) {
