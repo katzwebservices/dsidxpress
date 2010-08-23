@@ -75,12 +75,15 @@ class dsSearchAgent_Client {
 		}
 
 		$options = get_option(DSIDXPRESS_OPTION_NAME);
+		$action = strtolower($wp_query->query["idx-action"]);
 
 		if (!isset($options["Activated"]))
 			return $posts;
-
+		
+		// Begin - code for widgets, must be on all pages
 		add_action("wp_head", array("dsSearchAgent_Client", "HeaderUnconditional"));
 		wp_enqueue_script("jquery");
+		// End - code for widgets, must be on all pages
 
 		// see comment above PreActivate
 		if (is_array($wp_query->query) && isset($wp_query->query["idx-action-swap"])) {
@@ -93,12 +96,9 @@ class dsSearchAgent_Client {
 			return $posts;
 		}
 
-		$apiParams = self::GetApiParams($get);
-		if (count($apiParams) == 0) {
+		if ($action == "results" && count(self::GetApiParams($get)) == 0) {
 			return $posts;
 		}
-
-		$action = strtolower($wp_query->query["idx-action"]);
 
 		// keep wordpress from mucking up our HTML
 		remove_filter("the_content", "wptexturize");
@@ -267,13 +267,13 @@ class dsSearchAgent_Client {
 			"post_title"		=> $title,
 			"post_type"			=> "page"
 		));
-
+/*
 		if(
 			!self::IsStyleUrlEnqueued('jqueryui') &&
 			!self::IsStyleUrlEnqueued('jquery.ui') &&
 			!self::IsStyleUrlEnqueued('jquery-ui')
 		) wp_enqueue_style('jqueryui', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.7/themes/smoothness/jquery-ui.css');
-
+*/
 		return $posts;
 	}
 	static function ExtractValueFromApiData(&$apiData, $key) {
