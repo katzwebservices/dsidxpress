@@ -79,7 +79,7 @@ class dsSearchAgent_Client {
 
 		if (!isset($options["Activated"]))
 			return $posts;
-		
+
 		// Begin - code for widgets, must be on all pages
 		add_action("wp_head", array("dsSearchAgent_Client", "HeaderUnconditional"));
 		wp_enqueue_script("jquery");
@@ -236,12 +236,14 @@ class dsSearchAgent_Client {
 			}
 		}
 
-		if ($apiHttpResponse["response"]["code"] == "404")
+		if ($apiHttpResponse["response"]["code"] == "404") {
+			$wp_query->is_404 = true;
 			return array();
-		else if (empty($apiHttpResponse["body"]) || !empty($apiHttpResponse["errors"]) || substr($apiHttpResponse["response"]["code"], 0, 1) == "5")
+		} else if (empty($apiHttpResponse["body"]) || !empty($apiHttpResponse["errors"]) || substr($apiHttpResponse["response"]["code"], 0, 1) == "5") {
 			wp_die("We're sorry, but we ran into a temporary problem while trying to load the real estate data. Please check back soon.", "Real estate data load error");
-		else
+		} else {
 			$apiData = $apiHttpResponse["body"];
+		}
 
 		$title = self::ExtractValueFromApiData($apiData, "title");
 		$dateaddedgmt = self::ExtractValueFromApiData($apiData, "dateaddedgmt");
