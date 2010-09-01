@@ -35,12 +35,16 @@ class dsSearchAgent_Client {
 	static function Activate($posts) {
 		global $wp_query;
 
+		// wordpress adds magic quotes for us automatically. this quoting behavior seems to be pretty old and well built in, and so we're going to
+		// forcefully strip them out. see http://core.trac.wordpress.org/browser/trunk/wp-includes/load.php?rev=12732#L346 for an example of how long
+		// this has existed for
+		$get = stripslashes_deep($_GET);
+
 		// we're going to make our own _corrected_ array for the superglobal $_GET due to bugs in the "preferred" way to host WP on windows w/ IIS 6.
 		// the reason for this is because the URL that handles the request becomes wp-404-handler.php and _SERVER["QUERY_STRING"] subsequently ends up
 		// being in the format of 404;http://<domain>:<port>/<url>?<query-arg-1>&<query-arg-2>. the result of that problem is that the first query arg
 		// ends up becoming the entire request url up to the second query param
 
-		$get = $_GET;
 		$getKeys = array_keys($get);
 		if (isset($getKeys[0]) && strpos($getKeys[0], "404;") === 0) {
 			$get[substr($getKeys[0], strpos($getKeys[0], "?") + 1)] = $get[$getKeys[0]];
