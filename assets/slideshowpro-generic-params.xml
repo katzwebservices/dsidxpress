@@ -102,7 +102,7 @@
 		mediaPlayerTextSize = "9"
 		mediaPlayerVolumeBackgroundColor = "0x000000"
 		mediaPlayerVolumeHighlightColor = "0xCCCCCC"
-		navAppearance = "Always Visible"
+		navAppearance = "Hidden"
 		navBackgroundAlpha = "0"
 		navBackgroundColor = "0xffffff"     
 		navButtonColor = "0x444444"
