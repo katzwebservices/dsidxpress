@@ -5,7 +5,7 @@ add_action("admin_menu", array("dsSearchAgent_Admin", "AddMenu"));
 add_action("admin_notices", array("dsSearchAgent_Admin", "DisplayAdminNotices"));
 add_action("wp_ajax_dsidxpress-dismiss-notification", array("dsSearchAgent_Admin", "DismissNotification"));
 
-define('SCRIPT_DEBUG', true); 
+define('SCRIPT_DEBUG', true);
 wp_enqueue_script('jquery');
 add_thickbox();
 wp_enqueue_script('dsidxpress_admin_options', DSIDXPRESS_PLUGIN_URL . 'js/admin-options.js', array(), DSIDXPRESS_PLUGIN_VERSION);
@@ -47,16 +47,6 @@ class dsSearchAgent_Admin {
 		register_setting("dsidxpress_activation", DSIDXPRESS_OPTION_NAME, array("dsSearchAgent_Admin", "SanitizeOptions"));
 		register_setting("dsidxpress_options", DSIDXPRESS_OPTION_NAME, array("dsSearchAgent_Admin", "SanitizeOptions"));
 		register_setting("dsidxpress_options", DSIDXPRESS_API_OPTIONS_NAME, array("dsSearchAgent_Admin", "SanitizeApiOptions"));
-		/*
-		wp_enqueue_script('jquery');
-		wp_enqueue_script('utils');
-		wp_enqueue_script('core');
-		wp_enqueue_script('jquery-ui-core');
-		wp_enqueue_script('jquery-ui-sortable');
-		wp_enqueue_script('common');
-		wp_enqueue_script('thickbox');
-		wp_enqueue_style('thickbox');
-		*/
 	}
 	static function LoadHeader() {
 		if (self::$HeaderLoaded)
@@ -212,7 +202,7 @@ HTML;
 					</td>
 				</tr>
 			</table>
-			
+
 			<h4>Contact Information</h4>
 			<span class="description">This information is used in identifying you to the website visitor. For example: Listing PDF Printouts, Contact Forms, and Dwellicious</span>
 			<table class="form-table">
@@ -544,7 +534,7 @@ HTML;
 		$setDiagnostics["UrlInterceptSet"] = get_option("permalink_structure") != "" && !preg_match("/index\.php/", $permalinkStructure);
 		$setDiagnostics["ClockIsAccurate"] = $timeDiff < $secondsIn2Hrs && $timeDiff > -1 * $secondsIn2Hrs;
 		$setDiagnostics["UnderMonthlyCallLimit"] = $diagnostics["AllowedApiRequestCount"] === 0 || $diagnostics["AllowedApiRequestCount"] > $diagnostics["CurrentApiRequestCount"];
-		
+
 		$setDiagnostics["HasSearchAgentPro"] = $diagnostics["HasSearchAgentPro"];
 
 		$setDiagnostics["DiagnosticsSuccessful"] = true;
@@ -577,6 +567,10 @@ HTML;
 		// different option pages fill in different parts of this options array, so we simply merge what's already there with our new data
 		if (get_option(DSIDXPRESS_OPTION_NAME))
 			$options = array_merge(get_option(DSIDXPRESS_OPTION_NAME), $options);
+
+		// call the sitemap rebuild action since they may have changed their sitemap locations. the documentation says that the sitemap
+		// may not be rebuilt immediately but instead scheduled into a cron job for performance reasons.
+		do_action("sm_rebuild");
 
 		return $options;
 	}
