@@ -20,8 +20,20 @@ class dsSearchAgent_XmlSitemaps {
 				usort($options["SitemapLocations"], array("dsSearchAgent_XmlSitemaps", "CompareListObjects"));
 
 				foreach ($options["SitemapLocations"] as $key => $value) {
-					$location_sanitized = urlencode(strtolower(str_replace(array("-", " "), array("_", "-"), $value["value"])));
-					$url = $urlBase . $value["type"] .'/'. $location_sanitized . '/';
+					$area = $value["value"];
+					$type = $value["type"];
+
+					if (preg_match('/^[\w\d\s\-_]+$/', $area)) {
+						$location_sanitized = urlencode(strtolower(str_replace(array("-", " "), array("_", "-"), $value["value"])));
+						$url = $urlBase . $value["type"] .'/'. $location_sanitized . '/';
+					} else if ($type == "city") {
+						$url = $urlBase . "?idx-q-Cities=" . urlencode($area);
+					} else if ($type == "community") {
+						$url = $urlBase . "?idx-q-Communities=" . urlencode($area);
+					} else if ($type == "tract") {
+						$url = $urlBase . "?idx-q-TractIdentifiers=" . urlencode($area);
+					}
+					// zips will always match the regex
 
 					$generatorObject->AddUrl($url, time(), $options["SitemapFrequency"], floatval($value["priority"]));
 				}
