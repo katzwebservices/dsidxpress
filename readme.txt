@@ -46,6 +46,10 @@ If you'd like to **see the plugin in action**, you can check out our [dsIDXpress
 
 == Changelog ==
 
+= <next> =
+
+* Strip spaces from MLS #'s before making request to server
+
 = 1.1.12 =
 
 * Fixed 404 error with Headway themes (hopefully)
