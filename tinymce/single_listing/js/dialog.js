@@ -30,7 +30,7 @@ var dsidxSingleListing = (function() {
 			if (!mlsNumber)
 				tinyMCEPopup.close();
 			
-			var shortcode = '<p>[idx-listing mlsnumber="' + mlsNumber + '"';
+			var shortcode = '<p>[idx-listing mlsnumber="' + mlsNumber.replace(/\s/g, '') + '"';
 			
 			if (jQuery('#show-all:checked').length) {
 				shortcode += ' showall="true"';
