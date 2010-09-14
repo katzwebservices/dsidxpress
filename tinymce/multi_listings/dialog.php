@@ -12,7 +12,7 @@ while (!file_exists($bootstrapSearchDir . "/wp-load.php")) {
 require_once($bootstrapSearchDir . "/wp-load.php");
 require_once($bootstrapSearchDir . "/wp-admin/admin.php");
 
-if (!current_user_can("edit_pages"))
+if (!current_user_can("edit_posts"))
 	wp_die("You can't do anything destructive in here, but you shouldn't be playing around with this anyway.");
 
 global $wp_version, $tinymce_version;
