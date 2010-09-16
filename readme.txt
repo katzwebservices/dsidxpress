@@ -49,6 +49,8 @@ If you'd like to **see the plugin in action**, you can check out our [dsIDXpress
 = <next> =
 
 * Strip spaces from MLS #'s before making request to server
+* Fixed issue with area URLs in area widget being wrong when the area name contained non-alphanumeric characters
+* Fixed shortcode insert tool permissions so that non-admins can use it
 
 = 1.1.12 =
 

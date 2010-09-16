@@ -31,13 +31,28 @@ class dsSearchAgent_ListAreasWidget extends WP_Widget {
 		foreach ($areaOptions["areas"] as $area) {
 			$area = htmlentities($area);
 			$areaType = $areaOptions["areaType"];
-			$area_pair = preg_split('/\|/', $area, -1);
-			$area_title = count($area_pair) == 2 ? $area_pair[0] : $area;
-			$areaUrl = count($area_pair) == 2 ?
-				urlencode(strtolower(str_replace(array("-", " "), array("_", "-"), $area_pair[1]))) :
-				urlencode(strtolower(str_replace(array("-", " "), array("_", "-"), $area)));
+			$areaPair = preg_split('/\|/', $area, -1);
 
-			echo "<li><a href=\"{$urlBase}{$areaType}/{$areaUrl}/\">{$area_title}</a></li>";
+			if (count($areaPair) == 2) {
+				$displayTitle = $areaPair[0];
+				$actualArea = $areaPair[1];
+			} else {
+				$displayTitle = $area;
+				$actualArea = $area;
+			}
+
+			if (preg_match('/^[\w\d\s\-_]+$/', $actualArea)) {
+				$encodedArea = urlencode(strtolower(str_replace(array("-", " "), array("_", "-"), $actualArea)));
+				$fullAreaUrl = $urlBase . $areaType .'/'. $encodedArea . '/';
+			} else if ($areaType == "city") {
+				$fullAreaUrl = $urlBase . "?idx-q-Cities=" . urlencode($actualArea);
+			} else if ($areaType == "community") {
+				$fullAreaUrl = $urlBase . "?idx-q-Communities=" . urlencode($actualArea);
+			} else if ($areaType == "tract") {
+				$fullAreaUrl = $urlBase . "?idx-q-TractIdentifiers=" . urlencode($actualArea);
+			}
+
+			echo "<li><a href=\"{$fullAreaUrl}\">{$displayTitle}</a></li>";
 		}
 		echo "</ul>";
 		echo $after_widget;
