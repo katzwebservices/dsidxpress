@@ -100,7 +100,7 @@ class dsSearchAgent_Client {
 			return $posts;
 		}
 
-		if ($action == "results" && count(self::GetApiParams($get)) == 0) {
+		if ($action == "results" && count(self::GetApiParams($get, true)) == 0) {
 			return $posts;
 		}
 
@@ -174,12 +174,12 @@ class dsSearchAgent_Client {
 		return $posts;
 	}
 
-	static function GetApiParams($get) {
+	static function GetApiParams($get, $onlyQueryParams = false) {
 		global $wp_query;
 
 		$apiParams = array();
 		foreach ($wp_query->query as $key => $value) {
-			if (strpos($key, "idx-q") === false && strpos($key, "idx-d") === false)
+			if (strpos($key, "idx-q") === false && ((!$onlyQueryParams && strpos($key, "idx-d") === false) || $onlyQueryParams))
 				continue;
 
 			$key = str_replace(array("-", "<", ">"), array(".", "[", "]"), substr($key, 4));
@@ -189,7 +189,7 @@ class dsSearchAgent_Client {
 			$apiParams[(string)$key] = $value;
 		}
 		foreach ($get as $key => $value) {
-			if (strpos($key, "idx-q") === false && strpos($key, "idx-d") === false)
+			if (strpos($key, "idx-q") === false && ((!$onlyQueryParams && strpos($key, "idx-d") === false) || $onlyQueryParams))
 				continue;
 
 			if(!$value)

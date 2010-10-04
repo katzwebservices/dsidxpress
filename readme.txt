@@ -46,6 +46,10 @@ If you'd like to **see the plugin in action**, you can check out our [dsIDXpress
 
 == Changelog ==
 
+= <next> =
+
+* Paging on /idx/ has been disabled to prevent crawlers going where they shouldn't
+
 = 1.1.13 =
 
 * Strip spaces from MLS #'s before making request to server
