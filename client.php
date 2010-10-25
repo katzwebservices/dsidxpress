@@ -232,6 +232,7 @@ class dsSearchAgent_Client {
 		$apiParams["responseDirective.IncludeDisclaimer"] = "true";
 
 		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData($wp_query->query["idx-action"], $apiParams, false);
+		$apiData = $apiHttpResponse["body"];
 
 		if ($_SERVER["REMOTE_ADDR"] == self::$DebugAllowedFrom) {
 			if (isset($get["debug-api-response"])) {
@@ -243,10 +244,12 @@ class dsSearchAgent_Client {
 		if ($apiHttpResponse["response"]["code"] == "404") {
 			$wp_query->is_404 = true;
 			return array();
+		} else if ($apiHttpResponse["response"]["code"] == "302") {
+			$redirect = dsSearchAgent_Client::GetBasePath() . self::ExtractValueFromApiData($apiData, "redirect");
+			header("Location: $redirect", true, 302);
+			exit();
 		} else if (empty($apiHttpResponse["body"]) || !empty($apiHttpResponse["errors"]) || substr($apiHttpResponse["response"]["code"], 0, 1) == "5") {
 			wp_die("We're sorry, but we ran into a temporary problem while trying to load the real estate data. Please check back soon.", "Real estate data load error");
-		} else {
-			$apiData = $apiHttpResponse["body"];
 		}
 
 		$title = self::ExtractValueFromApiData($apiData, "title");
@@ -291,7 +294,7 @@ class dsSearchAgent_Client {
 		return "";
 	}
 	static function EnsureBaseUri() {
-		$urlSlug = dsSearchAgent_Rewrite::GetUrlSlug();
+		$basePath = dsSearchAgent_Client::GetBasePath();
 		$queryPosition = strrpos(self::$CanonicalUri, "?");
 		if ($queryPosition !== false)
 			$hardPermalink = substr(self::$CanonicalUri, 0, $queryPosition);
@@ -305,15 +308,8 @@ class dsSearchAgent_Client {
 		else
 			$requestedPath = $requestedPath;
 
-		$blogUrlWithoutProtocol = str_replace("http://", "", get_bloginfo("url"));
-		$blogUrlDirIndex = strpos($blogUrlWithoutProtocol, "/");
-
-		$blogUrlDir = "";
-		if ($blogUrlDirIndex) // don't need to check for !== false here since WP prevents trailing /'s
-			$blogUrlDir = substr($blogUrlWithoutProtocol, strpos($blogUrlWithoutProtocol, "/"));
-
-		if ($requestedPath != $blogUrlDir . "/" . $urlSlug . urldecode($hardPermalink)) {
-			$redirect = $blogUrlDir . "/" . $urlSlug . self::$CanonicalUri;
+		if ($requestedPath != $basePath . urldecode($hardPermalink)) {
+			$redirect = $basePath . self::$CanonicalUri;
 			$sortColumnKey = "idx-d-SortColumn<0>";
 			$sortDirectionKey = "idx-d-SortDirection<0>";
 			$sortColumn = $_GET[$sortColumnKey];
@@ -330,6 +326,17 @@ class dsSearchAgent_Client {
 			header("Location: $redirect", true, 301);
 			exit();
 		}
+	}
+	static function GetBasePath(){
+		$urlSlug = dsSearchAgent_Rewrite::GetUrlSlug();
+	
+		$blogUrlWithoutProtocol = str_replace("http://", "", get_bloginfo("url"));
+		$blogUrlDirIndex = strpos($blogUrlWithoutProtocol, "/");
+		$blogUrlDir = "";
+		if ($blogUrlDirIndex) // don't need to check for !== false here since WP prevents trailing /'s
+			$blogUrlDir = substr($blogUrlWithoutProtocol, strpos($blogUrlWithoutProtocol, "/"));
+			
+		return $blogUrlDir . "/" . $urlSlug;
 	}
 	static function ClearQuery($query) {
 		global $wp_query;
