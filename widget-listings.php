@@ -49,6 +49,13 @@ class dsSearchAgent_ListingsWidget extends WP_Widget {
 		} else if ($querySource == "link") {
 			$apiRequestParams["query.ForceUsePropertySearchConstraints"] = "true";
 			$apiRequestParams["query.LinkID"] = $linkSourceConfig["linkId"];
+			if($linkSourceConfig["sort"]){
+				$sort = explode("|", $linkSourceConfig["sort"]);
+				if(count($sort) > 1){
+					$apiRequestParams["directive.SortOrders[0].Column"] = $sort[0];
+					$apiRequestParams["directive.SortOrders[0].Direction"] = $sort[1];
+				}
+			}
 		} else if ($querySource == "agentlistings") {
 			$apiRequestParams["responseDirective.OnlyAgentsListings"] = "true";
 			$apiRequestParams["directive.SortOrders[0].Column"] = "DateAdded";
@@ -102,6 +109,7 @@ class dsSearchAgent_ListingsWidget extends WP_Widget {
 		$selectedAreaType = array($instance["areaSourceConfig"]["type"] => "selected=\"selected\"");
 		$selectedAreaTypeNormalized = ucwords($instance["areaSourceConfig"]["type"]);
 		$selectedSortOrder = array(str_replace("|", "", $instance["areaSourceConfig"]["sort"]) => "selected=\"selected\"");
+		$selectedLinkSortOrder = array(str_replace("|", "", $instance["linkSourceConfig"]["sort"]) => "selected=\"selected\"");
 		$selectedLink = array($instance["linkSourceConfig"]["linkId"] => "selected=\"selected\"");
 
 		$availableLinks = dsSearchAgent_ApiRequest::FetchData("AccountAvailableLinks", array(), true, 0);
@@ -201,6 +209,18 @@ HTML;
 			echo "<option value=\"{$link->LinkID}\" {$selectedLink[$link->LinkID]}>{$link->Title}</option>";
 		}
 		echo <<<HTML
+							</select>
+						</p>
+						
+						<p>
+							<label for="{$baseFieldId}[linkSourceConfig][sort]">Sort order</label>
+							<select id="{$baseFieldId}[linkSourceConfig][sort]" name="{$baseFieldName}[linkSourceConfig][sort]" class="widefat">
+								<option value="DateAdded|DESC" {$selectedLinkSortOrder[DateAddedDESC]}>Time on market, newest first</option>
+								<option value="Price|DESC" {$selectedLinkSortOrder[PriceDESC]}>Price, highest first</option>
+								<option value="OverallPriceDropPercent|DESC" {$selectedLinkSortOrder[OverallPriceDropPercentDESC]}>Price drop %, largest first</option>
+								<option value="WalkScore|DESC" {$selectedLinkSortOrder[WalkScoreDESC]}>Walk Score&trade;, highest first</option>
+								<option value="ImprovedSqFt|DESC" {$selectedLinkSortOrder[ImprovedSqFtDESC]}>Improved size, largest first</option>
+								<option value="LotSqFt|DESC" {$selectedLinkSortOrder[LotSqFtDESC]}>Lot size, largest first</option>
 							</select>
 						</p>
 					</td>

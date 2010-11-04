@@ -201,6 +201,33 @@ HTML;
 						Closed <input type="radio" id="dsidxpress-ResultsMapDefaultState-Closed" name="<?php echo DSIDXPRESS_OPTION_NAME; ?>[ResultsMapDefaultState]" value="closed" <?php echo $options["ResultsMapDefaultState"] == "closed" || !isset($options["ResultsMapDefaultState"]) ? "checked=\"checked\"" : "" ?>/>
 					</td>
 				</tr>
+				<tr>
+					<th>
+						<label for="dsidxpress-WalkScore">WalkScore:</label>
+					</th>
+					<td>
+						<p>
+							<input type="checkbox" id="dsidxpress-ShowWalkScoreInResults-Checkbox" onclick="jQuery('#dsidxpress-ShowWalkScoreInResults').val(this.checked)" <?php echo (strtolower($account_options->ShowWalkScoreInResults) == "true" ? "checked='checked'" : ""); ?> />
+							<input type="hidden" id="dsidxpress-ShowWalkScoreInResults" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[ShowWalkScoreInResults]" value="<?php echo strtolower($account_options->ShowWalkScoreInResults); ?>" />
+							<label for="dsidxpress-ShowWalkScoreInResults-Checkbox">Show in Results</label><br />
+						</p>
+						<p>
+							<input type="checkbox" id="dsidxpress-ShowWalkScoreInDetails-Checkbox" onclick="jQuery('#dsidxpress-ShowWalkScoreInDetails').val(this.checked)" <?php echo (strtolower($account_options->ShowWalkScoreInDetails) == "true" ? "checked='checked'" : ""); ?> />
+							<input type="hidden" id="dsidxpress-ShowWalkScoreInDetails" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[ShowWalkScoreInDetails]" value="<?php echo strtolower($account_options->ShowWalkScoreInDetails); ?>" />
+							<label for="dsidxpress-ShowWalkScoreInDetails-Checkbox">Show in Results</label><br />
+						</p>
+						<span class="description"><a href="http://www.walkscore.com/how-it-works.shtml" target="_blank">What is WalkScore?</a></span>
+					</td>
+				</tr>
+				<tr>
+					<th>
+						<label for="dsidxpress-FirstName">Restrict Results to a State:</label>
+					</th>
+					<td>
+						<input type="text" id="dsidxpress-RestrictResultsToState" maxlength="2" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[RestrictResultsToState]" value="<?php echo $account_options->RestrictResultsToState; ?>" /><br />
+						<span class="description">If you need/want to restrict dsIDXpress to a specific state, put the abbreviation in this field. <a href="http://en.wikipedia.org/wiki/List_of_U.S._state_abbreviations" target="_blank">List of U.S. State Abbreviations</a></span>
+					</td>
+				</tr>
 			</table>
 
 			<h4>Contact Information</h4>
