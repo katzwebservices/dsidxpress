@@ -214,7 +214,7 @@ HTML;
 						<p>
 							<input type="checkbox" id="dsidxpress-ShowWalkScoreInDetails-Checkbox" onclick="jQuery('#dsidxpress-ShowWalkScoreInDetails').val(this.checked)" <?php echo (strtolower($account_options->ShowWalkScoreInDetails) == "true" ? "checked='checked'" : ""); ?> />
 							<input type="hidden" id="dsidxpress-ShowWalkScoreInDetails" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[ShowWalkScoreInDetails]" value="<?php echo strtolower($account_options->ShowWalkScoreInDetails); ?>" />
-							<label for="dsidxpress-ShowWalkScoreInDetails-Checkbox">Show in Results</label><br />
+							<label for="dsidxpress-ShowWalkScoreInDetails-Checkbox">Show in Details</label><br />
 						</p>
 						<span class="description"><a href="http://www.walkscore.com/how-it-works.shtml" target="_blank">What is WalkScore?</a></span>
 					</td>
