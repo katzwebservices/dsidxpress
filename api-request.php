@@ -26,6 +26,7 @@ class dsSearchAgent_ApiRequest {
 		$params["requester.ApplicationVersion"] = $wp_version;
 		$params["requester.PluginVersion"] = DSIDXPRESS_PLUGIN_VERSION;
 		$params["requester.RequesterUri"] = get_bloginfo("url");
+		$params["requester.IsRegistered"] = current_user_can(dsSearchAgent_Roles::$Role_ViewDetails) ? "true" : "false";
 
 		foreach (self::$NumericValues as $key) {
 			if (array_key_exists($key, $params))
@@ -138,5 +139,18 @@ class dsSearchAgent_ApiRequest {
 
 		return $data;
 	}
+	private static function CheckIfSpider()  
+    {   
+        $spiders = array('Googlebot', 'Yammybot', 'Openbot', 'Yahoo', 'Slurp', 'msnbot', 'ia_archiver', 'Lycos', 'Scooter', 'AltaVista', 'Teoma', 'Gigabot', 'Googlebot-Mobile' );  
+ 
+        foreach ($spiders as $spider)  
+        {  
+            if (preg_match('/'.$spider.'/', $_SERVER['HTTP_USER_AGENT']))  
+            {  
+                return TRUE;  
+            }  
+        }  
+        return FALSE;  
+    }  
 }
 ?>

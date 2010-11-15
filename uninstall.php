@@ -9,3 +9,5 @@ function dsidxpressRemoveCacheFlush() {
 	wp_clear_scheduled_hook($flushCacheTask);
 }
 remove_action($flushCacheTask, "dsidxpressRemoveCacheFlush");
+
+//remove_role("dsidxpress_visitor"); not sure if we want to do this because of the nature of the registration type and the quantity

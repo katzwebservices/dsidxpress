@@ -372,15 +372,21 @@ HTML;
 
 		if ($options["PrivateApiKey"]) {
 			$diagnostics = self::RunDiagnostics($options);
-			$previouslyActive = $options["Activated"];
+			
+			$previous_options = $options["Activated"].'|'.$options["HasSearchAgentPro"].'|'.$options["DetailsRequiresRegistration"];
+			$new_options = $diagnostics["DiagnosticsSuccessful"].'|'.$diagnostics["HasSearchAgentPro"].'|'.$diagnostics["DetailsRequiresRegistration"];
+			
 			$options["Activated"] = $diagnostics["DiagnosticsSuccessful"];
 			$options["HasSearchAgentPro"] = $diagnostics["HasSearchAgentPro"];
-			if ($previouslyActive != $options["Activated"])
+			$options["DetailsRequiresRegistration"] = $diagnostics["DetailsRequiresRegistration"];
+			
+			if ($previous_options != $new_options)
 				update_option(DSIDXPRESS_OPTION_NAME, $options);
 
 			$formattedApiKey = $options["AccountID"] . "/" . $options["SearchSetupID"] . "/" . $options["PrivateApiKey"];
 		}
 ?>
+
 	<div class="wrap metabox-holder">
 		<div class="icon32" id="icon-options-general"><br/></div>
 		<h2>dsIDXpress Activation</h2>
@@ -563,10 +569,11 @@ HTML;
 		$setDiagnostics["UnderMonthlyCallLimit"] = $diagnostics["AllowedApiRequestCount"] === 0 || $diagnostics["AllowedApiRequestCount"] > $diagnostics["CurrentApiRequestCount"];
 
 		$setDiagnostics["HasSearchAgentPro"] = $diagnostics["HasSearchAgentPro"];
+		$setDiagnostics["DetailsRequiresRegistration"] = $diagnostics["DetailsRequiresRegistration"];
 
 		$setDiagnostics["DiagnosticsSuccessful"] = true;
 		foreach ($setDiagnostics as $key => $value) {
-			if (!$value && $key != "HasSearchAgentPro")
+			if (!$value && $key != "HasSearchAgentPro" && $key != "DetailsRequiresRegistration")
 				$setDiagnostics["DiagnosticsSuccessful"] = false;
 		}
 		$wp_rewrite->flush_rules();
