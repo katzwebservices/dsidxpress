@@ -30,6 +30,9 @@ class dsSearchAgent_SearchWidget extends WP_Widget {
 
 		$propertyTypes = dsSearchAgent_ApiRequest::FetchData("AccountSearchSetupPropertyTypes", array(), false, 60 * 60 * 24);
 		$propertyTypes = $propertyTypes["response"]["code"] == "200" ? json_decode($propertyTypes["body"]) : null;
+		
+		$account_options = dsSearchAgent_ApiRequest::FetchData("AccountOptions", array(), false, 0);
+		$account_options = $account_options["response"]["code"] == "200" ? json_decode($account_options["body"]) : null;
 
 		$num_location_dropdowns = 0;
 		if($searchOptions["show_cities"] == "yes" || !isset($instance["searchOptions"]["show_cities"]))
@@ -198,6 +201,12 @@ HTML;
 		if($options["HasSearchAgentPro"] == "yes" && $searchOptions["show_advanced"] == "yes"){
 			echo <<<HTML
 					try our&nbsp;<a href="{$formAction}advanced/"><img src="{$pluginUrl}assets/adv_search-16.png" /> Advanced Search</a>
+HTML;
+		}
+		if($account_options->EulaLink){
+			$eula_url = $account_options->EulaLink;
+			echo <<<HTML
+					<p>By searching, you agree to the <a href="{$eula_url}" target="_blank">EULA</a></p>
 HTML;
 		}
 		echo <<<HTML
