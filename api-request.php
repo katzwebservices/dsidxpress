@@ -139,18 +139,5 @@ class dsSearchAgent_ApiRequest {
 
 		return $data;
 	}
-	private static function CheckIfSpider()  
-    {   
-        $spiders = array('Googlebot', 'Yammybot', 'Openbot', 'Yahoo', 'Slurp', 'msnbot', 'ia_archiver', 'Lycos', 'Scooter', 'AltaVista', 'Teoma', 'Gigabot', 'Googlebot-Mobile' );  
- 
-        foreach ($spiders as $spider)  
-        {  
-            if (preg_match('/'.$spider.'/', $_SERVER['HTTP_USER_AGENT']))  
-            {  
-                return TRUE;  
-            }  
-        }  
-        return FALSE;  
-    }  
 }
 ?>
