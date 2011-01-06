@@ -181,6 +181,8 @@ class dsSearchAgent_Client {
 		foreach ($wp_query->query as $key => $value) {
 			if (strpos($key, "idx-q") === false && ((!$onlyQueryParams && strpos($key, "idx-d") === false) || $onlyQueryParams))
 				continue;
+			if (empty($value))
+				continue;
 
 			$key = str_replace(array("-", "<", ">"), array(".", "[", "]"), substr($key, 4));
 			$key = self::$QueryStringTranslations[substr($key, 0, 1)] . substr($key, strpos($key, "."));
@@ -191,8 +193,7 @@ class dsSearchAgent_Client {
 		foreach ($get as $key => $value) {
 			if (strpos($key, "idx-q") === false && ((!$onlyQueryParams && strpos($key, "idx-d") === false) || $onlyQueryParams))
 				continue;
-
-			if(!$value)
+			if (empty($value))
 				continue;
 
 			$key = str_replace(array("-", "<", ">"), array(".", "[", "]"), substr($key, 4));
@@ -209,7 +210,7 @@ class dsSearchAgent_Client {
 
 		wp_enqueue_script("jquery-ui-core");
 		wp_enqueue_script("jquery-ui-dialog");
-		wp_enqueue_script('jquery-scrollto', DSIDXPRESS_PLUGIN_URL . 'js/jquery.scrollTo-min.js', array(), DSIDXPRESS_PLUGIN_VERSION);
+		wp_enqueue_style("jqueryui", "http://ajax.googleapis.com/ajax/libs/jqueryui/1.7/themes/smoothness/jquery-ui.css");
 
 		add_action("wp_head", array("dsSearchAgent_Client", "Header"));
 
@@ -329,13 +330,13 @@ class dsSearchAgent_Client {
 	}
 	static function GetBasePath(){
 		$urlSlug = dsSearchAgent_Rewrite::GetUrlSlug();
-	
+
 		$blogUrlWithoutProtocol = str_replace("http://", "", get_bloginfo("url"));
 		$blogUrlDirIndex = strpos($blogUrlWithoutProtocol, "/");
 		$blogUrlDir = "";
 		if ($blogUrlDirIndex) // don't need to check for !== false here since WP prevents trailing /'s
 			$blogUrlDir = substr($blogUrlWithoutProtocol, strpos($blogUrlWithoutProtocol, "/"));
-			
+
 		return $blogUrlDir . "/" . $urlSlug;
 	}
 	static function ClearQuery($query) {
