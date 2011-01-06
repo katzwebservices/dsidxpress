@@ -17,7 +17,8 @@ class dsSearchAgent_Rewrite {
 			$slug . "zip/(\\d+)(?:/page\-(\\d+))?"			=> 'index.php?idx-action=results&idx-q-ZipCodes=$matches[1]&idx-d-ResultPage=$matches[2]',
 			$slug . "(\\d+)[^/]*(?:/page\-(\\d+))?"			=> 'index.php?idx-action=results&idx-q-LinkID=$matches[1]&idx-d-ResultPage=$matches[2]',
 			$slug . "mls-(.+)-.*"							=> 'index.php?idx-action=details&idx-q-MlsNumber=$matches[1]',
-			$slug . "advanced.*"								=> 'index.php?idx-action=framed',
+			$slug . "id-(\\d+)-(.+)-.*"						=> 'index.php?idx-action=details&idx-q-PropertyID=$matches[1]&idx-q-MlsNumber=$matches[2]',
+			$slug . "advanced.*"							=> 'index.php?idx-action=framed',
 			substr($slug, 0, strlen($slug) - 1) . "(?:/page\-(\\d+))?"	=> 'index.php?idx-action=results&idx-d-ResultPage=$matches[1]'
 		);
 
@@ -32,6 +33,7 @@ class dsSearchAgent_Rewrite {
 		$queryVars[] = "idx-q-ZipCodes";
 		$queryVars[] = "idx-q-LinkID";
 		$queryVars[] = "idx-q-MlsNumber";
+		$queryVars[] = "idx-q-PropertyID";
 		$queryVars[] = "idx-d-ResultPage";
 
 		// there will be a bunch of other parameters that will be used in the final API call, but we only need to

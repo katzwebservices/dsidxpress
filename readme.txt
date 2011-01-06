@@ -13,7 +13,7 @@ This plugin allows WordPress to embed live real estate data from an MLS directly
 
 With the [dsIDXpress plugin](http://www.dsidxpress.com), bloggers can embed **live** real estate listings (using what is known as *I*nternet *D*ata E*x*change, or IDX) into their blog's posts and pages using something WordPress calls "shortcodes" and into their sidebars using the included widgets. The plugin also functions as a full IDX solution by allowing visitors to search for, and view the details of, listings in the MLS.
 
-### IMPORTANT REQUIREMENTS TO USE THIS PLUGIN ###
+*Important requirements to use this plugin*
 
 * You must be an active member with a multiple listing service (MLS). This means that anyone other than real estate agents and brokers (and, in some MLS's, even agents are excluded) cannot use this plugin.
 * The executives at the MLS must be progressive enough to allow the data to be syndicated to your blog from our ([Diverse Solutions]) API.
@@ -51,6 +51,8 @@ If you'd like to **see the plugin in action**, you can check out our [dsIDXpress
 * Fixed compatibility issue for WordPress 3.1.
 * Removed jquery.scrollTo dependency and resource as it was sometimes getting clobbered by other poorly written plugins and themes. It's now handled in the API response.
 * Added reference to jQueryUI theme CSS hosted on Google CDN as it's used on the details page and wasn't getting included sometimes.
+* Removed some dead code.
+* Added rewrite rule so that props can also be loaded via an internal property ID for when MLS numbers overlap between MLS's. 
 
 = 1.1.18 =
 
