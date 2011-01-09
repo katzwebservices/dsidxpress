@@ -5,7 +5,6 @@ add_action("admin_menu", array("dsSearchAgent_Admin", "AddMenu"));
 add_action("admin_notices", array("dsSearchAgent_Admin", "DisplayAdminNotices"));
 add_action("wp_ajax_dsidxpress-dismiss-notification", array("dsSearchAgent_Admin", "DismissNotification"));
 
-define('SCRIPT_DEBUG', true);
 wp_enqueue_script('jquery');
 add_thickbox();
 wp_enqueue_script('dsidxpress_admin_options', DSIDXPRESS_PLUGIN_URL . 'js/admin-options.js', array(), DSIDXPRESS_PLUGIN_VERSION);
