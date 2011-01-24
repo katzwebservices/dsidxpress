@@ -311,10 +311,10 @@ class dsSearchAgent_Client {
 
 		if ($requestedPath != $basePath . urldecode($hardPermalink)) {
 			$redirect = $basePath . self::$CanonicalUri;
-			$sortColumnKey = "idx-d-SortColumn<0>";
-			$sortDirectionKey = "idx-d-SortDirection<0>";
+			$sortColumnKey = "idx-d-SortOrders<0>-Column";
+			$sortDirectionKey = "idx-d-SortOrders<0>-Direction";
 			$sortColumn = $_GET[$sortColumnKey];
-			$sortDirection = $_GET[$sortColumnDirection];
+			$sortDirection = $_GET[$sortDirectionKey];
 
 			if ($sortColumn && $sortDirection) {
 				if (substr($redirect, strlen($redirect) - 1, 1) == "/")
