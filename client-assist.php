@@ -85,6 +85,13 @@ class dsSearchAgent_ClientAssist {
 		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("Details", $apiParams, false);
 
 		header('Content-type: application/pdf');
+		header('Content-Disposition: attachment; filename="Property-'. $_REQUEST["MlsNumber"] .'.pdf"');
+		header('Content-Transfer-Encoding: binary');
+		header('Accept-Ranges: bytes');
+		header('Cache-control: private');
+		header('Pragma: private');
+		header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
+		
 		echo($apiHttpResponse["body"]);	
 		
 		die();
