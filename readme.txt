@@ -46,6 +46,10 @@ If you'd like to **see the plugin in action**, you can check out our [dsIDXpress
 
 == Changelog ==
 
+= <next> =
+
+* Added a page to the plugin directory to stop crawlers from looking in there and getting errors.
+
 = 1.1.21 =
 
 * Fixed bug where a 301 redirect for on a listing results page was dropping the listing sort order.
