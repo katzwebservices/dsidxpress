@@ -6,6 +6,7 @@ add_filter("the_posts", array("dsSearchAgent_Client", "Activate"));
 class dsSearchAgent_Client {
 	static $Options = null;
 	static $CanonicalUri = null;
+	static $TriggeredAlternateUrlStructure = null;
 	static $QueryStringTranslations = array(
 		"a" => "action",
 		"q" => "query",
@@ -257,6 +258,7 @@ class dsSearchAgent_Client {
 		$dateaddedgmt = self::ExtractValueFromApiData($apiData, "dateaddedgmt");
 		$description = self::ExtractValueFromApiData($apiData, "description");
 		self::$CanonicalUri = self::ExtractValueFromApiData($apiData, "canonical");
+		self::$TriggeredAlternateUrlStructure = self::ExtractValueFromApiData($apiData, "alternate-urls");
 		self::EnsureBaseUri();
 
 		set_query_var("name", "dsidxpress-{$action}"); // at least a few themes require _something_ to be set here to display a good <title> tag
@@ -309,7 +311,9 @@ class dsSearchAgent_Client {
 		else
 			$requestedPath = $requestedPath;
 
-		if ($requestedPath != $basePath . urldecode($hardPermalink)) {
+		$expectedPath = $basePath . urldecode($hardPermalink);
+
+		if ($requestedPath != $expectedPath) {
 			$redirect = $basePath . self::$CanonicalUri;
 			$sortColumnKey = "idx-d-SortOrders<0>-Column";
 			$sortDirectionKey = "idx-d-SortOrders<0>-Direction";
@@ -329,7 +333,7 @@ class dsSearchAgent_Client {
 		}
 	}
 	static function GetBasePath(){
-		$urlSlug = dsSearchAgent_Rewrite::GetUrlSlug();
+		$urlSlug = empty(self::$TriggeredAlternateUrlStructure) ? "idx/" : "";
 
 		$blogUrlWithoutProtocol = str_replace("http://", "", get_bloginfo("url"));
 		$blogUrlDirIndex = strpos($blogUrlWithoutProtocol, "/");

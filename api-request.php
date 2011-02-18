@@ -56,7 +56,7 @@ class dsSearchAgent_ApiRequest {
 		$stringToSign = "";
 		foreach ($params as $key => $value) {
 			$stringToSign .= "$key:$value\n";
-			if (!$params[$key])
+			if (!isset($params[$key]))
 				$params[$key] = "";
 		}
 		$stringToSign = rtrim($stringToSign, "\n");
@@ -82,14 +82,13 @@ class dsSearchAgent_ApiRequest {
 		global $wp_version;
 
 		$blog_url = get_bloginfo("url");
+		$idxActivationPath = $blogUrlDir . "/" . dsSearchAgent_Rewrite::GetUrlSlug();
 
 		$blogUrlWithoutProtocol = str_replace("http://", "", $blog_url);
 		$blogUrlDirIndex = strpos($blogUrlWithoutProtocol, "/");
 		$blogUrlDir = "";
 		if ($blogUrlDirIndex) // don't need to check for !== false here since WP prevents trailing /'s
 			$blogUrlDir = substr($blogUrlWithoutProtocol, strpos($blogUrlWithoutProtocol, "/"));
-
-		$idxActivationPath = $blogUrlDir . "/" . dsSearchAgent_Rewrite::GetUrlSlug();
 
 		$dsidxpress_options = get_option(DSIDXPRESS_OPTION_NAME);
 		$dsidxpress_option_keys_to_output = array("ResultsMapDefaultState");

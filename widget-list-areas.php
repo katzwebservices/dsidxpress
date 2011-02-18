@@ -18,10 +18,7 @@ class dsSearchAgent_ListAreasWidget extends WP_Widget {
 		if (!$options["Activated"])
 			return;
 
-		$urlBase = get_bloginfo("url");
-		if (substr($urlBase, strlen($urlBase), 1) != "/")
-			$urlBase .= "/";
-		$urlBase .= dsSearchAgent_Rewrite::GetUrlSlug();
+		$urlBase = get_bloginfo("url") . "/idx/";
 
 		echo $before_widget;
 		if ($title)

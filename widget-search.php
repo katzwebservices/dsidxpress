@@ -20,17 +20,14 @@ class dsSearchAgent_SearchWidget extends WP_Widget {
 
 		$pluginUrl = DSIDXPRESS_PLUGIN_URL;
 
-		$formAction = get_bloginfo("url");
-		if (substr($formAction, strlen($formAction), 1) != "/")
-			$formAction .= "/";
-		$formAction .= dsSearchAgent_Rewrite::GetUrlSlug();
+		$formAction = get_bloginfo("url") . "/idx/";
 
 		$defaultSearchPanels = dsSearchAgent_ApiRequest::FetchData("AccountSearchPanelsDefault", array(), false, 60 * 60 * 24);
 		$defaultSearchPanels = $defaultSearchPanels["response"]["code"] == "200" ? json_decode($defaultSearchPanels["body"]) : null;
 
 		$propertyTypes = dsSearchAgent_ApiRequest::FetchData("AccountSearchSetupPropertyTypes", array(), false, 60 * 60 * 24);
 		$propertyTypes = $propertyTypes["response"]["code"] == "200" ? json_decode($propertyTypes["body"]) : null;
-		
+
 		$account_options = dsSearchAgent_ApiRequest::FetchData("AccountOptions", array(), false, 0);
 		$account_options = $account_options["response"]["code"] == "200" ? json_decode($account_options["body"]) : null;
 
