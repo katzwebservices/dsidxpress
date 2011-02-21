@@ -18,7 +18,7 @@ class dsSearchAgent_Rewrite {
 			"idx/zip/(\\d+)(?:/page\-(\\d+))?"         => 'index.php?idx-action=results&idx-q-ZipCodes=$matches[1]&idx-d-ResultPage=$matches[2]',
 			"idx/(\\d+)[^/]*(?:/page\-(\\d+))?"        => 'index.php?idx-action=results&idx-q-LinkID=$matches[1]&idx-d-ResultPage=$matches[2]',
 			"idx/mls-(.+)-.*"                          => 'index.php?idx-action=details&idx-q-MlsNumber=$matches[1]',
-			"idx/id-(\\d+)-(.+)-.*"                    => 'index.php?idx-action=details&idx-q-PropertyID=$matches[1]&idx-q-MlsNumber=$matches[2]',
+			"idx/(\\d+)-mls-(.+)-.*"                   => 'index.php?idx-action=details&idx-q-PropertyID=$matches[1]&idx-q-MlsNumber=$matches[2]',
 			"idx/advanced.*"                           => 'index.php?idx-action=framed',
 			"idx(?:/page\-(\\d+))?"                    => 'index.php?idx-action=results&idx-d-ResultPage=$matches[1]'
 		);
@@ -27,7 +27,7 @@ class dsSearchAgent_Rewrite {
 			$stateAbbreviations = self::GetStateAbbreviations();
 
 			foreach ($stateAbbreviations as $state) {
-				$idxRules["{$state}/[^/]+/(\\d+)-(.+)-.*"] =
+				$idxRules["{$state}/[^/]+/(\\d+)-mls-(.+)-.*"] =
 					'index.php?idx-action=details&idx-q-PropertyID=$matches[1]&idx-q-MlsNumber=$matches[2]';
 				$idxRules["({$state})/([^/]+)(?:/page\-(\\d+))?"] =
 					'index.php?idx-action=results&idx-q-States=$matches[1]&idx-q-Cities=$matches[2]&idx-d-ResultPage=$matches[3]';
