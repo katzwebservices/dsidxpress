@@ -63,6 +63,7 @@ class dsSearchAgent_Rewrite {
 	}
 	static function GetStateAbbreviations() {
 		return array(
+			//united states
 			'al',
 			'ak',
 			'az',
@@ -113,7 +114,21 @@ class dsSearchAgent_Rewrite {
 			'wa',
 			'wv',
 			'wi',
-			'wy'
+			'wy',
+			// canada
+			'ab',
+			'bc',
+			'mb',
+			'nb',
+			'nl',
+			'ns',
+			'nt',
+			'nu',
+			'on',
+			'pe',
+			'qc',
+			'sk',
+			'yt'
 		);
 	}
 }
