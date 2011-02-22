@@ -359,6 +359,33 @@ HTML;
 			<?php } else { ?>
 				<span class="description">To enable this functionality, install and activate this plugin: <a class="thickbox onclick" title="Google XML Sitemaps" href="<?php echo admin_url('plugin-install.php?tab=plugin-information&plugin=google-sitemap-generator&TB_iframe=true&width=640')?>" target="_blank">Google XML Sitemaps</a></span>
 			<?php }?>
+			
+			<?php if(isset($account_options->EnableMemcacheInDsIdxPress) && strtolower($account_options->EnableMemcacheInDsIdxPress) == "true") {?>
+			<h4>Memcache Options</h4>
+			<?php if(!class_exists('Memcache') && !class_exists('Memcached')) {?>
+			<span class="description">Warning PHP is not configured with a Memcache module. See <a href="http://www.php.net/manual/en/book.memcache.php" target="_blank">here</a> or <a href="http://www.php.net/manual/en/book.memcached.php" target="_blank">here</a> to implement one.</span>
+			<?php }?>
+			<table class="form-table">
+				<tr>
+					<th>
+						<label for="dsidxpress-MemcacheHost">Host:</label>
+					</th>
+					<td>
+						<input type="text" id="dsidxpress-MemcacheHost" maxlength="49" name="<?php echo DSIDXPRESS_OPTION_NAME; ?>[MemcacheHost]" value="<?php echo $options["MemcacheHost"]; ?>" /><br />
+						<span class="description"></span>
+					</td>
+				</tr>
+				<tr>
+					<th>
+						<label for="dsidxpress-MemcachePort">Port:</label>
+					</th>
+					<td>
+						<input type="text" id="dsidxpress-MemcachePort" maxlength="49" name="<?php echo DSIDXPRESS_OPTION_NAME; ?>[MemcachePort]" value="<?php echo $options["MemcachePort"]; ?>" /><br />
+						<span class="description"></span>
+					</td>
+				</tr>
+			</table>
+			<?php }?>
 			<p class="submit">
 				<input type="submit" class="button-primary" name="Submit" value="Save Options and Sitemaps" />
 			</p>

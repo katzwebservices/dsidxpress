@@ -20,6 +20,24 @@ class dsSearchAgent_ApiRequest {
 		$requestUri = self::$ApiEndPoint . $action;
 		$compressCache = function_exists('gzdeflate') && function_exists('gzinflate');
 
+		if(!class_exists('Memcached'))
+			$memcached = null;
+		else if(isset($options["MemcacheHost"]) && isset($options["MemcachePort"])) {
+			$memcached = new Memcached();
+			if($memcached->addServer($options["MemcacheHost"], $options["MemcachePort"]) === false)
+				$memcached = null;
+		} else
+			$memcached = null;
+			
+		if(!class_exists('Memcache'))
+			$memcache = null;
+		else if(isset($options["MemcacheHost"]) && isset($options["MemcachePort"])) {
+			$memcache = new Memcache;
+			if($memcache->connect($options["MemcacheHost"], $options["MemcachePort"]) === false)
+				$memcache = null;
+		} else
+			$memcache = null;
+
 		$params["query.SearchSetupID"] = $options["SearchSetupID"];
 		$params["requester.AccountID"] = $options["AccountID"];
 		$params["requester.ApplicationProfile"] = "WordPressIdxModule";
@@ -37,7 +55,13 @@ class dsSearchAgent_ApiRequest {
 		$transientKey = "idx_" . sha1($action . "_" . implode("", $params));
 
 		if ($cacheSecondsOverride !== 0) {
-			$cachedRequestData = get_transient($transientKey);
+			if(isset($memcache))
+				$cachedRequestData = $memcache->get($transientKey);
+			else if(isset($memcached))
+				$cachedRequestData = $memcached->get($transientKey);
+			else
+				$cachedRequestData = get_transient($transientKey);
+				
 			if ($cachedRequestData) {
 				$cachedRequestData = $compressCache ? unserialize(gzinflate(base64_decode($cachedRequestData))) : $cachedRequestData;
 				$cachedRequestData["body"] = self::ExtractAndEnqueueStyles($cachedRequestData["body"], $echoAssetsIfNotEnqueued);
@@ -70,8 +94,14 @@ class dsSearchAgent_ApiRequest {
 
 		if (empty($response["errors"]) && substr($response["response"]["code"], 0, 1) != "5") {
 			$response["body"] = self::FilterData($response["body"]);
-			if ($cacheSecondsOverride !== 0 && $response["body"])
-				set_transient($transientKey, $compressCache ? base64_encode(gzdeflate(serialize($response))) : $response, $cacheSecondsOverride === null ? self::$CacheSeconds : $cacheSecondsOverride);
+			if ($cacheSecondsOverride !== 0 && $response["body"]){
+				if(isset($memcache))
+					$memcache->set($transientKey, $compressCache ? base64_encode(gzdeflate(serialize($response))) : $response, MEMCACHE_COMPRESSED, $cacheSecondsOverride === null ? self::$CacheSeconds : $cacheSecondsOverride);
+				else if(isset($memcached))
+					$memcached->set($transientKey, $compressCache ? base64_encode(gzdeflate(serialize($response))) : $response, time() + ($cacheSecondsOverride === null ? self::$CacheSeconds : $cacheSecondsOverride));
+				else
+					set_transient($transientKey, $compressCache ? base64_encode(gzdeflate(serialize($response))) : $response, $cacheSecondsOverride === null ? self::$CacheSeconds : $cacheSecondsOverride);
+			}
 			$response["body"] = self::ExtractAndEnqueueStyles($response["body"], $echoAssetsIfNotEnqueued);
 			$response["body"] = self::ExtractAndEnqueueScripts($response["body"], $echoAssetsIfNotEnqueued);
 		}
