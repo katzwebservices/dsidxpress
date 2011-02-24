@@ -28,7 +28,7 @@ class dsSearchAgent_ApiRequest {
 				$memcached = null;
 		} else
 			$memcached = null;
-			
+
 		if(!class_exists('Memcache'))
 			$memcache = null;
 		else if(isset($options["MemcacheHost"]) && isset($options["MemcachePort"])) {
@@ -61,7 +61,7 @@ class dsSearchAgent_ApiRequest {
 				$cachedRequestData = $memcached->get($transientKey);
 			else
 				$cachedRequestData = get_transient($transientKey);
-				
+
 			if ($cachedRequestData) {
 				$cachedRequestData = $compressCache ? unserialize(gzinflate(base64_decode($cachedRequestData))) : $cachedRequestData;
 				$cachedRequestData["body"] = self::ExtractAndEnqueueStyles($cachedRequestData["body"], $echoAssetsIfNotEnqueued);
@@ -112,13 +112,14 @@ class dsSearchAgent_ApiRequest {
 		global $wp_version;
 
 		$blog_url = get_bloginfo("url");
-		$idxActivationPath = $blogUrlDir . "/" . dsSearchAgent_Rewrite::GetUrlSlug();
 
 		$blogUrlWithoutProtocol = str_replace("http://", "", $blog_url);
 		$blogUrlDirIndex = strpos($blogUrlWithoutProtocol, "/");
 		$blogUrlDir = "";
 		if ($blogUrlDirIndex) // don't need to check for !== false here since WP prevents trailing /'s
 			$blogUrlDir = substr($blogUrlWithoutProtocol, strpos($blogUrlWithoutProtocol, "/"));
+
+		$idxActivationPath = $blogUrlDir . "/" . dsSearchAgent_Rewrite::GetUrlSlug();
 
 		$dsidxpress_options = get_option(DSIDXPRESS_OPTION_NAME);
 		$dsidxpress_option_keys_to_output = array("ResultsMapDefaultState");
