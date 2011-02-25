@@ -244,7 +244,7 @@ class dsSearchAgent_Client {
 		}
 
 		if ($apiHttpResponse["response"]["code"] == "404") {
-			$wp_query->is_404 = true;
+			$wp_query->query_vars['error'] = '404';
 			return array();
 		} else if ($apiHttpResponse["response"]["code"] == "302") {
 			$redirect = dsSearchAgent_Client::GetBasePath() . self::ExtractValueFromApiData($apiData, "redirect");

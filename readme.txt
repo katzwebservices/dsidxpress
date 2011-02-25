@@ -46,6 +46,10 @@ If you'd like to **see the plugin in action**, you can check out our [dsIDXpress
 
 == Changelog ==
 
+= <next> =
+
+* Fixed dsIDXpress virtual pages so that a proper 404 is served when there's no content match. 
+
 = 1.1.25 =
 
 * Yet another URL compatibility fix for when the site isn't on the domain root 
