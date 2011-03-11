@@ -49,6 +49,7 @@ If you'd like to **see the plugin in action**, you can check out our [dsIDXpress
 = <next> =
 
 * Fixed dsIDXpress virtual pages so that a proper 404 is served when there's no content match. 
+* Bug fix for IE shortcode editor.
 
 = 1.1.25 =
 
