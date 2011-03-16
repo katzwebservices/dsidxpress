@@ -52,7 +52,7 @@ class dsSearchAgent_ApiRequest {
 		}
 
 		ksort($params);
-		$transientKey = "idx_" . sha1($action . "_" . implode("", $params));
+		$transientKey = "idx_" . sha1($action . "_" . http_build_query($params));
 
 		if ($cacheSecondsOverride !== 0) {
 			if(isset($memcache))
