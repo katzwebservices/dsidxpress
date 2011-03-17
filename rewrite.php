@@ -16,9 +16,9 @@ class dsSearchAgent_Rewrite {
 			"idx/tract/([^/]+)(?:/page\-(\\d+))?"      => 'index.php?idx-action=results&idx-q-TractIdentifiers=$matches[1]&idx-d-ResultPage=$matches[2]',
 			"idx/area/([^/]+)(?:/page\-(\\d+))?"       => 'index.php?idx-action=results&idx-q-Areas=$matches[1]&idx-d-ResultPage=$matches[2]',
 			"idx/zip/(\\d+)(?:/page\-(\\d+))?"         => 'index.php?idx-action=results&idx-q-ZipCodes=$matches[1]&idx-d-ResultPage=$matches[2]',
-			"idx/(\\d+)[^/]*(?:/page\-(\\d+))?"        => 'index.php?idx-action=results&idx-q-LinkID=$matches[1]&idx-d-ResultPage=$matches[2]',
 			"idx/mls-(.+)-.*"                          => 'index.php?idx-action=details&idx-q-MlsNumber=$matches[1]',
 			"idx/(\\d+)-mls-(.+)-.*"                   => 'index.php?idx-action=details&idx-q-PropertyID=$matches[1]&idx-q-MlsNumber=$matches[2]',
+			"idx/(\\d+)[^/]*(?:/page\-(\\d+))?"        => 'index.php?idx-action=results&idx-q-LinkID=$matches[1]&idx-d-ResultPage=$matches[2]',
 			"idx/advanced.*"                           => 'index.php?idx-action=framed',
 			"idx(?:/page\-(\\d+))?"                    => 'index.php?idx-action=results&idx-d-ResultPage=$matches[1]'
 		);
