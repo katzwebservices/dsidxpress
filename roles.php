@@ -6,12 +6,15 @@ class dsSearchAgent_Roles {
 		$options = get_option(DSIDXPRESS_OPTION_NAME);
 		
 		if($options["DetailsRequiresRegistration"]){
-			$visitor_role = get_role("dsidxpress_visitor");
+			$visitor_role = get_role(dsSearchAgent_Roles::$Role_Name);
 			
 			if(true || $visitor_role == FALSE){
 				global $wp_roles;
-				$wp_roles->add_role(dsSearchAgent_Roles::$Role_Name, "dsIDXpress Visitor", array(dsSearchAgent_Roles::$Role_ViewDetails));
-				
+				$wp_roles->add_role(dsSearchAgent_Roles::$Role_Name, "dsIDXpress Visitor", array());
+
+				$wp_roles->add_cap(dsSearchAgent_Roles::$Role_Name, dsSearchAgent_Roles::$Role_ViewDetails);
+				$wp_roles->add_cap(dsSearchAgent_Roles::$Role_Name, 'read');
+
 				$wp_roles->add_cap('administrator', dsSearchAgent_Roles::$Role_ViewDetails);
 				$wp_roles->add_cap('editor', dsSearchAgent_Roles::$Role_ViewDetails);
 				$wp_roles->add_cap('author', dsSearchAgent_Roles::$Role_ViewDetails);
