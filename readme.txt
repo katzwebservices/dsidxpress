@@ -46,6 +46,10 @@ If you'd like to **see the plugin in action**, you can check out our [dsIDXpress
 
 == Changelog ==
 
+= <next> =
+
+* Ensured that a location is requsted before a result page URL is served.
+
 = 1.1.27 =
 
 * Edge-case roles issue

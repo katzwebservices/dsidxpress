@@ -101,7 +101,18 @@ class dsSearchAgent_Client {
 			return $posts;
 		}
 
-		if ($action == "results" && count(self::GetApiParams($get, true)) == 0) {
+		$apiQueryOnlyParams = self::GetApiParams($get, true);
+		if ($action == "results" && count($apiQueryOnlyParams) == 0) {
+			return $posts;
+		} else if ($action == "results"
+		           && empty($apiQueryOnlyParams["query.Cities"])
+		           && empty($apiQueryOnlyParams["query.Communities"])
+		           && empty($apiQueryOnlyParams["query.TractIdentifiers"])
+		           && empty($apiQueryOnlyParams["query.Areas"])
+		           && empty($apiQueryOnlyParams["query.ZipCodes"])
+		           && empty($apiQueryOnlyParams["query.LinkID"])
+		           && empty($apiQueryOnlyParams["query.LatitudeMin"])
+		          ) {
 			return $posts;
 		}
 
