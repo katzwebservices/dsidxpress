@@ -49,6 +49,9 @@ If you'd like to **see the plugin in action**, you can check out our [dsIDXpress
 = <next> =
 
 * Ensured that a location is requsted before a result page URL is served.
+* Not found pages now return a 404 HTTP status code when either a) there's no location specified or b) the plugin isn't activated.
+* Prevented plugin from activating itself on any URL that starts with "idx" and has other characters after it. 
+
 
 = 1.1.27 =
 

@@ -82,8 +82,10 @@ class dsSearchAgent_Client {
 		$options = get_option(DSIDXPRESS_OPTION_NAME);
 		$action = strtolower($wp_query->query["idx-action"]);
 
-		if (!isset($options["Activated"]))
+		if (!isset($options["Activated"])) {
+			$wp_query->query_vars['error'] = '404';
 			return $posts;
+		}
 
 		// Begin - code for widgets, must be on all pages
 		add_action("wp_head", array("dsSearchAgent_Client", "HeaderUnconditional"));
@@ -102,17 +104,16 @@ class dsSearchAgent_Client {
 		}
 
 		$apiQueryOnlyParams = self::GetApiParams($get, true);
-		if ($action == "results" && count($apiQueryOnlyParams) == 0) {
-			return $posts;
-		} else if ($action == "results"
-		           && empty($apiQueryOnlyParams["query.Cities"])
-		           && empty($apiQueryOnlyParams["query.Communities"])
-		           && empty($apiQueryOnlyParams["query.TractIdentifiers"])
-		           && empty($apiQueryOnlyParams["query.Areas"])
-		           && empty($apiQueryOnlyParams["query.ZipCodes"])
-		           && empty($apiQueryOnlyParams["query.LinkID"])
-		           && empty($apiQueryOnlyParams["query.LatitudeMin"])
-		          ) {
+		if ($action == "results"
+		    && empty($apiQueryOnlyParams["query.Cities"])
+		    && empty($apiQueryOnlyParams["query.Communities"])
+		    && empty($apiQueryOnlyParams["query.TractIdentifiers"])
+		    && empty($apiQueryOnlyParams["query.Areas"])
+		    && empty($apiQueryOnlyParams["query.ZipCodes"])
+		    && empty($apiQueryOnlyParams["query.LinkID"])
+		    && empty($apiQueryOnlyParams["query.LatitudeMin"])
+		    ) {
+			$wp_query->query_vars['error'] = '404';
 			return $posts;
 		}
 
