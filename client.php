@@ -112,6 +112,14 @@ class dsSearchAgent_Client {
 		    && empty($apiQueryOnlyParams["query.ZipCodes"])
 		    && empty($apiQueryOnlyParams["query.LinkID"])
 		    && empty($apiQueryOnlyParams["query.LatitudeMin"])
+		    && empty($apiQueryOnlyParams["query.MlsNumbers"])
+		    && empty($apiQueryOnlyParams["query.ListingAgentID"])
+		    && empty($apiQueryOnlyParams["query.ListingOfficeID"])
+		    && empty($apiQueryOnlyParams["query.AddressMask"])
+		    && empty($apiQueryOnlyParams["query.AddressMasks"])
+		    && empty($apiQueryOnlyParams["query.Counties"])
+		    && empty($apiQueryOnlyParams["query.Schools"])
+		    && empty($apiQueryOnlyParams["query.RadiusDistance"])
 		    ) {
 			$wp_query->query_vars['error'] = '404';
 			return $posts;
