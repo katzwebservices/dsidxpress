@@ -104,13 +104,13 @@ class dsSearchAgent_Client {
 		}
 
 		$apiQueryOnlyParams = self::GetApiParams($get, true);
+
 		if ($action == "results"
 		    && empty($apiQueryOnlyParams["query.Cities"])
 		    && empty($apiQueryOnlyParams["query.Communities"])
 		    && empty($apiQueryOnlyParams["query.TractIdentifiers"])
 		    && empty($apiQueryOnlyParams["query.Areas"])
 		    && empty($apiQueryOnlyParams["query.ZipCodes"])
-		    && empty($apiQueryOnlyParams["query.LinkID"])
 		    && empty($apiQueryOnlyParams["query.LatitudeMin"])
 		    && empty($apiQueryOnlyParams["query.MlsNumbers"])
 		    && empty($apiQueryOnlyParams["query.ListingAgentID"])
@@ -119,6 +119,22 @@ class dsSearchAgent_Client {
 		    && empty($apiQueryOnlyParams["query.AddressMasks"])
 		    && empty($apiQueryOnlyParams["query.Counties"])
 		    && empty($apiQueryOnlyParams["query.Schools"])
+
+		    && empty($apiQueryOnlyParams["query.Cities[0]"])
+		    && empty($apiQueryOnlyParams["query.Communities[0]"])
+		    && empty($apiQueryOnlyParams["query.TractIdentifiers[0]"])
+		    && empty($apiQueryOnlyParams["query.Areas[0]"])
+		    && empty($apiQueryOnlyParams["query.ZipCodes[0]"])
+		    && empty($apiQueryOnlyParams["query.LatitudeMin[0]"])
+		    && empty($apiQueryOnlyParams["query.MlsNumbers[0]"])
+		    && empty($apiQueryOnlyParams["query.ListingAgentID[0]"])
+		    && empty($apiQueryOnlyParams["query.ListingOfficeID[0]"])
+		    && empty($apiQueryOnlyParams["query.AddressMask[0]"])
+		    && empty($apiQueryOnlyParams["query.AddressMasks[0]"])
+		    && empty($apiQueryOnlyParams["query.Counties[0]"])
+		    && empty($apiQueryOnlyParams["query.Schools[0]"])
+
+		    && empty($apiQueryOnlyParams["query.LinkID"])
 		    && empty($apiQueryOnlyParams["query.RadiusDistance"])
 		    ) {
 			$wp_query->query_vars['error'] = '404';
