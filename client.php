@@ -119,6 +119,8 @@ class dsSearchAgent_Client {
 		    && empty($apiQueryOnlyParams["query.AddressMasks"])
 		    && empty($apiQueryOnlyParams["query.Counties"])
 		    && empty($apiQueryOnlyParams["query.Schools"])
+		    && empty($apiQueryOnlyParams["query.Schools.Name"])
+		    && empty($apiQueryOnlyParams["query.Schools.Type"])
 
 		    && empty($apiQueryOnlyParams["query.Cities[0]"])
 		    && empty($apiQueryOnlyParams["query.Communities[0]"])
@@ -133,6 +135,8 @@ class dsSearchAgent_Client {
 		    && empty($apiQueryOnlyParams["query.AddressMasks[0]"])
 		    && empty($apiQueryOnlyParams["query.Counties[0]"])
 		    && empty($apiQueryOnlyParams["query.Schools[0]"])
+		    && empty($apiQueryOnlyParams["query.Schools[0].Name"])
+		    && empty($apiQueryOnlyParams["query.Schools[0].Type"])
 
 		    && empty($apiQueryOnlyParams["query.LinkID"])
 		    && empty($apiQueryOnlyParams["query.RadiusDistance"])
