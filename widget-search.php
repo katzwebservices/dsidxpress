@@ -8,6 +8,8 @@ class dsSearchAgent_SearchWidget extends WP_Widget {
 
 		if (is_admin())
 			wp_enqueue_script('dsidxpress_widget_search', DSIDXPRESS_PLUGIN_URL . 'js/widget-search.js', array('jquery'), DSIDXPRESS_PLUGIN_VERSION);
+			
+		wp_enqueue_script('dsidxpress_widget_search_view', DSIDXPRESS_PLUGIN_URL . 'js/widget-search-view.js', array('jquery'), DSIDXPRESS_PLUGIN_VERSION);
 	}
 	function widget($args, $instance) {
 		extract($args);
@@ -24,7 +26,6 @@ class dsSearchAgent_SearchWidget extends WP_Widget {
 
 		$defaultSearchPanels = dsSearchAgent_ApiRequest::FetchData("AccountSearchPanelsDefault", array(), false, 60 * 60 * 24);
 		$defaultSearchPanels = $defaultSearchPanels["response"]["code"] == "200" ? json_decode($defaultSearchPanels["body"]) : null;
-
 		$propertyTypes = dsSearchAgent_ApiRequest::FetchData("AccountSearchSetupPropertyTypes", array(), false, 60 * 60 * 24);
 		$propertyTypes = $propertyTypes["response"]["code"] == "200" ? json_decode($propertyTypes["body"]) : null;
 
@@ -49,7 +50,7 @@ class dsSearchAgent_SearchWidget extends WP_Widget {
 
 		echo <<<HTML
 			<div class="dsidx-search-widget dsidx-widget">
-			<form action="{$formAction}" method="get">
+			<form action="{$formAction}" method="get" onsubmit="return dsidx_w.searchWidget.validate();" >
 				<table>
 					<tr>
 						<td colspan="2">
@@ -66,6 +67,7 @@ HTML;
 
 		echo <<<HTML
 							</select>
+							<label id="idx-search-invalid-msg" style="color:red"></label>
 						</td>
 					</tr>
 HTML;
@@ -74,7 +76,7 @@ HTML;
 					<tr>
 						<th><label for="idx-q-Cities">City</label></th>
 						<td>
-							<select id="idx-q-Cities" name="idx-q-Cities">
+							<select id="idx-q-Cities" name="idx-q-Cities" class="idx-q-Location-Filter">
 HTML;
 			if($num_location_dropdowns > 1)
 				echo "<option value=\"\">- Any -</option>";
@@ -95,7 +97,7 @@ HTML;
 					<tr>
 						<th><label for="idx-q-Communities">Community</label></th>
 						<td>
-							<select id="idx-q-Communities" name="idx-q-Communities">
+							<select id="idx-q-Communities" name="idx-q-Communities" class="idx-q-Location-Filter">
 HTML;
 			if($num_location_dropdowns > 1)
 				echo "<option value=\"\">- Any -</option>";
@@ -116,7 +118,7 @@ HTML;
 					<tr>
 						<th><label for="idx-q-TractIdentifiers">Tract</label></th>
 						<td>
-							<select id="idx-q-TractIdentifiers" name="idx-q-TractIdentifiers">
+							<select id="idx-q-TractIdentifiers" name="idx-q-TractIdentifiers" class="idx-q-Location-Filter">
 HTML;
 			if($num_location_dropdowns > 1)
 				echo "<option value=\"\">- Any -</option>";
@@ -137,7 +139,7 @@ HTML;
 					<tr>
 						<th><label for="idx-q-ZipCodes">Zip</label></th>
 						<td>
-							<select id="idx-q-ZipCodes" name="idx-q-ZipCodes">
+							<select id="idx-q-ZipCodes" name="idx-q-ZipCodes" class="idx-q-Location-Filter">
 HTML;
 			if($num_location_dropdowns > 1)
 				echo "<option value=\"\">- Any -</option>";
@@ -211,6 +213,7 @@ HTML;
 			</form>
 			</div>
 HTML;
+		
 		echo $after_widget;
 	}
 	function update($new_instance, $old_instance) {
