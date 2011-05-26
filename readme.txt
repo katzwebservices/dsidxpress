@@ -49,6 +49,10 @@ If you'd like to **see the plugin in action**, you can check out our [dsIDXpress
 
 * Added search location validation to search widget.
 
+= <next> =
+
+* Prevented printable property PDFs from getting indexed. 
+
 = 1.1.31 =
 
 * Fixed issue where resuls URL with multiple schools weren't loading. 
