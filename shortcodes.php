@@ -32,7 +32,7 @@ class dsSearchAgent_Shortcodes {
 		}
 
 		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("Details", $apiRequestParams);
-		add_action("wp_footer", array("dsSearchAgent_Shortcodes", "InsertDisclaimer"));
+		dsidx_footer::ensure_disclaimer_exists();
 
 		if ($apiHttpResponse["response"]["code"] == "404") {
 			return "<p class=\"dsidx-error\">We're sorry, but we couldn't find MLS # {$atts[mlsnumber]} in our database. This property may be a new listing or possibly taken off the market. Please check back again.</p>";
@@ -95,10 +95,6 @@ class dsSearchAgent_Shortcodes {
 		} else {
 			return "<p class=\"dsidx-error\">We're sorry, but it seems that we're having some problems loading MLS data from our database. Please check back soon.</p>";
 		}
-	}
-	static function InsertDisclaimer() {
-		$disclaimer = dsSearchAgent_ApiRequest::FetchData("Disclaimer");
-		echo $disclaimer["body"];
 	}
 }
 

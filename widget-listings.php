@@ -77,6 +77,8 @@ class dsSearchAgent_ListingsWidget extends WP_Widget {
 
 		echo $data;
 		echo $after_widget;
+
+		dsidx_footer::ensure_disclaimer_exists();
 	}
 	function update($new_instance, $old_instance) {
 		// we need to do this first-line awkwardness so that the title comes through in the sidebar display thing
@@ -211,7 +213,7 @@ HTML;
 		echo <<<HTML
 							</select>
 						</p>
-						
+
 						<p>
 							<label for="{$baseFieldId}[linkSourceConfig][sort]">Sort order</label>
 							<select id="{$baseFieldId}[linkSourceConfig][sort]" name="{$baseFieldName}[linkSourceConfig][sort]" class="widefat">

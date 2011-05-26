@@ -58,6 +58,7 @@ require_once("api-request.php");
 require_once("cron.php");
 require_once("xml-sitemaps.php");
 require_once("roles.php");
+require_once("footer.php");
 
 if (is_admin()) {
 	// this is needed specifically for development as PHP seems to choke when 1) loading this in admin, 2) using windows, 3) using directory junctions
