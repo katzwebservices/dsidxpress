@@ -88,7 +88,7 @@ class dsSearchAgent_Shortcodes {
 		$apiRequestParams["directive.SortOrders[0].Direction"] = $atts["orderdir"];
 
 		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("Results", $apiRequestParams);
-		add_action("wp_footer", array("dsSearchAgent_Shortcodes", "InsertDisclaimer"));
+		dsidx_footer::ensure_disclaimer_exists();
 
 		if (empty($apiHttpResponse["errors"]) && $apiHttpResponse["response"]["code"] == "200") {
 			return $apiHttpResponse["body"];
