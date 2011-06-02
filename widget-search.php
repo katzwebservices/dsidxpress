@@ -9,7 +9,7 @@ class dsSearchAgent_SearchWidget extends WP_Widget {
 		if (is_admin())
 			wp_enqueue_script('dsidxpress_widget_search', DSIDXPRESS_PLUGIN_URL . 'js/widget-search.js', array('jquery'), DSIDXPRESS_PLUGIN_VERSION);
 			
-		wp_enqueue_script('dsidxpress_widget_search_view', DSIDXPRESS_PLUGIN_URL . 'js/widget-search-view.js', array('jquery'), DSIDXPRESS_PLUGIN_VERSION);
+		wp_enqueue_script('dsidxpress_widget_search_view', DSIDXPRESS_PLUGIN_URL . 'js/widget-client.js', array('jquery'), DSIDXPRESS_PLUGIN_VERSION);
 	}
 	function widget($args, $instance) {
 		extract($args);
