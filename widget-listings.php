@@ -65,7 +65,7 @@ class dsSearchAgent_ListingsWidget extends WP_Widget {
 			$apiRequestParams["directive.SortOrders[0].Column"] = "DateAdded";
 			$apiRequestParams["directive.SortOrders[0].Direction"] = "DESC";
 		}
-
+		
 		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("Results", $apiRequestParams);
 		if (empty($apiHttpResponse["errors"]) && $apiHttpResponse["response"]["code"] == "200") {
 			$data = $apiHttpResponse["body"];
@@ -112,6 +112,7 @@ class dsSearchAgent_ListingsWidget extends WP_Widget {
 		$selectedAreaTypeNormalized = ucwords($instance["areaSourceConfig"]["type"]);
 		$selectedSortOrder = array(str_replace("|", "", $instance["areaSourceConfig"]["sort"]) => "selected=\"selected\"");
 		$selectedLinkSortOrder = array(str_replace("|", "", $instance["linkSourceConfig"]["sort"]) => "selected=\"selected\"");
+		
 		$selectedLink = array($instance["linkSourceConfig"]["linkId"] => "selected=\"selected\"");
 
 		$availableLinks = dsSearchAgent_ApiRequest::FetchData("AccountAvailableLinks", array(), true, 0);
@@ -172,6 +173,7 @@ class dsSearchAgent_ListingsWidget extends WP_Widget {
 							<select id="{$baseFieldId}[areaSourceConfig][sort]" name="{$baseFieldName}[areaSourceConfig][sort]" class="widefat">
 								<option value="DateAdded|DESC" {$selectedSortOrder[DateAddedDESC]}>Time on market, newest first</option>
 								<option value="Price|DESC" {$selectedSortOrder[PriceDESC]}>Price, highest first</option>
+								<option value="Price|ASC" {$selectedSortOrder[PriceASC]}>Price, lowest first</option>
 								<option value="OverallPriceDropPercent|DESC" {$selectedSortOrder[OverallPriceDropPercentDESC]}>Price drop %, largest first</option>
 								<option value="WalkScore|DESC" {$selectedSortOrder[WalkScoreDESC]}>Walk Score&trade;, highest first</option>
 								<option value="ImprovedSqFt|DESC" {$selectedSortOrder[ImprovedSqFtDESC]}>Improved size, largest first</option>
@@ -219,6 +221,7 @@ HTML;
 							<select id="{$baseFieldId}[linkSourceConfig][sort]" name="{$baseFieldName}[linkSourceConfig][sort]" class="widefat">
 								<option value="DateAdded|DESC" {$selectedLinkSortOrder[DateAddedDESC]}>Time on market, newest first</option>
 								<option value="Price|DESC" {$selectedLinkSortOrder[PriceDESC]}>Price, highest first</option>
+								<option value="Price|ASC" {$selectedSortOrder[PriceASC]}>Price, lowest first</option>
 								<option value="OverallPriceDropPercent|DESC" {$selectedLinkSortOrder[OverallPriceDropPercentDESC]}>Price drop %, largest first</option>
 								<option value="WalkScore|DESC" {$selectedLinkSortOrder[WalkScoreDESC]}>Walk Score&trade;, highest first</option>
 								<option value="ImprovedSqFt|DESC" {$selectedLinkSortOrder[ImprovedSqFtDESC]}>Improved size, largest first</option>

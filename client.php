@@ -217,7 +217,7 @@ class dsSearchAgent_Client {
 
 	static function GetApiParams($get, $onlyQueryParams = false) {
 		global $wp_query;
-
+		
 		$apiParams = array();
 		foreach ($wp_query->query as $key => $value) {
 			if (strpos($key, "idx-q") === false && ((!$onlyQueryParams && strpos($key, "idx-d") === false) || $onlyQueryParams))
