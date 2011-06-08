@@ -20,9 +20,16 @@ dsidx_w.searchWidget = (function () {
     	return returnStr.substring(0, returnStr.length - 2);
     }
     
+    function MLSExists() {
+    	if ($('#idx-q-MlsNumbers').length > 0 && $('#idx-q-MlsNumbers').val().length > 0)
+    		return true;
+    	else
+    		return false;
+    }
+    
     var returnObj = {
     	validate: function () {
-            if (!isLocationValid())
+            if (!isLocationValid() && !MLSExists())
             {
             	$("#idx-search-invalid-msg").text("Please select at least one of the following fields: " + isFieldShown());
             	return false;
