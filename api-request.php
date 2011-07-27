@@ -84,7 +84,6 @@ class dsSearchAgent_ApiRequest {
 				$params[$key] = "";
 		}
 		$stringToSign = rtrim($stringToSign, "\n");
-
 		$params["requester.Signature"] = hash_hmac("sha1", $stringToSign, $privateApiKey);
 		$response = (array)wp_remote_post($requestUri, array(
 			"body"			=> $params,
@@ -150,9 +149,13 @@ class dsSearchAgent_ApiRequest {
 
 		preg_match_all('/<link\s*rel="stylesheet"\s*type="text\/css"\s*href="(?P<href>[^"]+)"\s*data-handle="(?P<handle>[^"]+)"\s*\/>/', $data, $styles, PREG_SET_ORDER);
 		foreach ($styles as $style) {
-			if (!$echoAssetsIfNotEnqueued || ($echoAssetsIfNotEnqueued && wp_style_is($style["handle"])))
+			if (!$echoAssetsIfNotEnqueued || ($echoAssetsIfNotEnqueued && wp_style_is($style["handle"], 'registered')))
 				$data = str_replace($style[0], "", $data);
-			wp_enqueue_style($style["handle"], $style["href"], false, "-");
+
+			if ($echoAssetsIfNotEnqueued)
+				wp_register_style($style["handle"], $style["href"], false, "-");
+			else
+				wp_enqueue_style($style["handle"], $style["href"], false, "-");
 		}
 
 		return $data;
@@ -162,9 +165,13 @@ class dsSearchAgent_ApiRequest {
 
 		preg_match_all('/<script\s*src="(?P<src>[^"]+)"\s*data-handle="(?P<handle>[^"]+)"><\/script>/', $data, $scripts, PREG_SET_ORDER);
 		foreach ($scripts as $script) {
-			if (!$echoAssetsIfNotEnqueued || ($echoAssetsIfNotEnqueued && wp_script_is($script["handle"])))
+			if (!$echoAssetsIfNotEnqueued || ($echoAssetsIfNotEnqueued && wp_script_is($script["handle"], 'registered')))
 				$data = str_replace($script[0], "", $data);
-			wp_enqueue_script($script["handle"], $script["src"], false, "-");
+
+			if ($echoAssetsIfNotEnqueued)
+				wp_register_script($script["handle"], $script["src"], false, "-");
+			else
+				wp_enqueue_script($script["handle"], $script["src"], false, "-");
 		}
 
 		return $data;
