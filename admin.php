@@ -101,13 +101,15 @@ HTML;
 						been added to your <a href="widgets.php">widgets page</a> and the two new IDX icons
 						(they look like property markers) that have been added to the visual editor for
 						all of your <a href="page-new.php">pages</a> and <a href="post-new.php">posts</a>.
-						You'll probably also want to check out our <a href="http://wiki.dsidxpress.com/wiki:link-structure"
+						You'll probably also want to check out our <a href="http://wiki.diversesolutions.com/wiki:link-structure"
 							target="_blank">dsIDXpress virtual page link structure guide</a> so that you
 						can start linking to the property listings and property details pages throughout
-						your blog.
+						your blog. Finally, you may also want to hop over to our
+						<a href="http://helpdesk.diversesolutions.com/category/ds-idxpress/" target="_blank">help desk</a> or our
+						<a href="http://forum.diversesolutions.com/" target="_blank">forum</a>.
 					</p>
 					<p style="line-height: 1.6; text-align: center; font-weight: bold;">Take a look at the
-						<a href="http://wiki.dsidxpress.com/wiki:getting-started" target="_blank">dsIDXpress getting
+						<a href="http://wiki.diversesolutions.com/wiki:getting-started" target="_blank">dsIDXpress getting
 						started guide</a> for more info.
 					</p>
 					<p style="text-align: right;">(<a href="javascript:void(0)" onclick="dsidxpressDismiss()">dismiss this message</a>)</p>
@@ -359,7 +361,7 @@ HTML;
 			<?php } else { ?>
 				<span class="description">To enable this functionality, install and activate this plugin: <a class="thickbox onclick" title="Google XML Sitemaps" href="<?php echo admin_url('plugin-install.php?tab=plugin-information&plugin=google-sitemap-generator&TB_iframe=true&width=640')?>" target="_blank">Google XML Sitemaps</a></span>
 			<?php }?>
-			
+
 			<?php if(isset($account_options->EnableMemcacheInDsIdxPress) && strtolower($account_options->EnableMemcacheInDsIdxPress) == "true") {?>
 			<h4>Memcache Options</h4>
 			<?php if(!class_exists('Memcache') && !class_exists('Memcached')) {?>
@@ -398,14 +400,14 @@ HTML;
 
 		if ($options["PrivateApiKey"]) {
 			$diagnostics = self::RunDiagnostics($options);
-			
+
 			$previous_options = $options["Activated"].'|'.$options["HasSearchAgentPro"].'|'.$options["DetailsRequiresRegistration"];
 			$new_options = $diagnostics["DiagnosticsSuccessful"].'|'.$diagnostics["HasSearchAgentPro"].'|'.$diagnostics["DetailsRequiresRegistration"];
-			
+
 			$options["Activated"] = $diagnostics["DiagnosticsSuccessful"];
 			$options["HasSearchAgentPro"] = $diagnostics["HasSearchAgentPro"];
 			$options["DetailsRequiresRegistration"] = $diagnostics["DetailsRequiresRegistration"];
-			
+
 			if ($previous_options != $new_options)
 				update_option(DSIDXPRESS_OPTION_NAME, $options);
 

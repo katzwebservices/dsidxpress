@@ -46,6 +46,10 @@ If you'd like to **see the plugin in action**, you can check out our [dsIDXpress
 
 == Changelog ==
 
+= 1.1.36 =
+
+* Added / updated some links in the intro notification after the initial plugin activation.
+
 = 1.1.35 =
 
 * Bug Fixes 
