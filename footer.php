@@ -12,6 +12,13 @@ class dsidx_footer {
 	}
 
 	static function insert_disclaimer() {
+		global $wp_query;
+
+		if (is_array($wp_query->query)
+		    && ($wp_query->query["idx-action"] == "details" || $wp_query->query["idx-action"] == "results")
+		   )
+			return;
+
 		$disclaimer = dsSearchAgent_ApiRequest::FetchData("Disclaimer");
 		echo $disclaimer["body"];
 	}
