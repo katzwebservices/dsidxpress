@@ -106,6 +106,7 @@ class dsSearchAgent_Client {
 		$apiQueryOnlyParams = self::GetApiParams($get, true);
 
 		if ($action == "results"
+		    && empty($apiQueryOnlyParams["query.Locations"])
 		    && empty($apiQueryOnlyParams["query.Cities"])
 		    && empty($apiQueryOnlyParams["query.Communities"])
 		    && empty($apiQueryOnlyParams["query.TractIdentifiers"])
@@ -122,6 +123,7 @@ class dsSearchAgent_Client {
 		    && empty($apiQueryOnlyParams["query.Schools.Name"])
 		    && empty($apiQueryOnlyParams["query.Schools.Type"])
 
+		    && empty($apiQueryOnlyParams["query.Locations[0]"])
 		    && empty($apiQueryOnlyParams["query.Cities[0]"])
 		    && empty($apiQueryOnlyParams["query.Communities[0]"])
 		    && empty($apiQueryOnlyParams["query.TractIdentifiers[0]"])
