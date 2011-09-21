@@ -39,7 +39,7 @@ class dsSearchAgent_ClientAssist {
 		$slideshow_xml_url = DSIDXPRESS_PLUGIN_URL . "client-assist.php?action=SlideshowXml&count=$count&uriSuffix=$uriSuffix&uriBase=$uriBase";
 		$param_xml = file_get_contents('assets/slideshowpro-generic-params.xml');
 
-		$param_xml = str_replace("{xmlFilePath}", $slideshow_xml_url, $param_xml);
+		$param_xml = str_replace("{xmlFilePath}", htmlspecialchars($slideshow_xml_url), $param_xml);
 		$param_xml = str_replace("{imageTitle}", "", $param_xml);
 
 		header('Content-Type: text/xml');

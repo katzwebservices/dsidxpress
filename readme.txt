@@ -48,7 +48,8 @@ If you'd like to **see the plugin in action**, you can check out our [dsIDXpress
 
 = <next> =
 
-* Fixed bug where notices were being shown and slideshow wasn't working when server was incorrectly configured.  
+* Fixed bug where notices were being shown and slideshow wasn't working when server was incorrectly configured.
+* Fixed slideshow XML so it's syntactically valid and will show up when viewed in a browser.
 
 = 1.1.37 =
 
