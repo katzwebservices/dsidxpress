@@ -46,6 +46,10 @@ If you'd like to **see the plugin in action**, you can check out our [dsIDXpress
 
 == Changelog ==
 
+= <next> =
+
+* Fixed bug where notices were being shown and slideshow wasn't working when server was incorrectly configured.  
+
 = 1.1.37 =
 
 * Fixed issue where some result URLs with "locations" weren't loading. 
