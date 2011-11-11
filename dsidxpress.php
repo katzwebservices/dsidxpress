@@ -50,22 +50,31 @@ if (get_option("dssearchagent-wordpress-edition")) {
 	delete_option("dsidxpress-custom-options");
 }
 
-require_once("widget-search.php");
-require_once("widget-list-areas.php");
-require_once("widget-listings.php");
-require_once("rewrite.php");
-require_once("api-request.php");
-require_once("cron.php");
-require_once("xml-sitemaps.php");
-require_once("roles.php");
-require_once("footer.php");
+// sometimes dirname( __FILE__ ) gives us a bad location, but sometimes require_once(...) doesn't require from the correct directory.
+// so we're splitting the difference here and seeing if dirname( __FILE__ ) is valid by checking the existence of a well-known file,
+// then falling back to an empty path name if it's invalid.
+if(file_exists(dirname( __FILE__ ) . "/dsidxpress.php")){
+	$require_prefix = dirname( __FILE__ ) . "/";
+} else {
+	$require_prefix = "";
+}
+
+require_once($require_prefix . "widget-search.php");
+require_once($require_prefix . "widget-list-areas.php");
+require_once($require_prefix . "widget-listings.php");
+require_once($require_prefix . "rewrite.php");
+require_once($require_prefix . "api-request.php");
+require_once($require_prefix . "cron.php");
+require_once($require_prefix . "xml-sitemaps.php");
+require_once($require_prefix . "roles.php");
+require_once($require_prefix . "footer.php");
 
 if (is_admin()) {
 	// this is needed specifically for development as PHP seems to choke when 1) loading this in admin, 2) using windows, 3) using directory junctions
 	include_once(str_replace("\\", "/", WP_PLUGIN_DIR) . "/dsidxpress/admin.php");
 } else {
-	require_once("client.php");
-	require_once("shortcodes.php");
+	require_once($require_prefix . "client.php");
+	require_once($require_prefix . "shortcodes.php");
 }
 
 register_activation_hook(__FILE__, "dsidxpress_FlushRewriteRules");
