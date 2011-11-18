@@ -24,20 +24,16 @@ class dsSearchAgent_Rewrite {
 		);
 
 		if (!empty($options["UseAlternateUrlStructure"])) {
-			$stateAbbreviations = self::GetStateAbbreviations();
-
-			foreach ($stateAbbreviations as $state) {
-				$idxRules["{$state}/[^/]+/(\\d+)-mls-(.+)-.*"] =
-					'index.php?idx-action=details&idx-q-PropertyID=$matches[1]&idx-q-MlsNumber=$matches[2]';
-				$idxRules["({$state})/([^/]+)(?:/page\-(\\d+))?"] =
-					'index.php?idx-action=results&idx-q-States=$matches[1]&idx-q-Cities=$matches[2]&idx-d-ResultPage=$matches[3]';
-				$idxRules["({$state})/([^/]+)/community/([^/]+)(?:/page\-(\\d+))?"] =
-					'index.php?idx-action=results&idx-q-States=$matches[1]&idx-q-Communities=$matches[2]&idx-d-ResultPage=$matches[3]';
-				$idxRules["({$state})/([^/]+)/tract/([^/]+)(?:/page\-(\\d+))?"] =
-					'index.php?idx-action=results&idx-q-States=$matches[1]&idx-q-TractIdentifiers=$matches[2]&idx-d-ResultPage=$matches[3]';
-				$idxRules["({$state})/(\\d+)(?:/page\-(\\d+))?"] =
-					'index.php?idx-action=results&idx-q-States=$matches[1]&idx-q-ZipCodes=$matches[2]&idx-d-ResultPage=$matches[3]';
-			}
+			$idxRules["\w{2}/[^/]+/(\\d+)-mls-(.+)-.*"] =
+				'index.php?idx-action=details&idx-q-PropertyID=$matches[1]&idx-q-MlsNumber=$matches[2]';
+			$idxRules["(\w{2})/([^/]+)(?:/page\-(\\d+))?"] =
+				'index.php?idx-action=results&idx-q-States=$matches[1]&idx-q-Cities=$matches[2]&idx-d-ResultPage=$matches[3]';
+			$idxRules["(\w{2})/([^/]+)/community/([^/]+)(?:/page\-(\\d+))?"] =
+				'index.php?idx-action=results&idx-q-States=$matches[1]&idx-q-Communities=$matches[2]&idx-d-ResultPage=$matches[3]';
+			$idxRules["(\w{2})/([^/]+)/tract/([^/]+)(?:/page\-(\\d+))?"] =
+				'index.php?idx-action=results&idx-q-States=$matches[1]&idx-q-TractIdentifiers=$matches[2]&idx-d-ResultPage=$matches[3]';
+			$idxRules["(\w{2})/(\\d+)(?:/page\-(\\d+))?"] =
+				'index.php?idx-action=results&idx-q-States=$matches[1]&idx-q-ZipCodes=$matches[2]&idx-d-ResultPage=$matches[3]';
 		}
 
 		return $idxRules + $incomingRules;
@@ -60,76 +56,6 @@ class dsSearchAgent_Rewrite {
 		// as HTTP GET or POST vars, so we can just use the superglobal $_REQUEST to access those
 
 		return $queryVars;
-	}
-	static function GetStateAbbreviations() {
-		return array(
-			//united states
-			'al',
-			'ak',
-			'az',
-			'ar',
-			'ca',
-			'co',
-			'ct',
-			'de',
-			'dc',
-			'fl',
-			'ga',
-			'hi',
-			'id',
-			'il',
-			'in',
-			'ia',
-			'ks',
-			'ky',
-			'la',
-			'me',
-			'md',
-			'ma',
-			'mi',
-			'mn',
-			'ms',
-			'mo',
-			'mt',
-			'ne',
-			'nv',
-			'nh',
-			'nj',
-			'nm',
-			'ny',
-			'nc',
-			'nd',
-			'oh',
-			'ok',
-			'or',
-			'pa',
-			'ri',
-			'sc',
-			'sd',
-			'tn',
-			'tx',
-			'ut',
-			'vt',
-			'va',
-			'wa',
-			'wv',
-			'wi',
-			'wy',
-			// canada
-			'ab',
-			'bc',
-			'mb',
-			'nb',
-			'nl',
-			'ns',
-			'nt',
-			'nu',
-			'on',
-			'pe',
-			'qc',
-			'sk',
-			'yt'
-		);
 	}
 }
 ?>

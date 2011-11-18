@@ -46,6 +46,10 @@ If you'd like to **see the plugin in action**, you can check out our [dsIDXpress
 
 == Changelog ==
 
+= 1.1.39 =
+
+* Fixed certain types of URLs for non-US MLS's.
+
 = 1.1.38 =
 
 * Fixed bug where notices were being shown and slideshow wasn't working when server was incorrectly configured.
