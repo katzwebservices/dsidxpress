@@ -96,6 +96,11 @@ class dsSearchAgent_ClientAssist {
 
 		die();
 	}
+		static function OnBoard_GetAccessToken(){
+		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("OnBoard_GetAccessToken");
+		echo $apiHttpResponse["body"];
+		die();
+	}
 }
 call_user_func(array('dsSearchAgent_ClientAssist',  $_REQUEST['action']));
 ?>
