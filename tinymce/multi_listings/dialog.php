@@ -10,7 +10,7 @@ while (!file_exists($bootstrapSearchDir . "/wp-load.php")) {
 		break;
 	}
 }
-require_once($bootstrapSearchDir . "/wp-load.php");
+
 require_once($bootstrapSearchDir . "/wp-admin/admin.php");
 
 if (!current_user_can("edit_posts"))
