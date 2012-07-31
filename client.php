@@ -358,7 +358,7 @@ class dsSearchAgent_Client {
 		
 		if ($apiHttpResponse["response"]["code"] == "404") {
 			$wp_query->set('is_404', true);
-			add_action('get_header', function ($header) { return status_header(404);});
+			add_action('get_header', self::Return404);
 		} else if ($apiHttpResponse["response"]["code"] == "302") {
 			$redirect = dsSearchAgent_Client::GetBasePath() . self::ExtractValueFromApiData($apiData, "redirect");
 			header("Location: $redirect", true, 302);
@@ -402,12 +402,6 @@ class dsSearchAgent_Client {
 		wp_cache_set( $post_id, $post, 'posts');
 		$posts = array( $post );
 
-		if(
-			!self::IsStyleUrlEnqueued('jqueryui') &&
-			!self::IsStyleUrlEnqueued('jquery.ui') &&
-			!self::IsStyleUrlEnqueued('jquery-ui')
-		) wp_enqueue_style('jqueryui', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.7/themes/smoothness/jquery-ui.css');
-
 		// track the detail & result views, do this at the end in case something errors or w/e
 		$views = intval(@$_COOKIE["dsidx-visitor-$action-views"]);
 		setcookie("dsidx-visitor-$action-views", $views + 1, time()+60*60*24*30, '/');
@@ -419,6 +413,9 @@ class dsSearchAgent_Client {
 		}
 		
 		return $posts;
+	}
+	static function Return404($header) { 
+		return status_header(404);
 	}
 	static function ExtractValueFromApiData(&$apiData, $key) {
 		preg_match('/^\<!\-\-\s*' . $key . ':\s*"(?P<value>[^"]+)"\s*\-\-\>/ms', $apiData, $matches);
@@ -505,19 +502,6 @@ class dsSearchAgent_Client {
 		// let thesis handle the canonical
 		if (self::$CanonicalUri && !$thesis)
 			echo "<link rel=\"canonical\" href=\"" . self::GetPermalink() . "\" />\n";
-	}
-	static function IsStyleUrlEnqueued($partial_url){
-		global $wp_styles;
-		$enqueued = false;
-		if ( is_a($wp_styles, 'WP_Styles') ){
-			foreach($wp_styles->registered as $handle => $style){
-				if(strrpos($style->src, $partial_url) !== false){
-					$enqueued = true;
-				}
-			}
-		}
-
-		return $enqueued;
 	}
 }
 ?>

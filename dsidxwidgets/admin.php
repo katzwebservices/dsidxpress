@@ -132,23 +132,25 @@ HTML;
 			);
 		}
 		
-		usort($posts, function ($a, $b) {
-			if (isset($a->post_title) && isset($b->post_title)) {
-				if ($a->post_title == 'Home') {
-					return -1;
-				}
-				
-				if ($b->post_title == 'Home') {
-					return 1;
-				}
-				
-				return strcmp($a->post_title, $b->post_title);
-			} else {
-				return 0;
-			}
-		});
+		usort($posts, self::Sort);
 		
 		return $posts;
+	}
+
+	public static function Sort($a, $b) {
+		if (isset($a->post_title) && isset($b->post_title)) {
+			if ($a->post_title == 'Home') {
+				return -1;
+			}
+				
+			if ($b->post_title == 'Home') {
+				return 1;
+			}
+				
+			return strcmp($a->post_title, $b->post_title);
+		} else {
+			return 0;
+		}
 	}
 	
 	public static function ShortCircuit() {
