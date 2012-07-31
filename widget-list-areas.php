@@ -6,8 +6,8 @@ class dsSearchAgent_ListAreasWidget extends WP_Widget {
 			"description" => "Lists of links for showing real estate"
 		));
 
-		if (is_admin())
-			wp_enqueue_script('dsidxpress_widget_list_areas', DSIDXPRESS_PLUGIN_URL . 'js/widget-list-areas.js', array('jquery'), DSIDXPRESS_PLUGIN_VERSION);
+		if ($_SERVER['SCRIPT_NAME'] == '/wp-admin/widgets.php')
+			wp_enqueue_script('dsidxpress_widget_list_areas', DSIDXPRESS_PLUGIN_URL . 'js/widget-list-areas.js', array('jquery'), DSIDXPRESS_PLUGIN_VERSION, true);
 	}
 	function widget($args, $instance) {
 		extract($args);
@@ -18,7 +18,7 @@ class dsSearchAgent_ListAreasWidget extends WP_Widget {
 		if (!$options["Activated"])
 			return;
 
-		$urlBase = get_bloginfo("url") . "/idx/";
+		$urlBase = get_home_url() . "/idx/";
 
 		echo $before_widget;
 		if ($title)

@@ -1,3 +1,6 @@
+var changes_made = false;
+var xmlsitemap_page = false;
+
 dsIDXpressOptions = {
 	UrlBase : '',
 	OptionPrefix : '',
@@ -10,9 +13,22 @@ dsIDXpressOptions = {
 			});
 			jQuery("#dsidxpress-SitemapLocations").disableSelection();
 		}
+
+		jQuery('.dsidxpress-api-checkbox').click(function () {
+			jQuery('#' + this.id.replace('-check', '')).val(this.checked.toString());
+		});
+
+		jQuery('#dsidxpress-AgentID').blur(function (){
+			jQuery('#dsidxpress-API-AgentID').val(this.value);
+		});
+
+		jQuery('#dsidxpress-OfficeID').blur(function () {
+			jQuery('#dsidxpress-API-OfficeID').val(this.value);
+		});
 	},
 	
 	AddSitemapLocation : function(){
+		changes_made = true;
 		var location_name = jQuery('#dsidxpress-NewSitemapLocation').val(),
 			location_type = jQuery('#dsidxpress-NewSitemapLocationType').val(),
 			location_sanitized = encodeURIComponent(location_name.replace('-', '_').replace(' ', '-').toLowerCase());
@@ -77,12 +93,16 @@ dsIDXpressOptions = {
 			
 			value.each(function(o){
 				var input = jQuery(this);
-				input.attr('name', input.attr('name').replace(/\[\d+\]/, '[' + location_index + ']'));
+				if (input.attr('name') != undefined) {
+					input.attr('name', input.attr('name').replace(/\[\d+\]/, '[' + location_index + ']'));
+				}
 			});
 
 			type.each(function(o){
 				var input = jQuery(this);
-				input.attr('name', input.attr('name').replace(/\[\d+\]/, '[' + location_index + ']'));
+				if (input.attr('name') != undefined) {
+					input.attr('name', input.attr('name').replace(/\[\d+\]/, '[' + location_index + ']'));
+				}
 			});	
 						
 			location_index++;
@@ -92,12 +112,28 @@ dsIDXpressOptions = {
 	
 	RemoveSitemapLocation : function(button){
 		if(confirm("Are you sure you want to remove this item")) {
+			changes_made = true;
 			jQuery(button.parentNode.parentNode).remove();
 			dsIDXpressOptions.RepairOrder();
 		}
+	},
+
+	OptionCheckBoxClick : function(checkboxID) {
+		checkboxID = checkboxID.id;
+		checked = jQuery('#' + checkboxID).prop("checked");
+		jQuery('#' + checkboxID.substring(0, checkboxID.length - 2)).val(checked);
 	}
 }
 
 jQuery(document).ready(function () {
 	dsIDXpressOptions.Init();
+
+	window.onbeforeunload = function() {
+		if (changes_made && xmlsitemap_page)
+			return 'The changes you made will be lost if you navigate away from this page.';
+	};
+
+	/* Changes made additions */
+	jQuery("#xml-options-saved").click(function() { changes_made = false; });
+	jQuery("select:not(.ignore-changes)").change(function () { changes_made = true; });
 });

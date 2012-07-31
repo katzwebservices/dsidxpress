@@ -5,7 +5,7 @@ Plugin URI: http://www.dsidxpress.com/
 Description: This plugin allows WordPress to embed live real estate data from an MLS directly into a blog. You MUST have a dsIDXpress account to use this plugin.
 Author: Diverse Solutions
 Author URI: http://www.diversesolutions.com/
-Version: 1.1.41a
+Version: 2.0
 */
 
 /*
@@ -33,7 +33,7 @@ define("DSIDXPRESS_API_OPTIONS_NAME", "dsidxpress-api-options");
 
 define("DSIDXPRESS_MIN_VERSION_PHP", "5.2.0");
 define("DSIDXPRESS_MIN_VERSION_WORDPRESS", "2.8");
-define("DSIDXPRESS_PLUGIN_URL", WP_PLUGIN_URL . "/dsidxpress/");
+define("DSIDXPRESS_PLUGIN_URL", plugins_url() . "/dsidxpress/");
 define("DSIDXPRESS_PLUGIN_VERSION", $pluginData["Version"]);
 
 if (version_compare(phpversion(), DSIDXPRESS_MIN_VERSION_PHP) == -1 || version_compare($wp_version, DSIDXPRESS_MIN_VERSION_WORDPRESS) == -1) {
@@ -62,12 +62,15 @@ if(file_exists(dirname( __FILE__ ) . "/dsidxpress.php")){
 require_once($require_prefix . "widget-search.php");
 require_once($require_prefix . "widget-list-areas.php");
 require_once($require_prefix . "widget-listings.php");
+require_once($require_prefix . "widget-single-listing.php");
 require_once($require_prefix . "rewrite.php");
 require_once($require_prefix . "api-request.php");
 require_once($require_prefix . "cron.php");
 require_once($require_prefix . "xml-sitemaps.php");
 require_once($require_prefix . "roles.php");
 require_once($require_prefix . "footer.php");
+require_once($require_prefix . "dsidxpress_seo.php");
+require_once($require_prefix . "autocomplete.php");
 
 if (is_admin()) {
 	// this is needed specifically for development as PHP seems to choke when 1) loading this in admin, 2) using windows, 3) using directory junctions
@@ -75,6 +78,13 @@ if (is_admin()) {
 } else {
 	require_once($require_prefix . "client.php");
 	require_once($require_prefix . "shortcodes.php");
+}
+
+if (defined('DS_API')) {
+	dsSearchAgent_ApiRequest::$ApiEndPoint = DS_API;
+} else {
+	define('DS_API', 'http://api-c.idx.diversesolutions.com/api/');
+	dsSearchAgent_ApiRequest::$ApiEndPoint = DS_API;
 }
 
 register_activation_hook(__FILE__, "dsidxpress_FlushRewriteRules");
@@ -101,6 +111,7 @@ function dsidxpress_InitWidgets() {
 	register_widget("dsSearchAgent_SearchWidget");
 	register_widget("dsSearchAgent_ListAreasWidget");
 	register_widget("dsSearchAgent_ListingsWidget");
+	register_widget("dsSearchAgent_SingleListingWidget");
 }
 function dsidxpress_FlushRewriteRules() {
 	global $wp_rewrite;
@@ -112,5 +123,8 @@ function dsidxpress_FlushRewriteRules() {
 	update_option(DSIDXPRESS_OPTION_NAME, $localOptions);
 	$wp_rewrite->flush_rules();
 }
+
+
+require_once($require_prefix . "dsidxwidgets/dsidxwidgets.php");
 
 ?>

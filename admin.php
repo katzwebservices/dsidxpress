@@ -1,41 +1,73 @@
 <?php
 
 add_action("admin_init", array("dsSearchAgent_Admin", "Initialize"));
-add_action("admin_menu", array("dsSearchAgent_Admin", "AddMenu"));
+add_Action("admin_enqueue_scripts", array("dsSearchAgent_Admin", "Enqueue"));
+add_action("admin_menu", array("dsSearchAgent_Admin", "AddMenu"), 40);
 add_action("admin_notices", array("dsSearchAgent_Admin", "DisplayAdminNotices"));
 add_action("wp_ajax_dsidxpress-dismiss-notification", array("dsSearchAgent_Admin", "DismissNotification"));
+add_filter("manage_nav-menus_columns", array("dsSearchAgent_Admin", "CreateLinkBuilderMenuWidget"), 9);
 
-wp_enqueue_script('jquery');
-add_thickbox();
-wp_enqueue_script('dsidxpress_admin_options', DSIDXPRESS_PLUGIN_URL . 'js/admin-options.js', array(), DSIDXPRESS_PLUGIN_VERSION);
+if (defined('ZPRESS_API') && ZPRESS_API != '') {
+	add_filter('nav_menu_items_zpress-page', array('dsSearchAgent_Admin', 'NavMenus'));
+}
 
 class dsSearchAgent_Admin {
 	static $HeaderLoaded = null;
 	static function AddMenu() {
 		$options = get_option(DSIDXPRESS_OPTION_NAME);
 
-		add_menu_page('dsIDXpress', 'dsIDXpress', "manage_options", "dsidxpress", "", DSIDXPRESS_PLUGIN_URL . 'assets/idxpress_LOGOicon.png');
-
-		$activationPage = add_submenu_page("dsidxpress", "dsIDXpress Activation", "Activation", "manage_options", "dsidxpress", array("dsSearchAgent_Admin", "Activation"));
-		add_action("admin_print_scripts-{$activationPage}", array("dsSearchAgent_Admin", "LoadHeader"));
-
-		if (isset($options["Activated"])) {
-			$optionsPage = add_submenu_page("dsidxpress", "dsIDXpress Options", "Options", "manage_options", "dsidxpress-options", array("dsSearchAgent_Admin", "EditOptions"));
-			add_action("admin_print_scripts-{$optionsPage}", array("dsSearchAgent_Admin", "LoadHeader"));
-		}
-
+		dsSearchAgent_Admin::GenerateAdminMenus(DSIDXPRESS_PLUGIN_URL . 'assets/idxpress_LOGOicon.png');
+		dsSearchAgent_Admin::GenerateAdminSubMenus();
+		
 		add_filter("mce_external_plugins", array("dsSearchAgent_Admin", "AddTinyMcePlugin"));
 		add_filter("mce_buttons", array("dsSearchAgent_Admin", "RegisterTinyMceButton"));
 		// won't work until this <http://core.trac.wordpress.org/ticket/12207> is fixed
 		//add_filter("tiny_mce_before_init", array("dsSearchAgent_Admin", "ModifyTinyMceSettings"));
 	}
+	static function GenerateAdminMenus($icon_url){		
+		add_menu_page('IDX', 'IDX', "manage_options", "dsidxpress", "", $icon_url);
+
+		$activationPage = add_submenu_page("dsidxpress", "IDX Activation", "Activation", "manage_options", "dsidxpress", array("dsSearchAgent_Admin", "Activation"));
+		add_action("admin_print_scripts-{$activationPage}", array("dsSearchAgent_Admin", "LoadHeader"));
+	}
+	
+	static function GenerateAdminSubMenus() {
+		$options = get_option(DSIDXPRESS_OPTION_NAME);
+
+		if (isset($options["Activated"])) {
+			$optionsPage = add_submenu_page("dsidxpress", "IDX Options", "General", "manage_options", "dsidxpress-options", array("dsSearchAgent_Admin", "EditOptions"));
+			add_action("admin_print_scripts-{$optionsPage}", array("dsSearchAgent_Admin", "LoadHeader"));
+		}
+		
+		if (isset($options["Activated"])) {
+			$filtersPage = add_submenu_page("dsidxpress", "IDX Filters", "Filters", "manage_options", "dsidxpress-filters", array("dsSearchAgent_Admin", "FilterOptions"));
+			add_action("admin_print_scripts-{$filtersPage}", array("dsSearchAgent_Admin", "LoadHeader"));
+		}
+		
+		if (isset($options["Activated"])) {
+			$seoSettingsPage = add_submenu_page("dsidxpress", "IDX SEO Settings", "SEO Settings", "manage_options", "dsidxpress-seo-settings", array("dsSearchAgent_Admin", "SEOSettings"));
+			add_action("admin_print_scripts-{$seoSettingsPage}", array("dsSearchAgent_Admin", "LoadHeader"));
+		}
+		
+		if (isset($options["Activated"])) {
+			$xmlSitemapsPage = add_submenu_page("dsidxpress", "IDX XML Sitemaps", "XML Sitemaps", "manage_options", "dsidxpress-xml-sitemaps", array("dsSearchAgent_Admin", "XMLSitemaps"));
+			add_action("admin_print_scripts-{$xmlSitemapsPage}", array("dsSearchAgent_Admin", "LoadHeader"));
+		}
+		
+		if (isset($options["Activated"])) {
+			$detailsPage = add_submenu_page("dsidxpress", "IDX Details", "More Options", "manage_options", "dsidxpress-details", array("dsSearchAgent_Admin", "DetailsOptions"));
+			add_action("admin_print_scripts-{$detailsPage}", array("dsSearchAgent_Admin", "LoadHeader"));
+		}
+	}
 	static function AddTinyMcePlugin($plugins) {
 		$plugins["idxlisting"] = DSIDXPRESS_PLUGIN_URL . "tinymce/single_listing/editor_plugin.js";
 		$plugins["idxlistings"] = DSIDXPRESS_PLUGIN_URL . "tinymce/multi_listings/editor_plugin.js";
+		$plugins["idxlinkbuilder"] = DSIDXPRESS_PLUGIN_URL . "tinymce/link_builder/editor_plugin.js";
+		
 		return $plugins;
 	}
 	static function RegisterTinyMceButton($buttons) {
-		array_push($buttons, "separator", "idxlisting", "idxlistings");
+		array_push($buttons, "separator", "idxlisting", "idxlistings", "idxlinkbuilder");
 		return $buttons;
 	}
 	static function ModifyTinyMceSettings($settings) {
@@ -46,6 +78,32 @@ class dsSearchAgent_Admin {
 		register_setting("dsidxpress_activation", DSIDXPRESS_OPTION_NAME, array("dsSearchAgent_Admin", "SanitizeOptions"));
 		register_setting("dsidxpress_options", DSIDXPRESS_OPTION_NAME, array("dsSearchAgent_Admin", "SanitizeOptions"));
 		register_setting("dsidxpress_options", DSIDXPRESS_API_OPTIONS_NAME, array("dsSearchAgent_Admin", "SanitizeApiOptions"));
+		register_setting("dsidxpress_api_options", DSIDXPRESS_API_OPTIONS_NAME, array("dsSearchAgent_Admin", "SanitizeApiOptions"));
+		register_setting("dsidxpress_xml_sitemap", DSIDXPRESS_OPTION_NAME, array("dsSearchAgent_Admin", "SanitizeOptions"));
+	}
+	static function Enqueue($hook) {
+		//every admin should have admin-options.js cept dsidx_footer-util
+		if(!isset($_GET['page'])){	
+			wp_enqueue_script('dsidxpress_admin_options', DSIDXPRESS_PLUGIN_URL . 'js/admin-options.js', array(), DSIDXPRESS_PLUGIN_VERSION, true);	
+		}
+		
+		if (isset($_GET['page']) && ($_GET['page'] == 'dsidxpress-details' || $_GET['page'] == 'dsidxpress-seo-settings' || $_GET['page'] == 'dsidxpress-options' || $_GET['page'] == 'dsidxpress-xml-sitemaps')) {
+			wp_enqueue_script('dsidxpress_admin_options', DSIDXPRESS_PLUGIN_URL . 'js/admin-options.js', array(), DSIDXPRESS_PLUGIN_VERSION, true);		
+		}
+		
+		//We need the options script loaded in the header for this page
+		if (isset($_GET['page']) && $_GET['page'] == 'dsidxpress-xml-sitemaps') {
+			wp_enqueue_script('dsidxpress_admin_options', DSIDXPRESS_PLUGIN_URL . 'js/admin-options.js', array(), DSIDXPRESS_PLUGIN_VERSION);		
+		}
+		
+		if (isset($_GET['page']) && $_GET['page'] == 'dsidxpress-filters') {
+			wp_enqueue_script('dsidxpress_admin_filters', DSIDXPRESS_PLUGIN_URL . 'js/admin-filters.js', array(), DSIDXPRESS_PLUGIN_VERSION);		
+		}
+
+		if ($hook == 'nav-menus.php') {
+			wp_enqueue_script('dsidxpress_admin_utilities', DSIDXPRESS_PLUGIN_URL . 'js/admin-utilities.js', array(), DSIDXPRESS_PLUGIN_VERSION, true);
+			wp_enqueue_style('dsidxpress_admin_options_style', DSIDXPRESS_PLUGIN_URL . 'css/admin-options.css', array(), DSIDXPRESS_PLUGIN_VERSION);
+		}
 	}
 	static function LoadHeader() {
 		if (self::$HeaderLoaded)
@@ -62,6 +120,7 @@ HTML;
 			return;
 
 		$options = get_option(DSIDXPRESS_OPTION_NAME);
+		
 		if (!isset($options["PrivateApiKey"])) {
 			echo <<<HTML
 				<div class="error">
@@ -100,7 +159,7 @@ HTML;
 						to your site right away. The easiest way to get started is to use the three new IDX widgets that have
 						been added to your <a href="widgets.php">widgets page</a> and the two new IDX icons
 						(they look like property markers) that have been added to the visual editor for
-						all of your <a href="page-new.php">pages</a> and <a href="post-new.php">posts</a>.
+						all of your <a href="post-new.php?post_type=page">pages</a> and <a href="post-new.php">posts</a>.
 						You'll probably also want to check out our <a href="http://wiki.diversesolutions.com/wiki:link-structure"
 							target="_blank">dsIDXpress virtual page link structure guide</a> so that you
 						can start linking to the property listings and property details pages throughout
@@ -126,6 +185,7 @@ HTML;
 		update_option(DSIDXPRESS_OPTION_NAME, $options);
 		die();
 	}
+	
 	static function EditOptions() {
 		$options = get_option(DSIDXPRESS_OPTION_NAME);
 
@@ -135,19 +195,21 @@ HTML;
 		else
 			$account_options = json_decode($apiHttpResponse["body"]);
 
-		$urlBase = get_bloginfo("url");
+		$urlBase = get_home_url();
 		if (substr($urlBase, strlen($urlBase), 1) != "/") $urlBase .= "/";
 		$urlBase .= dsSearchAgent_Rewrite::GetUrlSlug();
 ?>
 	<div class="wrap metabox-holder">
-		<div class="icon32" id="icon-options-general"><br/></div>
-		<h2>dsIDXpress Options</h2>
-
+		<?php screen_icon(); ?>
+		<h2>General Options</h2>
+		<?php if (isset($_REQUEST['settings-updated']) && $_REQUEST['settings-updated'] == 'true') : ?>
+		<div class="updated"><p><strong><?php _e( 'Options saved' ); ?></strong></p></div>
+		<?php endif; ?>
 		<form method="post" action="options.php">
-			<?php settings_fields("dsidxpress_options"); ?>
-
-			<h4>Display Settings</h4>
+		<?php settings_fields("dsidxpress_options"); ?>
+		<h4>Display Settings</h4>
 			<table class="form-table">
+				<?php if(!defined('ZPRESS_API') || ZPRESS_API == '') : ?>
 				<tr>
 					<th>
 						<label for="dsidxpress-DetailsTemplate">Template for details pages:</label>
@@ -155,7 +217,10 @@ HTML;
 					<td>
 						<select id="dsidxpress-DetailsTemplate" name="<?php echo DSIDXPRESS_OPTION_NAME ; ?>[DetailsTemplate]">
 							<option value="">- Default -</option>
-							<?php page_template_dropdown($options["DetailsTemplate"]) ?>
+							<?php
+								$details_template = (isset($options["DetailsTemplate"])) ? $options["DetailsTemplate"] : '';
+								page_template_dropdown($details_template);
+							?>
 						</select><br />
 						<span class="description">Some themes have custom templates that can change how a particular page is displayed. If your theme does have multiple templates, you'll be able to select which one you want to use in the drop-down above.</span>
 					</td>
@@ -167,7 +232,10 @@ HTML;
 					<td>
 						<select id="dsidxpress-ResultsTemplate" name="<?php echo DSIDXPRESS_OPTION_NAME ; ?>[ResultsTemplate]">
 							<option value="">- Default -</option>
-							<?php page_template_dropdown($options["ResultsTemplate"]) ?>
+							<?php
+								$results_template = (isset($options["ResultsTemplate"])) ? $options["ResultsTemplate"] : '';
+								page_template_dropdown($results_template);
+							?>
 						</select><br />
 						<span class="description">See above.</span>
 					</td>
@@ -179,11 +247,15 @@ HTML;
 					<td>
 						<select id="dsidxpress-AdvancedTemplate" name="<?php echo DSIDXPRESS_OPTION_NAME ; ?>[AdvancedTemplate]">
 							<option value="">- Default -</option>
-							<?php page_template_dropdown($options["AdvancedTemplate"]) ?>
+							<?php
+								$advanced_template = (isset($options["AdvancedTemplate"])) ? $options["AdvancedTemplate"] : '';
+								page_template_dropdown($advanced_template);
+							?>
 						</select><br />
 						<span class="description">See above.</span>
 					</td>
 				</tr>
+				<?php endif; ?>
 				<tr>
 					<th>
 						<label for="dsidxpress-CustomTitleText">Title for results pages:</label>
@@ -195,42 +267,120 @@ HTML;
 				</tr>
 				<tr>
 					<th>
-						<label for="dsidxpress-ResultsMapDefaultState">Default for the Results Map:</label>
+						<label for="dsidxpress-ResultsMapDefaultState">Default view for Results pages:</label>
 					</th>
 					<td>
-						Open <input type="radio" id="dsidxpress-ResultsMapDefaultState-Open" name="<?php echo DSIDXPRESS_OPTION_NAME; ?>[ResultsMapDefaultState]" value="open" <?php echo $options["ResultsMapDefaultState"] == "open" ? "checked=\"checked\"" : "" ?> />&nbsp;or&nbsp;
-						Closed <input type="radio" id="dsidxpress-ResultsMapDefaultState-Closed" name="<?php echo DSIDXPRESS_OPTION_NAME; ?>[ResultsMapDefaultState]" value="closed" <?php echo $options["ResultsMapDefaultState"] == "closed" || !isset($options["ResultsMapDefaultState"]) ? "checked=\"checked\"" : "" ?>/>
-					</td>
-				</tr>
-				<tr>
-					<th>
-						<label for="dsidxpress-WalkScore">WalkScore:</label>
-					</th>
-					<td>
-						<p>
-							<input type="checkbox" id="dsidxpress-ShowWalkScoreInResults-Checkbox" onclick="jQuery('#dsidxpress-ShowWalkScoreInResults').val(this.checked)" <?php echo (strtolower($account_options->ShowWalkScoreInResults) == "true" ? "checked='checked'" : ""); ?> />
-							<input type="hidden" id="dsidxpress-ShowWalkScoreInResults" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[ShowWalkScoreInResults]" value="<?php echo strtolower($account_options->ShowWalkScoreInResults); ?>" />
-							<label for="dsidxpress-ShowWalkScoreInResults-Checkbox">Show in Results</label><br />
-						</p>
-						<p>
-							<input type="checkbox" id="dsidxpress-ShowWalkScoreInDetails-Checkbox" onclick="jQuery('#dsidxpress-ShowWalkScoreInDetails').val(this.checked)" <?php echo (strtolower($account_options->ShowWalkScoreInDetails) == "true" ? "checked='checked'" : ""); ?> />
-							<input type="hidden" id="dsidxpress-ShowWalkScoreInDetails" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[ShowWalkScoreInDetails]" value="<?php echo strtolower($account_options->ShowWalkScoreInDetails); ?>" />
-							<label for="dsidxpress-ShowWalkScoreInDetails-Checkbox">Show in Details</label><br />
-						</p>
-						<span class="description"><a href="http://www.walkscore.com/how-it-works.shtml" target="_blank">What is WalkScore?</a></span>
-					</td>
-				</tr>
-				<tr>
-					<th>
-						<label for="dsidxpress-FirstName">Restrict Results to a State:</label>
-					</th>
-					<td>
-						<input type="text" id="dsidxpress-RestrictResultsToState" maxlength="2" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[RestrictResultsToState]" value="<?php echo $account_options->RestrictResultsToState; ?>" /><br />
-						<span class="description">If you need/want to restrict dsIDXpress to a specific state, put the abbreviation in this field. <a href="http://en.wikipedia.org/wiki/List_of_U.S._state_abbreviations" target="_blank">List of U.S. State Abbreviations</a></span>
+						<input type="radio" id="dsidxpress-ResultsDefaultState-List" name="<?php echo DSIDXPRESS_OPTION_NAME; ?>[ResultsDefaultState]" value="list" <?php echo @$options["ResultsDefaultState"] == "list" || !isset($options["ResultsDefaultState"]) ? "checked=\"checked\"" : "" ?>/> <label for="dsidxpress-ResultsDefaultState-List">List</label><br />
+						<input type="radio" id="dsidxpress-ResultsDefaultState-ListMap" name="<?php echo DSIDXPRESS_OPTION_NAME; ?>[ResultsDefaultState]" value="listmap" <?php echo @$options["ResultsDefaultState"] == "listmap" ? "checked=\"checked\"" : "" ?> /> <label for="dsidxpress-ResultsDefaultState-ListMap">List + Map</label>
+						<?php if (isset($options["dsIDXPressPackage"]) && $options["dsIDXPressPackage"] == "pro"): ?>
+						<br /><input type="radio" id="dsidxpress-ResultsDefaultState-Grid" name="<?php echo DSIDXPRESS_OPTION_NAME; ?>[ResultsDefaultState]" value="grid" <?php echo @$options["ResultsDefaultState"] == "grid" ? "checked=\"checked\"" : "" ?>/> <label for="dsidxpress-ResultsDefaultState-Grid">Grid</label>
+						<?php endif ?>
 					</td>
 				</tr>
 			</table>
-
+			<?php if (isset($options["dsIDXPressPackage"]) && $options["dsIDXPressPackage"] == "pro"): ?>
+			<h4>Forced Registration Settings</h4>
+			<table class="form-table">
+				<tr>
+					<th>
+						<label for="dsidxpress-NumofDetailsViews">Number of detail views before required registration</label>
+					</th>
+					<td>
+						<input type="text" id="dsidxpress-NumOfDetailsViews" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[AllowedDetailViewsBeforeRegistration]" value="<?php echo $account_options->AllowedDetailViewsBeforeRegistration; ?>" />
+					</td>
+				</tr>
+				<tr>
+					<th>
+						<label for="dsidxpress-NumofResultsViews">Number of result views before required registration</label>
+					</th>
+					<td>
+						<input type="text" id="dsidxpress-NumOfResultViews" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME;?>[AllowedSearchesBeforeRegistration]" value="<?php echo $account_options->AllowedSearchesBeforeRegistration; ?>" />
+					</td>
+				</tr>
+				<tr>
+					<th>
+						<label for="dsidxpress-RequireAuth-Details-Description-check">Require login to view description</label>
+					</th>
+					<td>
+						<input type="hidden" id="dsidxpress-RequireAuth-Details-Description" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[RequireAuth-Details-Description]" value="<?php echo $account_options->{'RequireAuth-Details-Description'}; ?>" />
+						<input type="checkbox" class="dsidxpress-api-checkbox" id="dsidxpress-RequireAuth-Details-Description-check" <?php echo @$account_options->{'RequireAuth-Details-Description'} == "true" ? "checked=\"checked\"" : "" ?> />
+					</td>
+				</tr>
+				<tr>
+					<th>
+						<label for="dsidxpress-RequireAuth-Property-Community">Require login to view the community</label>
+					</th>
+					<td>
+						<input type="hidden" id="dsidxpress-RequireAuth-Property-Community" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[RequireAuth-Property-Community]" value="<?php echo $account_options->{'RequireAuth-Property-Community'}; ?>" />
+						<input type="checkbox" class="dsidxpress-api-checkbox" id="dsidxpress-RequireAuth-Property-Community-check" <?php echo @$account_options->{'RequireAuth-Property-Community'} == "true" ? "checked=\"checked\"" : "" ?> />
+					</td>
+				</tr>
+				<tr>
+					<th>
+						<label for="dsidxpress-RequireAuth-Property-Tract-check">Require login to view the tract</label>
+					</th>
+					<td>
+						<input type="hidden" id="dsidxpress-RequireAuth-Property-Tract" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[RequireAuth-Property-Tract]" value="<?php echo $account_options->{'RequireAuth-Property-Tract'}; ?>" />
+						<input type="checkbox" class="dsidxpress-api-checkbox" id="dsidxpress-RequireAuth-Property-Tract-check" <?php echo @$account_options->{'RequireAuth-Property-Tract'} == "true" ? "checked=\"checked\"" : "" ?> />
+					</td>
+				</tr>
+				<tr>
+					<th>
+						<label for="dsidxpress-RequireAuth-Details-Schools-check">Require login to view schools</label>
+					</th>
+					<td>
+						<input type="hidden" id="dsidxpress-RequireAuth-Details-Schools" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[RequireAuth-Details-Schools]" value="<?php echo $account_options->{'RequireAuth-Details-Schools'}; ?>" />
+						<input type="checkbox" class="dsidxpress-api-checkbox" id="dsidxpress-RequireAuth-Details-Schools-check" <?php echo @$account_options->{'RequireAuth-Details-Schools'} == "true" ? "checked=\"checked\"" : "" ?> />
+					</td>
+				</tr>
+				<tr>
+					<th>
+						<label for="dsidxpress-RequireAuth-Details-PriceChanges-check">Require login to view price changes</label>
+					</th>
+					<td>
+						<input type="hidden" id="dsidxpress-RequireAuth-Details-PriceChanges" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[RequireAuth-Details-PriceChanges]" value="<?php echo $account_options->{'RequireAuth-Details-PriceChanges'}; ?>" />
+						<input type="checkbox" class="dsidxpress-api-checkbox" id="dsidxpress-RequireAuth-Details-PriceChanges-check" <?php echo @$account_options->{'RequireAuth-Details-PriceChanges'} == "true" ? "checked=\"checked\"" : "" ?> />
+					</td>
+				</tr>
+				<tr>
+					<th>
+						<label for="dsidxpress-RequireAuth-Details-Features-check">Require login to view features</label>
+					</th>
+					<td>
+						<input type="hidden" id="dsidxpress-RequireAuth-Details-Features" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[RequireAuth-Details-Features]" value="<?php echo $account_options->{'RequireAuth-Details-Features'}; ?>" />
+						<input type="checkbox" class="dsidxpress-api-checkbox" id="dsidxpress-RequireAuth-Details-Features-check" <?php echo @$account_options->{'RequireAuth-Details-Features'} == "true" ? "checked=\"checked\"" : "" ?> />
+					</td>
+				</tr>
+				<tr>
+					<th>
+						<label for="dsidxpress-RequireAuth-Property-DaysOnMarket-check">Require login to view days on market</label>
+					</th>
+					<td>
+						<input type="hidden" id="dsidxpress-RequireAuth-Property-DaysOnMarket" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[RequireAuth-Property-DaysOnMarket]" value="<?php echo $account_options->{'RequireAuth-Property-DaysOnMarket'}; ?>" />
+						<input type="checkbox" class="dsidxpress-api-checkbox" id="dsidxpress-RequireAuth-Property-DaysOnMarket-check" <?php echo @$account_options->{'RequireAuth-Property-DaysOnMarket'} == "true" ? "checked=\"checked\"" : "" ?> />
+					</td>
+				</tr>
+				<tr>
+					<th>
+						<label for="dsidxpress-RequireAuth-Property-LastUpdated-check">Require login to view last update date</label>
+					</th>
+					<td>
+						<input type="hidden" id="dsidxpress-RequireAuth-Property-LastUpdated" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[RequireAuth-Property-LastUpdated]" value="<?php echo $account_options->{'RequireAuth-Property-LastUpdated'}; ?>" />
+						<input type="checkbox" class="dsidxpress-api-checkbox" id="dsidxpress-RequireAuth-Property-LastUpdated-check" <?php echo @$account_options->{'RequireAuth-Property-LastUpdated'} == "true" ? "checked=\"checked\"" : "" ?> />
+					</td>
+				</tr>
+				<tr>
+					<th>
+						<label for="dsidxpress-RequireAuth-Property-YearBuilt-check">Require login to view year built</label>
+					</th>
+					<td>
+						<input type="hidden" id="dsidxpress-RequireAuth-Property-YearBuilt" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[RequireAuth-Property-YearBuilt]" value="<?php echo $account_options->{'RequireAuth-Property-YearBuilt'}; ?>" />
+						<input type="checkbox" class="dsidxpress-api-checkbox" id="dsidxpress-RequireAuth-Property-YearBuilt-check" <?php echo @$account_options->{'RequireAuth-Property-YearBuilt'} == "true" ? "checked=\"checked\"" : "" ?> />
+					</td>
+				</tr>
+			</table>
+			<?php endif ?>
+			<?php if(!defined('ZPRESS_API') || ZPRESS_API == '') : ?>
 			<h4>Contact Information</h4>
 			<span class="description">This information is used in identifying you to the website visitor. For example: Listing PDF Printouts, Contact Forms, and Dwellicious</span>
 			<table class="form-table">
@@ -262,107 +412,47 @@ HTML;
 					</td>
 				</tr>
 			</table>
-
-			<h4>XML Sitemaps Locations</h4>
-			<?php if ( in_array('google-sitemap-generator/sitemap.php', get_option('active_plugins'))) {?>
-			<span class="description">Add the Locations (City, Community, Tract, or Zip) to your XML Sitemap by adding them via the dialogs below.</span>
-			<div class="dsidxpress-SitemapLocations stuffbox">
-				<script>dsIDXpressOptions.UrlBase = '<?php echo $urlBase; ?>'; dsIDXpressOptions.OptionPrefix = '<?php echo DSIDXPRESS_OPTION_NAME; ?>';</script>
-				<h3><span class="hndle">Locations for Sitemap</span></h3>
-				<div class="inside">
-					<ul id="dsidxpress-SitemapLocations">
-					<?php
-						if (isset($options["SitemapLocations"]) && is_array($options["SitemapLocations"])) {
-							$location_index = 0;
-
-							usort($options["SitemapLocations"], array("dsSearchAgent_Admin", "CompareListObjects"));
-
-							foreach ($options["SitemapLocations"] as $key => $value) {
-								$location_sanitized = urlencode(strtolower(str_replace(array("-", " "), array("_", "-"), $value["value"])));
-								?>
-								<li class="ui-state-default dsidxpress-SitemapLocation">
-									<div class="arrow"><span class="dsidxpress-up_down"></span></div>
-									<div class="value">
-										<a href="<?php echo $urlBase . $value["type"] .'/'. $location_sanitized;?>" target="_blank"><?php echo $value["value"]; ?></a>
-										<input type="hidden" name="<?php echo DSIDXPRESS_OPTION_NAME ; ?>[SitemapLocations][<?php echo $location_index; ?>][value]" value="<?php echo $value["value"]; ?>" />
-									</div>
-									<div class="priority">
-										Priority: <select name="<?php echo DSIDXPRESS_OPTION_NAME ; ?>[SitemapLocations][<?php echo $location_index; ?>][priority]">
-											<option value="0.0"<?php echo ($value["priority"] == "0.0" ? ' selected="selected"' : '') ?>>0.0</option>
-											<option value="0.1"<?php echo ($value["priority"] == "0.1" ? ' selected="selected"' : '') ?>>0.1</option>
-											<option value="0.2"<?php echo ($value["priority"] == "0.2" ? ' selected="selected"' : '') ?>>0.2</option>
-											<option value="0.3"<?php echo ($value["priority"] == "0.3" ? ' selected="selected"' : '') ?>>0.3</option>
-											<option value="0.4"<?php echo ($value["priority"] == "0.4" ? ' selected="selected"' : '') ?>>0.4</option>
-											<option value="0.5"<?php echo ($value["priority"] == "0.5" || !isset($value["priority"]) ? ' selected="selected"' : '') ?>>0.5</option>
-											<option value="0.6"<?php echo ($value["priority"] == "0.6" ? ' selected="selected"' : '') ?>>0.6</option>
-											<option value="0.7"<?php echo ($value["priority"] == "0.7" ? ' selected="selected"' : '') ?>>0.7</option>
-											<option value="0.8"<?php echo ($value["priority"] == "0.8" ? ' selected="selected"' : '') ?>>0.8</option>
-											<option value="0.9"<?php echo ($value["priority"] == "0.9" ? ' selected="selected"' : '') ?>>0.9</option>
-											<option value="1.0"<?php echo ($value["priority"] == "1.0" ? ' selected="selected"' : '') ?>>1.0</option>
-										</select>
-									</div>
-									<div class="type"><select name="<?php echo DSIDXPRESS_OPTION_NAME ; ?>[SitemapLocations][<?php echo $location_index; ?>][type]">
-										<option value="city"<?php echo ($value["type"] == "city" ? ' selected="selected"' : ''); ?>>City</option>
-										<option value="community"<?php echo ($value["type"] == "community" ? ' selected="selected"' : ''); ?>>Community</option>
-										<option value="tract"<?php echo ($value["type"] == "tract" ? ' selected="selected"' : ''); ?>>Tract</option>
-										<option value="zip"<?php echo ($value["type"] == "zip" ? ' selected="selected"' : ''); ?>>Zip Code</option>
-									</select></div>
-									<div class="action"><input type="button" value="Remove" class="button" onclick="dsIDXpressOptions.RemoveSitemapLocation(this)" /></div>
-									<div style="clear:both"></div>
-								</li>
-								<?php
-								$location_index++;
-							}
-						}
-					?>
-					</ul>
-
-					<div class="dsidxpress-SitemapLocationsNew">
-						<div class="arrow">New:</div>
-						<div class="value"><input type="text" id="dsidxpress-NewSitemapLocation" maxlength="49" value="" /></div>
-						<div class="type">
-							<select class="widefat" id="dsidxpress-NewSitemapLocationType"">
-								<option value="city">City</option>
-								<option value="community">Community</option>
-								<option value="tract">Tract</option>
-								<option value="zip">Zip Code</option>
-							</select>
-						</div>
-						<div class="action">
-							<input type="button" class="button" id="dsidxpress-NewSitemapLocationAdd" value="Add" onclick="dsIDXpressOptions.AddSitemapLocation()" />
-						</div>
-						<div style="clear:both"></div>
-					</div>
-				</div>
-			</div>
-
-			<span class="description">"Priority" gives a hint to the web crawler as to what you think the importance of each page is. <code>1</code> being highest and <code>0</code> lowest.</span>
-
-			<h4>XML Sitemaps Options</h4>
+			
+			<h4>Copyright Settings</h4>
+			<span class="description">This setting allows you to remove links to <a href="http://www.diversesolutions.com">Diverse Solutions</a> that are included in the IDX disclaimer.</span>
 			<table class="form-table">
 				<tr>
 					<th>
-						<label for="<?php echo DSIDXPRESS_OPTION_NAME ; ?>[SitemapFrequency]">Frequency:</label>
+						<label for="dsidxpress-RemoveDsDisclaimerLinks">Remove Diverse Solutions links</label>
 					</th>
 					<td>
-						<select name="<?php echo DSIDXPRESS_OPTION_NAME ; ?>[SitemapFrequency]" id="<?php echo DSIDXPRESS_OPTION_NAME ; ?>_SitemapFrequency">
-							<!--<option value="always"<?php echo ($options["SitemapFrequency"] == "always" ? ' selected="selected"' : '') ?>>Always</option> -->
-							<option value="hourly"<?php echo ($options["SitemapFrequency"] == "hourly" ? 'selected="selected"' : '') ?>>Hourly</option>
-							<option value="daily"<?php echo ($options["SitemapFrequency"] == "daily" || !isset($options["SitemapFrequency"]) ? 'selected="selected"' : '') ?>>Daily</option>
-							<!--<option value="weekly"<?php echo ($options["SitemapFrequency"] == "weekly" ? 'selected="selected"' : '') ?>>Weekly</option>
-							<option value="monthly"<?php echo ($options["SitemapFrequency"] == "monthly" ? 'selected="selected"' : '') ?>>Monthly</option>
-							<option value="yearly"<?php echo ($options["SitemapFrequency"] == "yearly" ? 'selected="selected"' : '') ?>>Yearly</option>
-							<option value="never"<?php echo ($options["SitemapFrequency"] == "never" ? 'selected="selected"' : '') ?>>Never</option> -->
-						</select>
-						<span class="description">The "hint" to send to the crawler. This does not guarantee frequency, crawler will do what they want.</span>
+						<input type="checkbox" id="dsidxpress-RemoveDsDisclaimerLinks" name="<?php echo DSIDXPRESS_OPTION_NAME; ?>[RemoveDsDisclaimerLinks]" value="Y"<?php if (isset($options['RemoveDsDisclaimerLinks']) && $options['RemoveDsDisclaimerLinks'] == 'Y'): ?> checked="checked"<?php endif ?> />
 					</td>
 				</tr>
 			</table>
-			<?php } else { ?>
-				<span class="description">To enable this functionality, install and activate this plugin: <a class="thickbox onclick" title="Google XML Sitemaps" href="<?php echo admin_url('plugin-install.php?tab=plugin-information&plugin=google-sitemap-generator&TB_iframe=true&width=640')?>" target="_blank">Google XML Sitemaps</a></span>
-			<?php }?>
-
-			<?php if(isset($account_options->EnableMemcacheInDsIdxPress) && strtolower($account_options->EnableMemcacheInDsIdxPress) == "true") {?>
+			<?php endif; ?>
+			<?php if(defined('ZPRESS_API') && ZPRESS_API != '') : ?>
+			<h4>My Listings</h4>
+			<span class="description">When filled in, these settings will make pages for "My Listings" and "My Office Listings" available in your navigation menus page list.</span>
+			<table class="form-table">
+				<tr>
+					<th>
+						<label for="dsidxpress-AgentID">Agent ID:</label>
+					</th>
+					<td>
+						<input type="hidden" id="dsidxpress-API-AgentID" maxlength="35" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[AgentID]" value="<?php echo (!empty($options['AgentID']) ? $options['AgentID'] : $account_options->AgentID); ?>" /><br />
+						<input type="text" id="dsidxpress-AgentID" maxlength="35" name="<?php echo DSIDXPRESS_OPTION_NAME; ?>[AgentID]" value="<?php echo (!empty($options['AgentID']) ? $options['AgentID'] : $account_options->AgentID); ?>" /><br />
+						<span class="description"></span>
+					</td>
+				</tr>
+				<tr>
+					<th>
+						<label for="dsidxpress-OfficeID">Office ID:</label>
+					</th>
+					<td>
+						<input type="hidden" id="dsidxpress-API-OfficeID" maxlength="35" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[OfficeID]" value="<?php echo (!empty($options['OfficeID']) ? $options['OfficeID'] : $account_options->OfficeID); ?>" /><br />
+						<input type="text" id="dsidxpress-OfficeID" maxlength="35" name="<?php echo DSIDXPRESS_OPTION_NAME; ?>[OfficeID]" value="<?php echo (!empty($options['OfficeID']) ? $options['OfficeID'] : $account_options->OfficeID); ?>" /><br />
+						<span class="description"></span>
+					</td>
+				</tr>
+			</table>
+			<?php endif; ?>
+			<?php if((!defined('ZPRESS_API') || ZPRESS_API == '') && isset($account_options->EnableMemcacheInDsIdxPress) && strtolower($account_options->EnableMemcacheInDsIdxPress) == "true") {?>
 			<h4>Memcache Options</h4>
 			<?php if(!class_exists('Memcache') && !class_exists('Memcached')) {?>
 			<span class="description">Warning PHP is not configured with a Memcache module. See <a href="http://www.php.net/manual/en/book.memcache.php" target="_blank">here</a> or <a href="http://www.php.net/manual/en/book.memcached.php" target="_blank">here</a> to implement one.</span>
@@ -373,7 +463,7 @@ HTML;
 						<label for="dsidxpress-MemcacheHost">Host:</label>
 					</th>
 					<td>
-						<input type="text" id="dsidxpress-MemcacheHost" maxlength="49" name="<?php echo DSIDXPRESS_OPTION_NAME; ?>[MemcacheHost]" value="<?php echo $options["MemcacheHost"]; ?>" /><br />
+						<input type="text" id="dsidxpress-MemcacheHost" maxlength="49" name="<?php echo DSIDXPRESS_OPTION_NAME; ?>[MemcacheHost]" value="<?php echo @$options["MemcacheHost"]; ?>" /><br />
 						<span class="description"></span>
 					</td>
 				</tr>
@@ -382,14 +472,14 @@ HTML;
 						<label for="dsidxpress-MemcachePort">Port:</label>
 					</th>
 					<td>
-						<input type="text" id="dsidxpress-MemcachePort" maxlength="49" name="<?php echo DSIDXPRESS_OPTION_NAME; ?>[MemcachePort]" value="<?php echo $options["MemcachePort"]; ?>" /><br />
+						<input type="text" id="dsidxpress-MemcachePort" maxlength="49" name="<?php echo DSIDXPRESS_OPTION_NAME; ?>[MemcachePort]" value="<?php echo @$options["MemcachePort"]; ?>" /><br />
 						<span class="description"></span>
 					</td>
 				</tr>
 			</table>
 			<?php }?>
 			<p class="submit">
-				<input type="submit" class="button-primary" name="Submit" value="Save Options and Sitemaps" />
+				<input type="submit" class="button-primary" name="Submit" value="Save Options" />
 			</p>
 		</form>
 	</div><?php
@@ -398,10 +488,12 @@ HTML;
 	static function Activation() {
 		$options = get_option(DSIDXPRESS_OPTION_NAME);
 
-		if ($options["PrivateApiKey"]) {
+		if (@$options["PrivateApiKey"]) {
 			$diagnostics = self::RunDiagnostics($options);
-
-			$previous_options = $options["Activated"].'|'.$options["HasSearchAgentPro"].'|'.$options["DetailsRequiresRegistration"];
+			
+			$previous_options  = (isset($options["Activated"])) ? $options["Activated"] : '';
+			$previous_options .= (isset($options["HasSearchAgentPro"])) ? '|'.$options["HasSearchAgentPro"] : '';
+			$previous_options .= (isset($options["DetailsRequiresRegistration"])) ? '|'.$options["DetailsRequiresRegistration"] : '';
 			$new_options = $diagnostics["DiagnosticsSuccessful"].'|'.$diagnostics["HasSearchAgentPro"].'|'.$diagnostics["DetailsRequiresRegistration"];
 
 			$options["Activated"] = $diagnostics["DiagnosticsSuccessful"];
@@ -416,8 +508,8 @@ HTML;
 ?>
 
 	<div class="wrap metabox-holder">
-		<div class="icon32" id="icon-options-general"><br/></div>
-		<h2>dsIDXpress Activation</h2>
+		<?php screen_icon(); ?>
+		<h2>IDX Activation</h2>
 		<form method="post" action="options.php">
 			<?php settings_fields("dsidxpress_activation"); ?>
 			<h3>Plugin activation</h3>
@@ -454,26 +546,26 @@ HTML;
 						<label for="option-FullApiKey">Activation key:</label>
 					</th>
 					<td>
-						<input type="text" id="option-FullApiKey" maxlength="49" name="<?php echo DSIDXPRESS_OPTION_NAME; ?>[FullApiKey]" value="<?php echo $formattedApiKey ?>" />
-					</td>
-				</tr>
-				<tr>
-					<th style="width: 110px;">Current status:</th>
-					<td class="dsidx-status dsidx-<?php echo $diagnostics["DiagnosticsSuccessful"] ? "success" : "failure" ?>">
-						** <?php echo $diagnostics && $diagnostics["DiagnosticsSuccessful"] ? "ACTIVE" : "INACTIVE" ?> **
-					</td>
-				</tr>
-			</table>
-			<p class="submit">
-				<input type="submit" class="button-primary" name="Submit" value="Activate Plugin For This Blog / Server" />
-			</p>
+						<input type="text" id="option-FullApiKey" maxlength="49" name="<?php echo DSIDXPRESS_OPTION_NAME; ?>[FullApiKey]" value="<?php echo @$formattedApiKey ?>" />
+						</td>
+						</tr>
+						<tr>
+						<th style="width: 110px;">Current status:</th>
+						<td class="dsidx-status dsidx-<?php echo @$diagnostics["DiagnosticsSuccessful"] ? "success" : "failure" ?>">
+						** <?php echo @$diagnostics && @$diagnostics["DiagnosticsSuccessful"] ? "ACTIVE" : "INACTIVE" ?> **
+						</td>
+						</tr>
+						</table>
+						<p class="submit">
+						<input type="submit" class="button-primary" name="Submit" value="Activate Plugin For This Blog / Server" />
+						</p>
 
-<?php
-		if ($diagnostics) {
-?>
+						<?php
+						if (@$diagnostics) {
+						?>
 			<h3>Diagnostics</h3>
 <?php
-			if (isset($diagnostics["error"])) {
+if (isset($diagnostics["error"])) {
 ?>
 			<p class="error">
 				It seems that there was an issue while trying to load the diagnostics from Diverse Solutions' servers. It's possible that our servers
@@ -481,7 +573,7 @@ HTML;
 				<a href="http://www.diversesolutions.com/support.htm" target="_blank">contact us</a>.
 			</p>
 <?php
-			} else {
+} else {
 ?>
 			<table class="form-table" style="margin-bottom: 15px;">
 				<tr>
@@ -489,85 +581,522 @@ HTML;
 						<a href="http://wiki.dsidxpress.com/wiki:installing?s[]=Account%20active#diagnostics" target="_blank">Account active?</a>
 					</th>
 					<td class="dsidx-status dsidx-<?php echo $diagnostics["IsAccountValid"] ? "success" : "failure" ?>">
-						<?php echo $diagnostics["IsAccountValid"] ? "Yes" : "No" ?>
+					<?php echo $diagnostics["IsAccountValid"] ? "Yes" : "No" ?>
 					</td>
 
 					<th style="width: 290px;">
-						<a href="http://wiki.dsidxpress.com/wiki:installing?s[]=Activation%20key%20active#diagnostics" target="_blank">Activation key active?</a>
+					<a href="http://wiki.dsidxpress.com/wiki:installing?s[]=Activation%20key%20active#diagnostics" target="_blank">Activation key active?</a>
 					</th>
 					<td class="dsidx-status dsidx-<?php echo $diagnostics["IsApiKeyValid"] ? "success" : "failure" ?>">
-						<?php echo $diagnostics["IsApiKeyValid"] ? "Yes" : "No" ?>
+					<?php echo $diagnostics["IsApiKeyValid"] ? "Yes" : "No" ?>
 					</td>
-				</tr>
-				<tr>
+					</tr>
+					<tr>
 					<th>
-						<a href="http://wiki.dsidxpress.com/wiki:installing?s[]=Account%20authorized%20for%20this%20MLS#diagnostics" target="_blank">Account authorized for this MLS?</a>
+					<a href="http://wiki.dsidxpress.com/wiki:installing?s[]=Account%20authorized%20for%20this%20MLS#diagnostics" target="_blank">Account authorized for this MLS?</a>
 					</th>
 					<td class="dsidx-status dsidx-<?php echo $diagnostics["IsAccountAuthorizedToMLS"] ? "success" : "failure" ?>">
-						<?php echo $diagnostics["IsAccountAuthorizedToMLS"] ? "Yes" : "No" ?>
+					<?php echo $diagnostics["IsAccountAuthorizedToMLS"] ? "Yes" : "No" ?>
 					</td>
 
 					<th>
-						<a href="http://wiki.dsidxpress.com/wiki:installing?s[]=Activation%20key%20authorized%20for%20this%20blog#diagnostics" target="_blank">Activation key authorized for this blog?</a>
+					<a href="http://wiki.dsidxpress.com/wiki:installing?s[]=Activation%20key%20authorized%20for%20this%20blog#diagnostics" target="_blank">Activation key authorized for this blog?</a>
 					</th>
 					<td class="dsidx-status dsidx-<?php echo $diagnostics["IsApiKeyAuthorizedToUri"] ? "success" : "failure" ?>">
-						<?php echo $diagnostics["IsApiKeyAuthorizedToUri"] ? "Yes" : "No" ?>
+					<?php echo $diagnostics["IsApiKeyAuthorizedToUri"] ? "Yes" : "No" ?>
 					</td>
-				</tr>
-				<tr>
+					</tr>
+					<tr>
 					<th>
-						<a href="http://wiki.dsidxpress.com/wiki:installing?s[]=Clock%20accurate%20on%20this%20server#diagnostics" target="_blank">Clock accurate on this server?</a>
+					<a href="http://wiki.dsidxpress.com/wiki:installing?s[]=Clock%20accurate%20on%20this%20server#diagnostics" target="_blank">Clock accurate on this server?</a>
 					</th>
 					<td class="dsidx-status dsidx-<?php echo $diagnostics["ClockIsAccurate"] ? "success" : "failure" ?>">
-						<?php echo $diagnostics["ClockIsAccurate"] ? "Yes" : "No" ?>
+					<?php echo $diagnostics["ClockIsAccurate"] ? "Yes" : "No" ?>
 					</td>
 
 					<th>
-						<a href="http://wiki.dsidxpress.com/wiki:installing?s[]=Activation%20key%20authorized%20for%20this%20server#diagnostics" target="_blank">Activation key authorized for this server?</a>
+					<a href="http://wiki.dsidxpress.com/wiki:installing?s[]=Activation%20key%20authorized%20for%20this%20server#diagnostics" target="_blank">Activation key authorized for this server?</a>
 					</th>
 					<td class="dsidx-status dsidx-<?php echo $diagnostics["IsApiKeyAuthorizedToIP"] ? "success" : "failure" ?>">
-						<?php echo $diagnostics["IsApiKeyAuthorizedToIP"] ? "Yes" : "No" ?>
+					<?php echo $diagnostics["IsApiKeyAuthorizedToIP"] ? "Yes" : "No" ?>
 					</td>
-				</tr>
-				<tr>
+					</tr>
+					<tr>
 					<th>
-						<a href="http://wiki.dsidxpress.com/wiki:installing?s[]=WordPress%20link%20structure%20ok#diagnostics" target="_blank">WordPress link structure ok?</a>
+					<a href="http://wiki.dsidxpress.com/wiki:installing?s[]=WordPress%20link%20structure%20ok#diagnostics" target="_blank">WordPress link structure ok?</a>
 					</th>
 					<td class="dsidx-status dsidx-<?php echo $diagnostics["UrlInterceptSet"] ? "success" : "failure" ?>">
-						<?php echo $diagnostics["UrlInterceptSet"] ? "Yes" : "No" ?>
+					<?php echo $diagnostics["UrlInterceptSet"] ? "Yes" : "No" ?>
 					</td>
 
 					<th>
-						<a href="http://wiki.dsidxpress.com/wiki:installing?s[]=Under%20monthly%20API%20call%20limit#diagnostics" target="_blank">Under monthly API call limit?</a>
+					<a href="http://wiki.dsidxpress.com/wiki:installing?s[]=Under%20monthly%20API%20call%20limit#diagnostics" target="_blank">Under monthly API call limit?</a>
 					</th>
 					<td class="dsidx-status dsidx-<?php echo $diagnostics["UnderMonthlyCallLimit"] ? "success" : "failure" ?>">
-						<?php echo $diagnostics["UnderMonthlyCallLimit"] ? "Yes" : "No" ?>
+					<?php echo $diagnostics["UnderMonthlyCallLimit"] ? "Yes" : "No" ?>
+					</td>
+					</tr>
+					<tr>
+					<th>
+					<a href="http://wiki.dsidxpress.com/wiki:installing?s[]=Server%20PHP%20version%20at%20least%205.2#diagnostics" target="_blank">Server PHP version at least 5.2?</a>
+					</th>
+					<td class="dsidx-status dsidx-<?php echo $diagnostics["PhpVersionAcceptable"] ? "success" : "failure" ?>">
+					<?php echo $diagnostics["PhpVersionAcceptable"] ? "Yes" : "No" ?>
+					</td>
+
+					<th>
+					<a href="http://wiki.dsidxpress.com/wiki:installing?s[]=Would%20you%20like%20fries%20with%20that#diagnostics" target="_blank">Would you like fries with that?</a>
+					</th>
+					<td class="dsidx-status dsidx-success">
+					Yes <!-- you kidding? we ALWAYS want fries. mmmm, friessssss -->
+					</td>
+					</tr>
+					</table>
+					<?php
+				}
+			}
+			?>
+
+
+		</form>
+	</div>
+	
+	
+	
+	
+<?php
+	}
+
+	static function FilterOptions() {
+		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("AccountOptions", array(), false, 0);
+		if (!empty($apiHttpResponse["errors"]) || $apiHttpResponse["response"]["code"] != "200")
+			wp_die("We're sorry, but we ran into a temporary problem while trying to load the account data. Please check back soon.", "Account data load error");
+		else
+			$account_options = json_decode($apiHttpResponse["body"]);
+		$urlBase = get_home_url();
+
+		$property_types = \dsSearchAgent_ApiRequest::FetchData('AccountSearchSetupPropertyTypes', array(), false, 60 * 60 * 24);
+		$default_types = \dsSearchAgent_ApiRequest::FetchData('DefaultPropertyTypes', array(), false,  60 * 60 * 24);
+
+		if (substr($urlBase, strlen($urlBase), 1) != "/") $urlBase .= "/";
+			$urlBase .= dsSearchAgent_Rewrite::GetUrlSlug(); ?>
+		<div class="wrap metabox-holder">
+			<?php screen_icon(); ?>
+			<h2>Filters</h2>
+			<?php if (isset($_REQUEST['settings-updated']) && $_REQUEST['settings-updated'] == 'true') : ?>
+			<div class="updated"><p><strong><?php _e( 'Options saved' ); ?></strong></p></div>
+			<?php endif; ?>
+			<form method="post" action="options.php">
+				<?php settings_fields("dsidxpress_api_options"); ?>
+				<h4>Filter Results Settings</h4>
+				<span class="description">These settings will filter results.</span>
+				<table class="form-table">
+					<tr>
+						<th>
+							<label for="dsidxpress-FirstName">Restrict Results to a Zipcode:</label>
+						</th>
+						<td>
+							<textarea class="linkInputTextArea" id="dsidxpress-RestrictResultsToZipcode" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[RestrictResultsToZipcode]"><?php echo ereg_replace(",", "\n", $account_options->RestrictResultsToZipcode); ?></textarea><br />
+							<span class="description">If you need/want to restrict dsIDXpress to a specific zipcode, put the zipcode in this field. Separate a list of values by hitting the 'Enter' key after each entry.</span>
+						</td>
+					</tr>
+					<tr>
+						<th>
+							<label for="dsidxpress-FirstName">Restrict Results to a City:</label>
+						</th>
+						<td>
+							<textarea class="linkInputTextArea" id="dsidxpress-RestrictResultsToCity" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[RestrictResultsToCity]"><?php echo ereg_replace(",", "\n", $account_options->RestrictResultsToCity); ?></textarea><br />
+							<span class="description">If you need/want to restrict dsIDXpress to a specific city, put the name in this field. Separate a list of values by hitting the 'Enter' key after each entry. </span>
+						</td>
+					</tr>
+					<tr>
+						<th>
+							<label for="dsidxpress-FirstName">Restrict Results to a County:</label>
+						</th>
+						<td>
+							<textarea class="linkInputTextArea" id="dsidxpress-RestrictResultsToCounty" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[RestrictResultsToCounty]"><?php echo ereg_replace(",", "\n", $account_options->RestrictResultsToCounty); ?></textarea><br />
+							<span class="description">If you need/want to restrict dsIDXpress to a specific county, put the name in this field. Separate a list of values by hitting the 'Enter' key after each entry. </span>
+						</td>
+					</tr>
+					<tr>
+						<th>
+							<label for="dsidxpress-FirstName">Restrict Results to a State:</label>
+						</th>
+						<td>
+							<textarea class="linkInputTextArea" id="dsidxpress-RestrictResultsToState" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[RestrictResultsToState]"><?php echo ereg_replace(",", "\n", $account_options->RestrictResultsToState); ?></textarea><br />
+							<span class="description">If you need/want to restrict dsIDXpress to a specific state, put the abbreviation in this field. Separate a list of values by hitting the 'Enter' key after each entry. <a href="http://en.wikipedia.org/wiki/List_of_U.S._state_abbreviations" target="_blank">List of U.S. State Abbreviations</a></span>
+						</td>
+					</tr>
+					<tr>
+						<th>
+							<label for="dsidxpress-FirstName">Restrict Results to a Property Type:</label>
+						</th>
+						<td>
+							<input type="hidden" class="linkInputTextArea" id="dsidxpress-RestrictResultsToPropertyType" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[RestrictResultsToPropertyType]" value="<?php echo ereg_replace(",", "\n", $account_options->RestrictResultsToPropertyType); ?>"></input>
+							<div id="dsidxpress-property-types" name="dsidxpress-property-types">
+								<?php
+									$property_types = json_decode($property_types["body"]);
+									$default_types = json_decode($default_types["body"]);
+
+									foreach ($property_types as $property_type) {
+										$name = htmlentities($property_type->DisplayName);
+										$id = $property_type->SearchSetupPropertyTypeID;
+										$opt_checked = "";
+										if(isset($account_options->RestrictResultsToPropertyType)){//already a value, ignore defaults
+											if(strstr(ereg_replace(",", "\n", $account_options->RestrictResultsToPropertyType), (string)$id)> -1){
+												$opt_checked = "checked";
+											}
+										}
+										else{//nothing has been saved yet, use the defaults from api
+											foreach ($default_types as $default_type) {
+												if(htmlentities($default_type->SearchSetupPropertyTypeID) == (string)$id){
+													$opt_checked = "checked";
+													break;
+												}
+											}
+										}
+										echo '<input class="dsidxpress-proptype-filter" '.$opt_checked.' type="checkbox" value="' . $id . '"/>'. $name . '<br>';
+									}
+								?>
+							</div>
+							<span class="description">If you need/want to restrict dsIDXpress to specific property types, select the types you would like to have return results.</span>
+						</td>
+					</tr>
+				</table>
+				<br />
+				<p class="submit">
+					<input type="submit" class="button-primary" name="Submit" value="Save Options" />
+				</p>
+			</form>
+		</div><?php
+	}
+	
+	static function SEOSettings() {
+		$options = get_option(DSIDXPRESS_OPTION_NAME);
+		
+		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("AccountOptions", array(), false, 0);
+		if (!empty($apiHttpResponse["errors"]) || $apiHttpResponse["response"]["code"] != "200")
+			wp_die("We're sorry, but we ran into a temporary problem while trying to load the account data. Please check back soon.", "Account data load error");
+		else
+			$account_options = json_decode($apiHttpResponse["body"]);
+		$urlBase = get_home_url();
+		if (substr($urlBase, strlen($urlBase), 1) != "/") $urlBase .= "/";
+			$urlBase .= dsSearchAgent_Rewrite::GetUrlSlug(); ?>
+		<div class="wrap metabox-holder">
+			<?php screen_icon(); ?>
+			<h2>SEO Settings</h2>
+			<?php if (isset($_REQUEST['settings-updated']) && $_REQUEST['settings-updated'] == 'true') : ?>
+			<div class="updated"><p><strong><?php _e( 'Options saved' ); ?></strong></p></div>
+			<?php endif; ?>
+			<form method="post" action="options.php">
+			<?php settings_fields("dsidxpress_api_options"); ?>
+			<h4>SEO Settings</h4>
+			<span class="description">These settings are used to improve the accuracy of how search engines find and list this site.</span>
+			<div style="padding-left: 30px;">
+			<h4>Details Page Settings</h4>
+			<span class="description">These settings apply to any page holding details for a specific property. <br /><br />
+				You may use %city%, %state%, %zip%, %county%, %tract%, %community% and/or %zip% in any of the fields below and <br />
+				they will display as the relevant value. For example: Homes for sale in %zip%. will appear as Homes for sale in 92681.
+			</span>
+			<br />
+			<table class="form-table">
+				<tr>
+					<th><label for="dsidxpress-DescMetaTag">Description Meta Tag:</th>
+					<td>
+						<input type="text" id="dsidxpress-DescMetaTag" size="50" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[dsIDXPressSEODescription]"  value="<?php echo $account_options->dsIDXPressSEODescription; ?>" /><br />
+						<span class="description">This text will be used as the summary displayed in search results.</span>
 					</td>
 				</tr>
 				<tr>
-					<th>
-						<a href="http://wiki.dsidxpress.com/wiki:installing?s[]=Server%20PHP%20version%20at%20least%205.2#diagnostics" target="_blank">Server PHP version at least 5.2?</a>
-					</th>
-					<td class="dsidx-status dsidx-<?php echo $diagnostics["PhpVersionAcceptable"] ? "success" : "failure" ?>">
-						<?php echo $diagnostics["PhpVersionAcceptable"] ? "Yes" : "No" ?>
+					<th><label for="dsidxpress-KeywordMetaTag">Keyword Meta Tag:</th>
+					<td>
+						<input type="text" id="dsidxpress-KeywordMetaTag" size="50" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[dsIDXPressSEOKeywords]" value="<?php echo $account_options->dsIDXPressSEOKeywords; ?>" /><br />
+						<span class="description">This value aids search engines in categorizing property pages.</span>
 					</td>
-
-					<th>
-						<a href="http://wiki.dsidxpress.com/wiki:installing?s[]=Would%20you%20like%20fries%20with%20that#diagnostics" target="_blank">Would you like fries with that?</a>
-					</th>
-					<td class="dsidx-status dsidx-success">
-						Yes <!-- you kidding? we ALWAYS want fries. mmmm, friessssss -->
+				</tr>
+				<tr>
+					<th><label for="dsidxpress-DetailsTitle">Title for Property:</th>
+					<td>
+						<input type="text" id="dsidxpress-DetailsTitle" size="50" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[dsIDXPressSEODetailsTitle]" value="<?php echo $account_options->dsIDXPressSEODetailsTitle; ?>" /><br />
+						<span class="description">This option will override the default page title.</span>
 					</td>
 				</tr>
 			</table>
-<?php
-			}
-		}
-?>
+			<h4>Results Page Settings</h4>
+			<span class="description">
+				These settings apply to any page holding a list of properties queried through a url. You may use %location% in the fields and the relevant value will display.
+			</span>
+			<br />
+			<table class="form-table">
+				<tr>
+					<th><label for="dsidxpress-DescMetaTag">Description Meta Tag:</th>
+					<td>
+						<input type="text" id="dsidxpress-DescMetaTag" size="50" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[dsIDXPressSEOResultsDescription]"  value="<?php echo $account_options->dsIDXPressSEOResultsDescription; ?>" /><br />
+						<span class="description">This text will be used as the summary displayed in search results </span>
+					</td>
+				</tr>
+				<tr>
+					<th><label for="dsidxpress-KeywordMetaTag">Keyword Meta Tag:</th>
+					<td>
+						<input type="text" id="dsidxpress-KeywordMetaTag" size="50" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[dsIDXPressSEOResultsKeywords]" value="<?php echo $account_options->dsIDXPressSEOResultsKeywords; ?>" /><br />
+						<span class="description">This value aids search engines in categorizing property result pages.</span>
+					</td>
+				</tr>
+				<tr>
+					<th><label for="dsidxpress-ResultsTitle" >Title for Property:</th>
+					<td>
+						<input type="text" id="dsidxpress-ResultsTitle" size="50" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[dsIDXPressSEOResultsTitle]" value="<?php echo $account_options->dsIDXPressSEOResultsTitle; ?>" /><br />
+						<span class="description">This option will override the default page title.</span>
+					</td>
+				</tr>
+			</table>
+			
+			</div>
+			<br />
+			<p class="submit">
+				<input type="submit" class="button-primary" name="Submit" value="Save Options" />
+			</p>
 		</form>
-	</div>
-<?php
+	</div><?php
 	}
+	
+	static function XMLSitemaps() {
+		$options = get_option(DSIDXPRESS_OPTION_NAME);
+		$urlBase = get_home_url();
+		if (substr($urlBase, strlen($urlBase), 1) != "/") $urlBase .= "/";
+		$urlBase .= dsSearchAgent_Rewrite::GetUrlSlug();
+	?>
+		<div class="wrap metabox-holder">
+			<?php screen_icon(); ?>
+			<h2>XML Sitemap Options</h2>
+			<?php if (isset($_REQUEST['settings-updated']) && $_REQUEST['settings-updated'] == 'true') : ?>
+			<div class="updated"><p><strong><?php _e( 'Options saved' ); ?></strong></p></div>
+			<?php endif; ?>
+			<span class="description">Here you can manage the MLS/IDX items you would like to feature in your XML Sitemap. XML Sitemaps help Google, and other search engines, index your site. Go <a href="http://en.wikipedia.org/wiki/Sitemaps" target="_blank">here</a> to learn more about XML Sitemaps</span>
+
+			<form method="post" action="options.php">
+			<?php settings_fields("dsidxpress_xml_sitemap"); ?>
+			<h4>XML Sitemaps Locations</h4>
+			<?php if ( in_array('google-sitemap-generator/sitemap.php', get_option('active_plugins')) || class_exists('zpress\admin\Theme')) {?>
+			<span class="description">Add the Locations (City, Community, Tract, or Zip) to your XML Sitemap by adding them via the dialogs below.</span>
+			<div class="dsidxpress-SitemapLocations stuffbox">
+				<script type="text/javascript">jQuery(function() { xmlsitemap_page = true; dsIDXpressOptions.UrlBase = '<?php echo $urlBase; ?>'; dsIDXpressOptions.OptionPrefix = '<?php echo DSIDXPRESS_OPTION_NAME; ?>';});</script>
+				<h3><span class="hndle">Locations for Sitemap</span></h3>
+				<div class="inside">
+					<ul id="dsidxpress-SitemapLocations">
+					<?php
+					if (isset($options["SitemapLocations"]) && is_array($options["SitemapLocations"])) {
+						$location_index = 0;
+
+						usort($options["SitemapLocations"], array("dsSearchAgent_Admin", "CompareListObjects"));
+
+						foreach ($options["SitemapLocations"] as $key => $value) {
+							$location_sanitized = urlencode(strtolower(str_replace(array("-", " "), array("_", "-"), $value["value"])));
+					?>
+								<li class="ui-state-default dsidxpress-SitemapLocation">
+									<div class="arrow"><span class="dsidxpress-up_down"></span></div>
+									<div class="value">
+										<a href="<?php echo $urlBase . $value["type"] .'/'. $location_sanitized;?>" target="_blank"><?php echo $value["value"]; ?></a>
+										<input type="hidden" name="<?php echo DSIDXPRESS_OPTION_NAME ; ?>[SitemapLocations][<?php echo $location_index; ?>][value]" value="<?php echo $value["value"]; ?>" />
+									</div>
+									<div class="priority">
+										Priority: <select name="<?php echo DSIDXPRESS_OPTION_NAME ; ?>[SitemapLocations][<?php echo $location_index; ?>][priority]">
+											<option value="0.0"<?php echo ($value["priority"] == "0.0" ? ' selected="selected"' : '') ?>>0.0</option>
+											<option value="0.1"<?php echo ($value["priority"] == "0.1" ? ' selected="selected"' : '') ?>>0.1</option>
+											<option value="0.2"<?php echo ($value["priority"] == "0.2" ? ' selected="selected"' : '') ?>>0.2</option>
+											<option value="0.3"<?php echo ($value["priority"] == "0.3" ? ' selected="selected"' : '') ?>>0.3</option>
+											<option value="0.4"<?php echo ($value["priority"] == "0.4" ? ' selected="selected"' : '') ?>>0.4</option>
+											<option value="0.5"<?php echo ($value["priority"] == "0.5" || !isset($value["priority"]) ? ' selected="selected"' : '') ?>>0.5</option>
+											<option value="0.6"<?php echo ($value["priority"] == "0.6" ? ' selected="selected"' : '') ?>>0.6</option>
+											<option value="0.7"<?php echo ($value["priority"] == "0.7" ? ' selected="selected"' : '') ?>>0.7</option>
+											<option value="0.8"<?php echo ($value["priority"] == "0.8" ? ' selected="selected"' : '') ?>>0.8</option>
+											<option value="0.9"<?php echo ($value["priority"] == "0.9" ? ' selected="selected"' : '') ?>>0.9</option>
+											<option value="1.0"<?php echo ($value["priority"] == "1.0" ? ' selected="selected"' : '') ?>>1.0</option>
+											</select>
+									</div>
+									<div class="type">
+										<select name="<?php echo DSIDXPRESS_OPTION_NAME ; ?>[SitemapLocations][<?php echo $location_index; ?>][type]">
+											<option value="city"<?php echo ($value["type"] == "city" ? ' selected="selected"' : ''); ?>>City</option>
+											<option value="community"<?php echo ($value["type"] == "community" ? ' selected="selected"' : ''); ?>>Community</option>
+											<option value="tract"<?php echo ($value["type"] == "tract" ? ' selected="selected"' : ''); ?>>Tract</option>
+											<option value="zip"<?php echo ($value["type"] == "zip" ? ' selected="selected"' : ''); ?>>Zip Code</option>
+										</select>
+									</div>
+									<div class="action"><input type="button" value="Remove" class="button" onclick="dsIDXpressOptions.RemoveSitemapLocation(this)" /></div>
+									<div style="clear:both"></div>
+								</li>
+								<?php
+								$location_index++;
+							}
+						}
+						?>
+					</ul>
+
+					<div class="dsidxpress-SitemapLocationsNew">
+						<div class="arrow">New:</div>
+						<div class="value"><input type="text" id="dsidxpress-NewSitemapLocation" maxlength="49" value="" /></div>
+						<div class="type">
+							<select class="widefat ignore-changes" id="dsidxpress-NewSitemapLocationType">
+								<option value="city">City</option>
+								<option value="community">Community</option>
+								<option value="tract">Tract</option>
+								<option value="zip">Zip Code</option>
+							</select>
+						</div>
+						<div class="action">
+							<input type="button" class="button" id="dsidxpress-NewSitemapLocationAdd" value="Add" onclick="dsIDXpressOptions.AddSitemapLocation()" />
+						</div>
+						<div style="clear:both"></div>
+					</div>
+				</div>
+			</div>
+
+			<span class="description">"Priority" gives a hint to the web crawler as to what you think the importance of each page is. <code>1</code> being highest and <code>0</code> lowest.</span>
+
+			<h4>XML Sitemaps Options</h4>
+			<table class="form-table">
+				<tr>
+					<th>
+						<label for="<?php echo DSIDXPRESS_OPTION_NAME ; ?>[SitemapFrequency]">Frequency:</label>
+					</th>
+					<td>
+						<select name="<?php echo DSIDXPRESS_OPTION_NAME ; ?>[SitemapFrequency]" id="<?php echo DSIDXPRESS_OPTION_NAME; ?>_SitemapFrequency">
+							<!--<option value="always"<?php echo (@$options["SitemapFrequency"] == "always" ? ' selected="selected"' : '') ?>>Always</option> -->
+							<option value="hourly"<?php echo (@$options["SitemapFrequency"] == "hourly" ? 'selected="selected"' : '') ?>>Hourly</option>
+							<option value="daily"<?php echo (@$options["SitemapFrequency"] == "daily" || !isset($options["SitemapFrequency"]) ? 'selected="selected"' : '') ?>>Daily</option>
+							<!--<option value="weekly"<?php echo (@$options["SitemapFrequency"] == "weekly" ? 'selected="selected"' : '') ?>>Weekly</option>
+							<option value="monthly"<?php echo (@$options["SitemapFrequency"] == "monthly" ? 'selected="selected"' : '') ?>>Monthly</option>
+							<option value="yearly"<?php echo (@$options["SitemapFrequency"] == "yearly" ? 'selected="selected"' : '') ?>>Yearly</option>
+							<option value="never"<?php echo (@$options["SitemapFrequency"] == "never" ? 'selected="selected"' : '') ?>>Never</option> -->
+						</select>
+						<span class="description">The "hint" to send to the crawler. This does not guarantee frequency, crawler will do what they want.</span>
+					</td>
+				</tr>
+			</table>
+			<br />
+			<p class="submit">
+				<input id="xml-options-saved" type="submit" class="button-primary" name="Submit" value="Save Options" />
+			</p>
+			</form>
+		</div>
+							<?php } else { ?>
+			<span class="description">To enable this functionality, install and activate this plugin: <a class="thickbox onclick" title="Google XML Sitemaps" href="<?php echo admin_url('plugin-install.php?tab=plugin-information&plugin=google-sitemap-generator&TB_iframe=true&width=640')?>" target="_blank">Google XML Sitemaps</a></span>
+			<?php }
+	}
+
+	static function DetailsOptions() {
+		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("AccountOptions", array(), false, 0);
+		if (!empty($apiHttpResponse["errors"]) || $apiHttpResponse["response"]["code"] != "200")
+			wp_die("We're sorry, but we ran into a temporary problem while trying to load the account data. Please check back soon.", "Account data load error");
+		else
+			$account_options = json_decode($apiHttpResponse["body"]);
+		$urlBase = get_home_url();
+		if (substr($urlBase, strlen($urlBase), 1) != "/") $urlBase .= "/";
+			$urlBase .= dsSearchAgent_Rewrite::GetUrlSlug(); ?>
+		<div class="wrap metabox-holder">
+			<?php screen_icon(); ?>
+			<h2>More Options</h2>
+			<?php if (isset($_REQUEST['settings-updated']) && $_REQUEST['settings-updated'] == 'true') : ?>
+			<div class="updated"><p><strong><?php _e( 'Options saved' ); ?></strong></p></div>
+			<?php endif; ?>
+			<form method="post" action="options.php">
+				<?php settings_fields("dsidxpress_api_options"); ?>
+				<h4>Details Page Settings</h4>
+				<span class="description">These settings apply to any page holding details for a specific property.</span>
+				<table class="form-table">
+					<?php if (isset($account_options->{'dsIDXPress-Package'}) && $account_options->{'dsIDXPress-Package'} == "pro"): ?>
+					<tr>
+						<th>
+							<label for="dsidxpress-ShowPanel_ZillowCB">Show Zestimate:</label>
+						</th>
+						<td>
+							<input type="checkbox" id="dsidxpress-ShowPanel_ZillowCB" size="50" <?php checked('true', strtolower($account_options->ShowPanel_Zillow)); ?> onclick="dsIDXpressOptions.OptionCheckBoxClick(this);" /><br />
+							<input type="hidden" id="dsidxpress-ShowPanel_Zillow" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[ShowPanel_Zillow]" value="<?php echo $account_options->ShowPanel_Zillow; ?>" />
+							<span class="description"></span>
+						</td>
+					</tr>
+					<?php endif ?>
+					<tr>
+						<th>
+							<label for="dsidxpress-ShowWalkScoreInDetailsCB">Show Walkscore:</label>
+						</th>
+						<td>
+							<input type="checkbox" id="dsidxpress-ShowWalkScoreInDetailsCB" size="50" <?php checked('true', strtolower($account_options->ShowWalkScoreInDetails)); ?> onclick="dsIDXpressOptions.OptionCheckBoxClick(this);" /><br />
+							<input type="hidden" id="dsidxpress-ShowWalkScoreInDetails" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[ShowWalkScoreInDetails]" value="<?php echo $account_options->ShowWalkScoreInDetails; ?>" />
+							<span class="description"></span>
+						</td>
+					</tr>
+					<tr>
+						<th>
+							<label for="dsidxpress-ShowPanel_FeaturesCB">Show Features:</label>
+						</th>
+						<td>
+							<input type="checkbox" id="dsidxpress-ShowPanel_FeaturesCB" size="50" <?php checked('true', strtolower($account_options->ShowPanel_Features)); ?> onclick="dsIDXpressOptions.OptionCheckBoxClick(this);" /><br />
+							<input type="hidden" id="dsidxpress-ShowPanel_Features" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[ShowPanel_Features]" value="<?php echo $account_options->ShowPanel_Features; ?>" />
+							<span class="description"></span>
+						</td>
+					</tr>
+					<tr>
+						<th>
+							<label for="dsidxpress-AllowScheduleShowingFeatureCB">Show Schedule a Showing button:</label>
+						</th>
+						<td>
+							<input type="checkbox" id="dsidxpress-AllowScheduleShowingFeatureCB" size="50" <?php checked('true', strtolower($account_options->AllowScheduleShowingFeature)); ?> onclick="dsIDXpressOptions.OptionCheckBoxClick(this);" /><br />
+							<input type="hidden" id="dsidxpress-AllowScheduleShowingFeature" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[AllowScheduleShowingFeature]" value="<?php echo $account_options->AllowScheduleShowingFeature; ?>" />
+							<span class="description"></span>
+						</td>
+					</tr>
+					<tr>
+						<th>
+							<label for="dsidxpress-ShowAskAQuestionCB">Show Ask a Question button:</label>
+						</th>
+						<td>
+							<input type="checkbox" id="dsidxpress-ShowAskAQuestionCB" size="50" <?php checked('true', strtolower($account_options->ShowAskAQuestion)); ?> onclick="dsIDXpressOptions.OptionCheckBoxClick(this);" /><br />
+							<input type="hidden" id="dsidxpress-ShowAskAQuestion" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[ShowAskAQuestion]" value="<?php echo $account_options->ShowAskAQuestion; ?>" />
+							<span class="description"></span>
+						</td>
+					</tr>
+					<?php if (isset($account_options->{'dsIDXPress-Package'}) && $account_options->{'dsIDXPress-Package'} == "pro"): ?>
+					<tr>
+						<th>
+							<label for="dsidxpress-ShowPanel_SchoolsCB">Show Schools:</label>
+						</th>
+						<td>
+							<input type="checkbox" id="dsidxpress-ShowPanel_SchoolsCB" size="50" <?php checked('true', strtolower($account_options->ShowPanel_Schools)); ?> onclick="dsIDXpressOptions.OptionCheckBoxClick(this);" /><br />
+							<input type="hidden" id="dsidxpress-ShowPanel_Schools" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[ShowPanel_Schools]" value="<?php echo $account_options->ShowPanel_Schools; ?>" />
+							<span class="description"></span>
+						</td>
+					</tr>
+					<?php endif; ?>
+					<tr>
+						<th>
+							<label for="dsidxpress-ShowPanel_MapCB">Show Map:</label>
+						</th>
+						<td>
+							<input type="checkbox" id="dsidxpress-ShowPanel_MapCB" size="50" <?php checked('true', strtolower($account_options->ShowPanel_Map)); ?> onclick="dsIDXpressOptions.OptionCheckBoxClick(this);" /><br />
+							<input type="hidden" id="dsidxpress-ShowPanel_Map" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[ShowPanel_Map]" value="<?php echo $account_options->ShowPanel_Map; ?>" />
+							<span class="description"></span>
+						</td>
+					</tr>
+					<tr>
+						<th>
+							<label for="dsidxpress-ShowPanel_ContactCB">Show Contact Form:</label>
+						</th>
+						<td>
+							<input type="checkbox" id="dsidxpress-ShowPanel_ContactCB" size="50" <?php checked('true', strtolower($account_options->ShowPanel_Contact)); ?> onclick="dsIDXpressOptions.OptionCheckBoxClick(this);" /><br />
+							<input type="hidden" id="dsidxpress-ShowPanel_Contact" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[ShowPanel_Contact]" value="<?php echo $account_options->ShowPanel_Contact;?>" />
+							<span class="description"></span>
+						</td>
+					</tr>
+				</table>
+				<br />
+				<p class="submit">
+					<input type="submit" class="button-primary" name="Submit" value="Save Options" />
+				</p>
+			</form>
+		</div><?php
+	}
+
 	static function RunDiagnostics($options) {
 		// it's possible for a malicious script to trick a blog owner's browser into running the Diagnostics which passes the PrivateApiKey which
 		// could allow a bug on the wire to pick up the key, but 1) we have IP and URL restrictions, and 2) there are much bigger issues than the
@@ -597,6 +1126,7 @@ HTML;
 		$setDiagnostics["UnderMonthlyCallLimit"] = $diagnostics["AllowedApiRequestCount"] === 0 || $diagnostics["AllowedApiRequestCount"] > $diagnostics["CurrentApiRequestCount"];
 
 		$setDiagnostics["HasSearchAgentPro"] = $diagnostics["HasSearchAgentPro"];
+		$setDiagnostics["dsIDXPressPackage"] = $diagnostics["dsIDXPressPackage"];
 		$setDiagnostics["DetailsRequiresRegistration"] = $diagnostics["DetailsRequiresRegistration"];
 
 		$setDiagnostics["DiagnosticsSuccessful"] = true;
@@ -609,26 +1139,44 @@ HTML;
 		return $setDiagnostics;
 	}
 	static function SanitizeOptions($options) {
-		if (isset($options["FullApiKey"])) {
+		if (!empty($options["FullApiKey"])) {
 			$options["FullApiKey"] = trim($options["FullApiKey"]);
 			$apiKeyParts = explode("/", $options["FullApiKey"]);
 			unset($options["FullApiKey"]);
+			
+			if (sizeof($apiKeyParts) == 3) {
+				$options["AccountID"] = $apiKeyParts[0];
+				$options["SearchSetupID"] = $apiKeyParts[1];
+				$options["PrivateApiKey"] = $apiKeyParts[2];
 
-			$options["AccountID"] = $apiKeyParts[0];
-			$options["SearchSetupID"] = $apiKeyParts[1];
-			$options["PrivateApiKey"] = $apiKeyParts[2];
+				dsSearchAgent_ApiRequest::FetchData("BindToRequester", array(), false, 0, $options);
+				$diagnostics = self::RunDiagnostics($options);
 
-			dsSearchAgent_ApiRequest::FetchData("BindToRequester", array(), false, 0, $options);
-			$diagnostics = self::RunDiagnostics($options);
-			$options["HasSearchAgentPro"] = $diagnostics["HasSearchAgentPro"];
-			$options["Activated"] = $diagnostics["DiagnosticsSuccessful"];
+				$options["HasSearchAgentPro"] = $diagnostics["HasSearchAgentPro"];
+				$options["dsIDXPressPackage"] = $diagnostics["dsIDXPressPackage"];
+				$options["Activated"] = $diagnostics["DiagnosticsSuccessful"];
 
-			if (!$options["Activated"] && isset($options["HideIntroNotification"]))
-				unset($options["HideIntroNotification"]);
+				if (!$options["Activated"] && isset($options["HideIntroNotification"]))
+					unset($options["HideIntroNotification"]);
+			
+			}
 		}
+		
 		// different option pages fill in different parts of this options array, so we simply merge what's already there with our new data
-		if (get_option(DSIDXPRESS_OPTION_NAME))
-			$options = array_merge(get_option(DSIDXPRESS_OPTION_NAME), $options);
+		if ($full_options = get_option(DSIDXPRESS_OPTION_NAME)) {
+			// clear out old ResultsMapDefaultState if its replacement, ResultsDefaultState is set
+			if (isset($options['ResultsDefaultState']) && isset($full_options['ResultsMapDefaultState'])) {
+				unset($full_options['ResultsMapDefaultState']);
+			}
+			
+			// make sure the option to remove diverse solutions links is removed if unchecked
+			if (isset($options['ResultsDefaultState']) && isset($full_options['RemoveDsDisclaimerLinks'])) {
+				unset($full_options['RemoveDsDisclaimerLinks']);
+			}
+			
+			// merge existing data with new data
+			$options = array_merge($full_options, $options);
+		}
 
 		// call the sitemap rebuild action since they may have changed their sitemap locations. the documentation says that the sitemap
 		// may not be rebuilt immediately but instead scheduled into a cron job for performance reasons.
@@ -647,23 +1195,209 @@ HTML;
 
 			foreach ($options as $key => $value) {
 				if ($options_text != "") $options_text .= ",";
+				if ($key == 'RestrictResultsToZipcode' || $key == 'RestrictResultsToCity' || $key == 'RestrictResultsToCounty' || $key == 'RestrictResultsToState' || $key == 'RestrictResultsToPropertyType') {
+				$value = ereg_replace("\n", ",", $value);//replace these values with new commas in api db
+				}
 				$options_text .= $key.'|'.urlencode($value);
 				unset($options[$key]);
 			}
-
 			$result = dsSearchAgent_ApiRequest::FetchData("SaveAccountOptions", array("options" => $options_text), false, 0);
+			
+			// this serves to flush the cache
+			dsSearchAgent_ApiRequest::FetchData("AccountOptions", array(), false, 0);
 		}
 		return $options;
 	}
 
 	static function CompareListObjects($a, $b)
-    {
-        $al = strtolower($a["value"]);
-        $bl = strtolower($b["value"]);
-        if ($al == $bl) {
-            return 0;
-        }
-        return ($al > $bl) ? +1 : -1;
-    }
+	{
+		$al = strtolower($a["value"]);
+		$bl = strtolower($b["value"]);
+		if ($al == $bl) {
+			return 0;
+		}
+		return ($al > $bl) ? +1 : -1;
+	}
+	public static function NavMenus($posts) {
+		$options = get_option(DSIDXPRESS_OPTION_NAME);
+		
+		// offset the time to ensure we have a unique post id
+		$post_id = time() + sizeof($posts);
+		
+		if (isset($options['AgentID']) && $options['AgentID'] != '') {
+			$posts[] = (object) array(
+				'ID'           => $post_id,
+				'object_id'    => $post_id,
+				'post_content' => '',
+				'post_excerpt' => '',
+				'post_parent'  => 0,
+				'post_title'   => 'My Listings',
+				'post_type'    => 'nav_menu_item',
+				'type'         => 'custom',
+				'url'          => get_home_url().'/idx/?'.urlencode('idx-q-ListingAgentID<0>') . '=' . $options['AgentID'],
+				'zpress_page'  => true
+			);
+			$post_id++;
+			
+			$posts[] = (object) array(
+				'ID'           => $post_id,
+				'object_id'    => $post_id,
+				'post_content' => '',
+				'post_excerpt' => '',
+				'post_parent'  => 0,
+				'post_title'   => 'My Sold Properties',
+				'post_type'    => 'nav_menu_item',
+				'type'         => 'custom',
+				'url'          => get_home_url().'/idx/?'.urlencode('idx-q-ListingAgentID<0>') . '=' . $options['AgentID'] .'&idx-q-ListingStatuses=8',
+				'zpress_page'  => true
+			);
+			$post_id++;
+		}
+		
+		if (isset($options['OfficeID']) && $options['OfficeID'] != '') {
+			$posts[] = (object) array(
+				'ID'           => $post_id,
+				'object_id'    => $post_id,
+				'post_content' => '',
+				'post_excerpt' => '',
+				'post_parent'  => 0,
+				'post_title'   => 'My Office Listings',
+				'post_type'    => 'nav_menu_item',
+				'type'         => 'custom',
+				'url'          => get_home_url().'/idx/?'.urlencode('idx-q-ListingOfficeID<0>') . '=' . $options['OfficeID'],
+				'zpress_page'  => true
+			);
+			$post_id++;
+		}
+		
+		$posts[] = (object) array(
+			'ID'           => $post_id,
+			'object_id'    => $post_id,
+			'post_content' => '',
+			'post_excerpt' => '',
+			'post_parent'  => 0,
+			'post_title'   => 'Real Estate Search',
+			'post_type'    => 'nav_menu_item',
+			'type'         => 'custom',
+			'url'          => get_home_url().'/idx/search/',
+			'zpress_page'  => true
+		);
+		
+		return $posts;
+	}
+	static function CreateLinkBuilderMenuWidget()
+	{
+		add_meta_box( 'add-link-builder', __('Listings Page Builder'), array('dsSearchAgent_Admin', 'CreateLinkBuilder'), 'nav-menus', 'side', 'default' );
+	}
+	/**
+	 * Displays a metabox for the link builder menu item.
+	 */
+	static function CreateLinkBuilder() {
+		global $_nav_menu_placeholder, $nav_menu_selected_id;
+		$_nav_menu_placeholder = 0 > $_nav_menu_placeholder ? $_nav_menu_placeholder - 1 : -1;
+
+		$current_tab = 'create';
+		if ( isset( $_REQUEST['customlink-tab'] ) && in_array( $_REQUEST['customlink-tab'], array('create', 'all') ) ) {
+			$current_tab = $_REQUEST['customlink-tab'];
+		}
+
+		$removed_args = array(
+			'action',
+			'customlink-tab',
+			'edit-menu-item',
+			'menu-item',
+			'page-tab',
+			'_wpnonce',
+		);
+		
+		dsSearchAgent_Admin::LinkBuilderHtml(false, $_nav_menu_placeholder, $nav_menu_selected_id);
+	}
+		
+	public static function LinkBuilderHtml($in_post_dialog = false, $_nav_menu_placeholder = -1, $nav_menu_selected_id = 1) {
+		$label_class = (!$in_post_dialog) ? ' input-with-default-title' : '';
+		$label_value = ($in_post_dialog && isset($_GET['selected_text'])) ? ' value="'.esc_attr(strip_tags($_GET['selected_text'])).'"' : '';
+		$url_value   = ($in_post_dialog && isset($_GET['selected_url'])) ? htmlspecialchars($_GET['selected_url']) : 'http://';
+		$link_mode   = (isset($_GET['idxlinkmode'])) ? $_GET['idxlinkmode'] : '';
+
+		$property_types_html = "";
+		$property_types = \dsSearchAgent_ApiRequest::FetchData('AccountPropertyTypes', array(), false, 60 * 60 * 24);
+		if(!empty($property_types)){
+		    $property_types = json_decode($property_types["body"]);
+		    foreach ($property_types as $property_type) {
+		        $checked_html = '';
+		        $name = htmlentities($property_type->DisplayName);
+		        $id = $property_type->PropertyTypeID;
+		        $property_types_html .= <<<HTML
+{$id}: {$name},
+HTML;
+		    }
+		}
+		$property_types_html = substr($property_types_html, 0, strlen($property_types_html)-1); 
+?>
+	<script> zpress_home_url = '<?php echo get_home_url() ?>';</script>
+	<div id="dsidxpress-link-builder" class="customlinkdiv">
+	    <input type="hidden" id="linkBuilderPropertyTypes" value="<?php echo $property_types_html ?>" />
+		<input type="hidden" value="custom" name="menu-item[<?php echo $_nav_menu_placeholder; ?>][menu-item-type]" />
+		<input type="hidden" value="<?php esc_attr_e($link_mode) ?>" id="dsidx-linkbuilder-mode" ?>
+		<p class="dsidxpress-item-wrap">
+			<label class="howto" for="dsidxpress-menu-item-label">
+				<span><?php _e('Label'); ?></span>
+				<input id="dsidxpress-menu-item-label" name="menu-item-label" type="text" class="regular-text menu-item-textbox<?php echo $label_class ?>" title="<?php esc_attr_e('Menu Item'); ?>"<?php echo $label_value ?> />
+			</label>
+		</p>
+		<p class="dsidxpress-item-wrap">
+			<label class="howto" for="dsidxpress-filter-menu">
+				<span><?php _e('Add Filter'); ?></span>
+				<select class="regular-text" id="dsidxpress-filter-menu" ></select>
+			</label>
+		</p>
+		
+		<div id="dsidxpress-editor-wrap" class="dsidxpress-item-wrap hidden">
+			<div class="dsidxpress-filter-editor">
+				<div class="dsidxpress-editor-header">
+					<h4>Filter results by <b>Beds</b></h4>
+					<span class="dsidx-editor-cancel"><a href="javascript:void(0)"></a></span>
+				</div>
+				<div class="dsidxpress-editor-main"></div>
+				<div class="buttons">
+					<input type="button" value="Update this Filter" class="button-primary" />
+					<input type="button" value="Cancel" class="button-secondary dsidx-editor-cancel" />
+				</div>
+			</div>
+		</div>
+		
+		<div id="dsidxpress-filters-wrap" class="dsidxpress-item-wrap hidden">
+			<span><?php _e('Filters'); ?></span>
+			<ul id="dsidxpress-filter-list"></ul>
+		</div>
+
+		<p class="dsidxpress-item-wrap">
+			<label class="howto dsidxpress-checkbox">
+				<input id="dsidxpress-show-url" type="checkbox" />
+				<span><?php _e('Display Generated URL'); ?></span>
+			</label>
+		</p>
+		
+		<p id="dsidxpress-assembled-url-wrap" class="dsidxpress-item-wrap hidden">
+			<label class="howto" for="dsidxpress-assembled-url">
+				<span><?php _e('URL'); ?></span>
+				<textarea id="dsidxpress-assembled-url" name="menu-item[<?php echo $_nav_menu_placeholder; ?>][menu-item-url]" type="text" rows="4" class="code menu-item-textbox"><?php echo $url_value; ?></textarea>
+			</label>
+		</p>
+			
+		<p class="button-controls">
+			<span class="add-to-menu">
+				<?php if (!$in_post_dialog): ?>
+				<img id="img-link-builder-waiting" style="display:none;" src="<?php echo esc_url( admin_url( 'images/wpspin_light.gif' ) ); ?>" alt="" />
+				<input type="submit"<?php disabled( $nav_menu_selected_id, 0 ); ?> class="button-secondary submit-add-to-menu" value="<?php esc_attr_e('Add to Menu'); ?>" name="add-custom-menu-item" id="submit-linkbuilderdiv" />
+				<?php else: ?>
+				<input type="button" id="dsidxpress-lb-cancel" name="cancel" value="Cancel" class="button-secondary" onclick="tinyMCEPopup.close();" />
+				<input type="button" id="dsidxpress-lb-insert" name="insert" value="<?php esc_attr_e($link_mode); ?> Link" class="button-primary" style="text-transform: capitalize;" onclick="dsidxLinkBuilder.insert();" />
+				<?php endif ?>
+			</span>
+		</p>
+	</div><!-- /#dsidxpress-link-builder -->
+	<?php
+	}
 }
 ?>

@@ -55,6 +55,19 @@ class dsSearchAgent_Shortcodes {
 			"zip"			=> "",
 			"minprice"		=> "",
 			"maxprice"		=> "",
+			"minbeds"		=> "",
+			"maxbeds"		=> "",
+			"minbaths"		=> "",
+			"maxbaths"		=> "",
+			"mindom"		=> "",
+			"maxdom"		=> "",
+			"minyear"		=> "",
+			"maxyear"		=> "",
+			"impsqftmin"	=> "",
+			"impsqftmax"	=> "",
+			"lotsqftmin"	=> "",
+			"lotsqftmax"	=> "",
+			"statuses" => "",
 			"propertytypes"	=> "",
 			"linkid"		=> "",
 			"count"			=> "5",
@@ -73,6 +86,22 @@ class dsSearchAgent_Shortcodes {
 		$apiRequestParams["query.ZipCodes"] = $atts["zip"];
 		$apiRequestParams["query.PriceMin"] = $atts["minprice"];
 		$apiRequestParams["query.PriceMax"] = $atts["maxprice"];
+		$apiRequestParams["query.BedsMin"] = $atts["minbeds"];
+		$apiRequestParams["query.BedsMax"] = $atts["maxbeds"];
+		$apiRequestParams["query.BathsMin"] = $atts["minbaths"];
+		$apiRequestParams["query.BathsMax"] = $atts["maxbaths"];
+		$apiRequestParams["query.DaysOnMarketMin"] = $atts["mindom"];
+		$apiRequestParams["query.DaysOnMarketMax"] = $atts["maxdom"];
+		$apiRequestParams["query.YearBuiltMin"] = $atts["minyear"];
+		$apiRequestParams["query.YearBuiltMax"] = $atts["maxyear"];
+		$apiRequestParams["query.ImprovedSqFtMin"] = $atts["impsqftmin"];
+		$apiRequestParams["query.ImprovedSqFtMax"] = $atts["impsqftmax"];
+		$apiRequestParams["query.LotSqFtMin"] = $atts["lotsqftmin"];
+		$apiRequestParams["query.LotSqFtMax"] = $atts["lotsqftmax"];
+		if(self::TranslateStatuses($atts["statuses"]))
+			$apiRequestParams["query.ListingStatuses"] = self::TranslateStatuses($atts["statuses"]);
+		else
+			$apiRequestParams["query.ListingStatuses"] = 3;
 		if ($atts["propertytypes"]) {
 			$propertyTypes = explode(",", str_replace(" ", "", $atts["propertytypes"]));
 			$propertyTypes = array_combine(range(0, count($propertyTypes) - 1), $propertyTypes);
@@ -95,6 +124,20 @@ class dsSearchAgent_Shortcodes {
 		} else {
 			return "<p class=\"dsidx-error\">We're sorry, but it seems that we're having some problems loading MLS data from our database. Please check back soon.</p>";
 		}
+	}
+	
+	static function TranslateStatuses($ids) {
+		$values = '';
+		$ids = explode(',',$ids);
+		foreach ($ids as $id) {
+			switch($id) {
+				case 1: $values .= 'Active,'; break;
+				case 2: $values .= 'Conditional,'; break;
+				case 3: $values .= 'Pending,'; break;
+				case 4: $values .= 'Sold,'; break;
+			}
+		}
+		return substr($values, 0, strlen($values) - 1);
 	}
 }
 

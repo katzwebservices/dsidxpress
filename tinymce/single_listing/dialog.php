@@ -11,13 +11,18 @@ while (!file_exists($bootstrapSearchDir . "/wp-load.php")) {
 	}
 }
 
-require_once($bootstrapSearchDir . "/wp-admin/admin.php");
+require_once($bootstrapSearchDir . '/wp-load.php');
+require_once($bootstrapSearchDir . '/wp-admin/admin.php');
+require_once(dirname( __FILE__ ) . '/../../admin.php');
 
 if (!current_user_can("edit_posts"))
 	wp_die("You can't do anything destructive in here, but you shouldn't be playing around with this anyway.");
 
 global $wp_version, $tinymce_version;
 $localJsUri = get_option("siteurl") . "/" . WPINC . "/js/";
+if (is_ssl()) {
+	$localJsUri = preg_replace('/http/', 'https', $localJsUri);
+}
 ?>
 
 <!DOCTYPE html>
@@ -26,8 +31,7 @@ $localJsUri = get_option("siteurl") . "/" . WPINC . "/js/";
 	<title>dsIDXpress: Insert Property</title>
 
 	<script src="<?php echo $localJsUri ?>tinymce/tiny_mce_popup.js?ver=<?php echo urlencode($tinymce_version) ?>"></script>
-	<!-- jsonpCallback $.ajax arg didn't seem to work w/ WP's version of jquery... -->
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.0/jquery.min.js"></script>
+	<script src="<?php echo $localJsUri ?>jquery/jquery.js"></script>
 	<script src="js/dialog.js?ver=<?php echo urlencode(DSIDXPRESS_PLUGIN_VERSION) ?>"></script>
 
 	<style type="text/css">

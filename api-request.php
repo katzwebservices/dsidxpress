@@ -1,6 +1,6 @@
 <?php
 class dsSearchAgent_ApiRequest {
-	public static $ApiEndPoint = "http://api.idx.diversesolutions.com/api/";
+	public static $ApiEndPoint = '';
 	// do NOT change this value or you will be automatically banned from the API. since the data is only updated every two hours, and
 	// since these API calls are computationally intensive on our servers, we need to set a reasonable cache duration.
 	private static $CacheSeconds = 7200;
@@ -20,31 +20,18 @@ class dsSearchAgent_ApiRequest {
 		$requestUri = self::$ApiEndPoint . $action;
 		$compressCache = function_exists('gzdeflate') && function_exists('gzinflate');
 
-		if(!class_exists('Memcached'))
-			$memcached = null;
-		else if(isset($options["MemcacheHost"]) && isset($options["MemcachePort"])) {
-			$memcached = new Memcached();
-			if($memcached->addServer($options["MemcacheHost"], $options["MemcachePort"]) === false)
-				$memcached = null;
-		} else
-			$memcached = null;
-
-		if(!class_exists('Memcache'))
-			$memcache = null;
-		else if(isset($options["MemcacheHost"]) && isset($options["MemcachePort"])) {
-			$memcache = new Memcache;
-			if($memcache->connect($options["MemcacheHost"], $options["MemcachePort"]) === false)
-				$memcache = null;
-		} else
-			$memcache = null;
-
 		$params["query.SearchSetupID"] = $options["SearchSetupID"];
 		$params["requester.AccountID"] = $options["AccountID"];
-		$params["requester.ApplicationProfile"] = "WordPressIdxModule";
+		if(!isset($params["requester.ApplicationProfile"]))
+			$params["requester.ApplicationProfile"] = "WordPressIdxModule";
 		$params["requester.ApplicationVersion"] = $wp_version;
 		$params["requester.PluginVersion"] = DSIDXPRESS_PLUGIN_VERSION;
-		$params["requester.RequesterUri"] = get_bloginfo("url");
-		$params["requester.IsRegistered"] = current_user_can(dsSearchAgent_Roles::$Role_ViewDetails) ? "true" : "false";
+		$params["requester.RequesterUri"] = get_home_url();
+		
+		if(isset($_COOKIE['dsidx-visitor-public-id']))
+			$params["requester.VisitorPublicID"] = $_COOKIE['dsidx-visitor-public-id'];
+		if(isset($_COOKIE['dsidx-visitor-auth']))
+			$params["requester.VisitorAuth"] = $_COOKIE['dsidx-visitor-auth'];
 
 		foreach (self::$NumericValues as $key) {
 			if (array_key_exists($key, $params))
@@ -55,12 +42,7 @@ class dsSearchAgent_ApiRequest {
 		$transientKey = "idx_" . sha1($action . "_" . http_build_query($params));
 
 		if ($cacheSecondsOverride !== 0) {
-			if(isset($memcache))
-				$cachedRequestData = $memcache->get($transientKey);
-			else if(isset($memcached))
-				$cachedRequestData = $memcached->get($transientKey);
-			else
-				$cachedRequestData = get_transient($transientKey);
+			$cachedRequestData = get_transient($transientKey);
 
 			if ($cachedRequestData) {
 				$cachedRequestData = $compressCache ? unserialize(gzinflate(base64_decode($cachedRequestData))) : $cachedRequestData;
@@ -73,9 +55,10 @@ class dsSearchAgent_ApiRequest {
 		// these params need to be beneath the caching stuff since otherwise the cache will be useless
 		$params["requester.ClientIpAddress"] = $_SERVER["REMOTE_ADDR"];
 		$params["requester.ClientUserAgent"] = $_SERVER["HTTP_USER_AGENT"];
-		$params["requester.UrlReferrer"] = $_SERVER["HTTP_REFERER"];
+		if(isset($_SERVER["HTTP_REFERER"]))
+			$params["requester.UrlReferrer"] = $_SERVER["HTTP_REFERER"];
 		$params["requester.UtcRequestDate"] = gmdate("c");
-
+		
 		ksort($params);
 		$stringToSign = "";
 		foreach ($params as $key => $value) {
@@ -93,14 +76,13 @@ class dsSearchAgent_ApiRequest {
 
 		if (empty($response["errors"]) && substr($response["response"]["code"], 0, 1) != "5") {
 			$response["body"] = self::FilterData($response["body"]);
-			if ($cacheSecondsOverride !== 0 && $response["body"]){
-				if(isset($memcache))
-					$memcache->set($transientKey, $compressCache ? base64_encode(gzdeflate(serialize($response))) : $response, MEMCACHE_COMPRESSED, $cacheSecondsOverride === null ? self::$CacheSeconds : $cacheSecondsOverride);
-				else if(isset($memcached))
-					$memcached->set($transientKey, $compressCache ? base64_encode(gzdeflate(serialize($response))) : $response, time() + ($cacheSecondsOverride === null ? self::$CacheSeconds : $cacheSecondsOverride));
-				else
+			if ($response["body"]){
+				if ($cacheSecondsOverride !== 0)
 					set_transient($transientKey, $compressCache ? base64_encode(gzdeflate(serialize($response))) : $response, $cacheSecondsOverride === null ? self::$CacheSeconds : $cacheSecondsOverride);
+				else
+					delete_transient($transientKey);
 			}
+			
 			$response["body"] = self::ExtractAndEnqueueStyles($response["body"], $echoAssetsIfNotEnqueued);
 			$response["body"] = self::ExtractAndEnqueueScripts($response["body"], $echoAssetsIfNotEnqueued);
 		}
@@ -110,7 +92,7 @@ class dsSearchAgent_ApiRequest {
 	private static function FilterData($data) {
 		global $wp_version;
 
-		$blog_url = get_bloginfo("url");
+		$blog_url = get_home_url();
 
 		$blogUrlWithoutProtocol = str_replace("http://", "", $blog_url);
 		$blogUrlDirIndex = strpos($blogUrlWithoutProtocol, "/");
@@ -121,16 +103,18 @@ class dsSearchAgent_ApiRequest {
 		$idxActivationPath = $blogUrlDir . "/" . dsSearchAgent_Rewrite::GetUrlSlug();
 
 		$dsidxpress_options = get_option(DSIDXPRESS_OPTION_NAME);
-		$dsidxpress_option_keys_to_output = array("ResultsMapDefaultState");
+		$dsidxpress_option_keys_to_output = array("ResultsDefaultState", "ResultsMapDefaultState");
 		$dsidxpress_options_to_output = array();
 
-		foreach($dsidxpress_options as $key => $value)
-		{
-			if(in_array($key, $dsidxpress_option_keys_to_output))
-				$dsidxpress_options_to_output[$key] = $value;
+		if(!empty($dsidxpress_options)){
+			foreach($dsidxpress_options as $key => $value)
+			{
+				if(in_array($key, $dsidxpress_option_keys_to_output))
+					$dsidxpress_options_to_output[$key] = $value;
+			}
 		}
 
-		$data = str_replace('{$pluginUrlPath}', DSIDXPRESS_PLUGIN_URL, $data);
+		$data = str_replace('{$pluginUrlPath}', get_home_url() . '/wp-content/plugins/dsidxpress/', $data);
 		$data = str_replace('{$pluginVersion}', DSIDXPRESS_PLUGIN_VERSION, $data);
 		$data = str_replace('{$wordpressVersion}', $wp_version, $data);
 		$data = str_replace('{$wordpressBlogUrl}', $blog_url, $data);

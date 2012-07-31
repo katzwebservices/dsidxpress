@@ -6,8 +6,8 @@ class dsSearchAgent_ListingsWidget extends WP_Widget {
 			"description" => "Show a list of real estate listings"
 		));
 
-		if (is_admin())
-			wp_enqueue_script('dsidxpress_widget_listings', DSIDXPRESS_PLUGIN_URL . 'js/widget-listings.js', array('jquery'), DSIDXPRESS_PLUGIN_VERSION);
+		if ($_SERVER['SCRIPT_NAME'] == '/wp-admin/widgets.php')
+			wp_enqueue_script('dsidxpress_widget_listings', DSIDXPRESS_PLUGIN_URL . 'js/widget-listings.js', array('jquery'), DSIDXPRESS_PLUGIN_VERSION, true);
 	}
 	function widget($args, $instance) {
 		extract($args);
@@ -17,6 +17,8 @@ class dsSearchAgent_ListingsWidget extends WP_Widget {
 
 		if (!$options["Activated"])
 			return;
+			
+		wp_enqueue_script('jquery', false, array(), false, true);
 
 		echo $before_widget;
 		if ($title)
@@ -73,7 +75,7 @@ class dsSearchAgent_ListingsWidget extends WP_Widget {
 			$data = "<p class=\"dsidx-error\">We're sorry, but it seems that we're having some problems loading properties from our database. Please check back soon.</p>";
 		}
 
-		$data = str_replace('{$pluginUrlPath}', DSIDXPRESS_PLUGIN_URL, $data);
+		$data = str_replace('{$pluginUrlPath}', get_home_url() . '/wp-content/plugins/dsidxpress/', $data);
 
 		echo $data;
 		echo $after_widget;

@@ -61,3 +61,70 @@ p.dsidx-error
 {
 	width:100%;
 }
+
+
+wortks for photogenic:
+
+p.dsidx-error
+{
+	margin-left: 20px;
+	margin-right: 20px;
+	padding: 5px;
+	border: 1px solid #FF0000;
+}
+.dsidx-widget
+{
+	text-align: left;
+}
+.dsidx-search-widget .dsidx-price
+{
+	width: 80px;
+}
+.dsidx-search-widget .dsidx-mlsnumber
+{
+	width: 80px;
+}
+.dsidx-search-widget select
+{
+	width: 90px;
+}
+.dsidx-widget.dsidx-search-widget .dsidx-search-button
+{
+	padding-top: 6px;
+	text-align:center;
+}
+.dsidx-search-widget td{
+	padding: 4px;
+}
+.dsidx-search-widget th{
+	padding: 8px;
+	background-color: #F3F3F3;
+}
+.dsidx-improvedsqft
+{
+	width: 50px;
+}
+.dsidx-search-widget .dsidx-beds,
+.dsidx-search-widget .dsidx-baths
+{
+	width: 25px;
+}
+
+.dsidx-search-widget .dsidx-search-button
+{
+	font-size: 12px;
+}
+
+.dsidx-search-widget .dsidx-search-button img
+{
+	vertical-align:-3px;
+	border: 0;
+}
+.dsidx-search-widget .dsidx-search-widget-propertyTypes
+{
+	width: 100%;
+}
+.dsidx-search-widget table
+{
+	width:100%;
+}

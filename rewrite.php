@@ -20,6 +20,7 @@ class dsSearchAgent_Rewrite {
 			"idx/(\\d+)-mls-(.+)-.*"                   => 'index.php?idx-action=details&idx-q-PropertyID=$matches[1]&idx-q-MlsNumber=$matches[2]',
 			"idx/(\\d+)[^/]*(?:/page\-(\\d+))?"        => 'index.php?idx-action=results&idx-q-LinkID=$matches[1]&idx-d-ResultPage=$matches[2]',
 			"idx/advanced.*"                           => 'index.php?idx-action=framed',
+			"idx/search/?$"                            => 'index.php?idx-action=search',
 			"idx(?:/page\-(\\d+))?$"                   => 'index.php?idx-action=results&idx-d-ResultPage=$matches[1]'
 		);
 

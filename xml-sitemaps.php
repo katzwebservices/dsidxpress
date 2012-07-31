@@ -7,7 +7,7 @@ class dsSearchAgent_XmlSitemaps {
 	static function BuildSitemap() {
 		$options = get_option(DSIDXPRESS_OPTION_NAME);
 
-		$urlBase = get_bloginfo("url");
+		$urlBase = get_home_url();
 		if (substr($urlBase, strlen($urlBase), 1) != "/") $urlBase .= "/";
 		$urlBase .= dsSearchAgent_Rewrite::GetUrlSlug();
 

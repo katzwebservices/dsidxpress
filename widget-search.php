@@ -6,10 +6,8 @@ class dsSearchAgent_SearchWidget extends WP_Widget {
 			"description" => "A real estate search form"
 		));
 
-		if (is_admin())
-			wp_enqueue_script('dsidxpress_widget_search', DSIDXPRESS_PLUGIN_URL . 'js/widget-search.js', array('jquery'), DSIDXPRESS_PLUGIN_VERSION);
-			
-		wp_enqueue_script('dsidxpress_widget_search_view', DSIDXPRESS_PLUGIN_URL . 'js/widget-client.js', array('jquery'), DSIDXPRESS_PLUGIN_VERSION);
+		if ($_SERVER['SCRIPT_NAME'] == '/wp-admin/widgets.php')
+			wp_enqueue_script('dsidxpress_widget_search', DSIDXPRESS_PLUGIN_URL . 'js/widget-search.js', array('jquery'), DSIDXPRESS_PLUGIN_VERSION, true);
 	}
 	function widget($args, $instance) {
 		extract($args);
@@ -19,17 +17,20 @@ class dsSearchAgent_SearchWidget extends WP_Widget {
 
 		if (!$options["Activated"])
 			return;
+		
 
-		$pluginUrl = DSIDXPRESS_PLUGIN_URL;
+		$pluginUrl = get_home_url() . '/wp-content/plugins/dsidxpress/';
 
-		$formAction = get_bloginfo("url") . "/idx/";
+		wp_enqueue_script('dsidxpress_widget_search_view', $pluginUrl . 'js/widget-client.js', array('jquery'), DSIDXPRESS_PLUGIN_VERSION, true);
+
+		$formAction = get_home_url() . "/idx/";
 
 		$defaultSearchPanels = dsSearchAgent_ApiRequest::FetchData("AccountSearchPanelsDefault", array(), false, 60 * 60 * 24);
 		$defaultSearchPanels = $defaultSearchPanels["response"]["code"] == "200" ? json_decode($defaultSearchPanels["body"]) : null;
 		$propertyTypes = dsSearchAgent_ApiRequest::FetchData("AccountSearchSetupPropertyTypes", array(), false, 60 * 60 * 24);
 		$propertyTypes = $propertyTypes["response"]["code"] == "200" ? json_decode($propertyTypes["body"]) : null;
 
-		$account_options = dsSearchAgent_ApiRequest::FetchData("AccountOptions", array(), false, 0);
+		$account_options = dsSearchAgent_ApiRequest::FetchData("AccountOptions", array(), false);
 		$account_options = $account_options["response"]["code"] == "200" ? json_decode($account_options["body"]) : null;
 
 		$num_location_dropdowns = 0;
@@ -310,21 +311,21 @@ HTML;
 
 			<p>
 				<h3>Fields to Display</h3>
-				<div id="{$searchOptionsFieldId}-show_checkboxes">
-					<input type="checkbox" id="{$searchOptionsFieldId}-show_cities" name="{$searchOptionsFieldName}[show_cities]" {$show_cities}/>
+				<div id="{$searchOptionsFieldId}-show_checkboxes" class="search-widget-searchOptions">
+					<input type="checkbox" id="{$searchOptionsFieldId}-show_cities" name="{$searchOptionsFieldName}[show_cities]" {$show_cities} onclick="dsWidgetSearch.ShowBlock(this);"/>
 					<label for="{$searchOptionsFieldId}-show_cities">Cities</label><br />
-					<input type="checkbox" id="{$searchOptionsFieldId}-show_communities" name="{$searchOptionsFieldName}[show_communities]" {$show_communities}/>
+					<input type="checkbox" id="{$searchOptionsFieldId}-show_communities" name="{$searchOptionsFieldName}[show_communities]" {$show_communities} onclick="dsWidgetSearch.ShowBlock(this);"/>
 					<label for="{$searchOptionsFieldId}-show_communities">Communities</label><br />
-					<input type="checkbox" id="{$searchOptionsFieldId}-show_tracts" name="{$searchOptionsFieldName}[show_tracts]" {$show_tracts}/>
+					<input type="checkbox" id="{$searchOptionsFieldId}-show_tracts" name="{$searchOptionsFieldName}[show_tracts]" {$show_tracts} onclick="dsWidgetSearch.ShowBlock(this);"/>
 					<label for="{$searchOptionsFieldId}-show_tracts">Tracts</label><br />
-					<input type="checkbox" id="{$searchOptionsFieldId}-show_zips" name="{$searchOptionsFieldName}[show_zips]" {$show_zips}/>
+					<input type="checkbox" id="{$searchOptionsFieldId}-show_zips" name="{$searchOptionsFieldName}[show_zips]" {$show_zips} onclick="dsWidgetSearch.ShowBlock(this);"/>
 					<label for="{$searchOptionsFieldId}-show_zips">Zips</label><br />
-					<input type="checkbox" id="{$searchOptionsFieldId}-show_mlsnumber" name="{$searchOptionsFieldName}[show_mlsnumber]" {$show_mlsnumber}/>
+					<input type="checkbox" id="{$searchOptionsFieldId}-show_mlsnumber" name="{$searchOptionsFieldName}[show_mlsnumber]" {$show_mlsnumber} onclick="dsWidgetSearch.ShowBlock(this);"/>
 					<label for="{$searchOptionsFieldId}-show_mlsnumber">MLS #'s</label><br />
 HTML;
 		if($options["HasSearchAgentPro"] == "yes") {
 			echo <<<HTML
-					<input id="{$searchOptionsFieldId}-show-advanced" name="{$searchOptionsFieldName}[show_advanced]" class="checkbox" type="checkbox" {$show_advanced}/>
+					<input id="{$searchOptionsFieldId}-show-advanced" name="{$searchOptionsFieldName}[show_advanced]" class="checkbox" type="checkbox" {$show_advanced} onclick="dsWidgetSearch.ShowBlock(this);"/>
 					<label for="{$searchOptionsFieldId}-show-advanced">Show Advanced Option</label>
 HTML;
 		}
@@ -389,7 +390,7 @@ HTML;
 					<span class="description">See all Zips <a href="javascript:void(0);" onclick="dsWidgetSearch.LaunchLookupList('{$pluginUrl}locations.php?type=zip')">here</a></span>
 				</p>
 			</div>
-			<script> dsWidgetSearch.InitFields('{$searchOptionsFieldId}'); </script>
+			<script> jQuery(document).ready(function() { dsWidgetSearch.InitFields(); }); </script>
 HTML;
 	}
 }

@@ -13,13 +13,17 @@ class dsidx_footer {
 
 	static function insert_disclaimer() {
 		global $wp_query;
-
+		
 		if (is_array($wp_query->query)
-		    && ($wp_query->query["idx-action"] == "details" || $wp_query->query["idx-action"] == "results")
+		    && ((isset($wp_query->query["idx-action"]) && $wp_query->query["idx-action"] == "details")
+		    || (isset($wp_query->query["idx-action"]) && $wp_query->query["idx-action"] == "results"))
 		   )
 			return;
 
-		$disclaimer = dsSearchAgent_ApiRequest::FetchData("Disclaimer");
+		$apiParams = array();
+		$apiParams["responseDirective.IncludeDsDisclaimer"] = (defined('ZPRESS_API') && ZPRESS_API != '') ? "false" : "true";
+
+		$disclaimer = dsSearchAgent_ApiRequest::FetchData("Disclaimer", $apiParams);
 		echo $disclaimer["body"];
 	}
 }

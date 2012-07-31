@@ -12,8 +12,8 @@ class dsSearchAgent_Client {
 		"q" => "query",
 		"d" => "directive"
 	);
-	static $DebugAllowedFrom = "70.183.17.242";
-
+	static $DebugAllowedFrom = array("70.183.17.242", "127.0.0.1", "::1:", "10.10.10.10");
+	
 	// this is a roundabout way to make sure that any other plugin / widget / etc that uses the WP_Query object doesn't get our IDX data
 	// in their query. since we don't actually get the query itself in the "the_posts" filter, we have to step around the issue by
 	// checking it BEFORE it gets to the the_posts filter. later, in the the_posts filter, we restore the previous state of things.
@@ -29,31 +29,17 @@ class dsSearchAgent_Client {
 				$wp_query->query["idx-action-swap"] = $wp_query->query["idx-action"];
 				unset($wp_query->query["idx-action"]);
 			} else {
-				$q->query_vars["caller_get_posts"] = true;
+				$q->query_vars["ignore_sticky_posts"] = true;
 			}
 		}
 	}
 	static function Activate($posts) {
 		global $wp_query;
 
-		// wordpress adds magic quotes for us automatically. this quoting behavior seems to be pretty old and well built in, and so we're going to
-		// forcefully strip them out. see http://core.trac.wordpress.org/browser/trunk/wp-includes/load.php?rev=12732#L346 for an example of how long
-		// this has existed for
-		$get = stripslashes_deep($_GET);
-
-		// we're going to make our own _corrected_ array for the superglobal $_GET due to bugs in the "preferred" way to host WP on windows w/ IIS 6.
-		// the reason for this is because the URL that handles the request becomes wp-404-handler.php and _SERVER["QUERY_STRING"] subsequently ends up
-		// being in the format of 404;http://<domain>:<port>/<url>?<query-arg-1>&<query-arg-2>. the result of that problem is that the first query arg
-		// ends up becoming the entire request url up to the second query param
-
-		$getKeys = array_keys($get);
-		if (isset($getKeys[0]) && strpos($getKeys[0], "404;") === 0) {
-			$get[substr($getKeys[0], strpos($getKeys[0], "?") + 1)] = $get[$getKeys[0]];
-			unset($get[$getKeys[0]]);
-		}
+		$get = self::GetUrlParams();
 
 		// for remote debugging
-		if ($_SERVER["REMOTE_ADDR"] == self::$DebugAllowedFrom) {
+		if (in_array($_SERVER["REMOTE_ADDR"], self::$DebugAllowedFrom)) {
 			if (isset($get["debug-wpquery"])) {
 				print_r($wp_query);
 				exit();
@@ -80,17 +66,19 @@ class dsSearchAgent_Client {
 		}
 
 		$options = get_option(DSIDXPRESS_OPTION_NAME);
-		$action = strtolower($wp_query->query["idx-action"]);
+		if(!empty($wp_query->query["idx-action"]))
+			$action = strtolower($wp_query->query["idx-action"]);
 
 		if (!isset($options["Activated"])) {
 			$wp_query->query_vars['error'] = '404';
 			return $posts;
 		}
 
-		// Begin - code for widgets, must be on all pages
-		add_action("wp_head", array("dsSearchAgent_Client", "HeaderUnconditional"));
-		wp_enqueue_script("jquery");
-		// End - code for widgets, must be on all pages
+		wp_enqueue_style('dsidxpress-unconditional', DSIDXPRESS_PLUGIN_URL . 'css/client.css');
+		
+		// the dsidxpress js that's on the CDN unfortunately looks to jquery to register a document.ready function. i dont like
+		// having to include this on every page, but we have to pick our battles carefully. hopefully we can fix this someday.
+		wp_enqueue_script('jquery');
 
 		// see comment above PreActivate
 		if (is_array($wp_query->query) && isset($wp_query->query["idx-action-swap"])) {
@@ -141,10 +129,12 @@ class dsSearchAgent_Client {
 		    && empty($apiQueryOnlyParams["query.Schools[0].Type"])
 
 		    && empty($apiQueryOnlyParams["query.LinkID"])
+		    && empty($apiQueryOnlyParams["query.PropertySearchID"])
 		    && empty($apiQueryOnlyParams["query.RadiusDistance"])
-		    ) {
-			$wp_query->query_vars['error'] = '404';
-			return $posts;
+		) {
+			// we used to null out the $posts here, but we're going to try to just noindex instead, so we don't block a 
+			// user from using the search intarface however they want.
+			add_action("wp_head", array("dsSearchAgent_Client", "NoIndex"));
 		}
 
 		// keep wordpress from mucking up our HTML
@@ -175,7 +165,7 @@ class dsSearchAgent_Client {
 		$wp_query->is_page = 1;
 		$wp_query->is_home = null;
 		$wp_query->is_singular = 1;
-
+		
 		if($action == "framed")
 			return self::FrameAction($action, $get);
 		else
@@ -197,7 +187,7 @@ class dsSearchAgent_Client {
 		set_query_var("name", "dsidxpress-{$action}"); // at least a few themes require _something_ to be set here to display a good <title> tag
 		set_query_var("pagename", "dsidxpress-{$action}"); // setting pagename in case someone wants to do a custom theme file for this "page"
 
-		$posts = array((object)array(
+		$post = (object)array(
 			"ID"				=> $post_id,
 			"comment_count"		=> 0,
 			"comment_status"	=> "closed",
@@ -212,9 +202,31 @@ class dsSearchAgent_Client {
 			"post_status"		=> "publish",
 			"post_title"		=> $title,
 			"post_type"			=> "page"
-		));
+		);
+		wp_cache_set( $post_id, $post, 'posts');
+		$posts = array( $post );
 
 		return $posts;
+	}
+
+	static function GetUrlParams(){
+		// wordpress adds magic quotes for us automatically. this quoting behavior seems to be pretty old and well built in, and so we're going to
+		// forcefully strip them out. see http://core.trac.wordpress.org/browser/trunk/wp-includes/load.php?rev=12732#L346 for an example of how long
+		// this has existed for
+		$get = stripslashes_deep($_GET);
+
+		// we're going to make our own _corrected_ array for the superglobal $_GET due to bugs in the "preferred" way to host WP on windows w/ IIS 6.
+		// the reason for this is because the URL that handles the request becomes wp-404-handler.php and _SERVER["QUERY_STRING"] subsequently ends up
+		// being in the format of 404;http://<domain>:<port>/<url>?<query-arg-1>&<query-arg-2>. the result of that problem is that the first query arg
+		// ends up becoming the entire request url up to the second query param
+
+		$getKeys = array_keys($get);
+		if (isset($getKeys[0]) && strpos($getKeys[0], "404;") === 0) {
+			$get[substr($getKeys[0], strpos($getKeys[0], "?") + 1)] = $get[$getKeys[0]];
+			unset($get[$getKeys[0]]);
+		}
+
+		return $get;
 	}
 
 	static function GetApiParams($get, $onlyQueryParams = false) {
@@ -248,46 +260,105 @@ class dsSearchAgent_Client {
 	}
 	static function ApiAction($action, $get) {
 		global $wp_query;
+		
 		$options = get_option(DSIDXPRESS_OPTION_NAME);
 		$post_id = time();
 
-		wp_enqueue_script("jquery-ui-core");
-		wp_enqueue_script("jquery-ui-dialog");
-		wp_enqueue_style("jqueryui", "http://ajax.googleapis.com/ajax/libs/jqueryui/1.7/themes/smoothness/jquery-ui.css");
-
+		wp_enqueue_script("jquery-ui-dialog", false, array(), false, true);
+		
 		add_action("wp_head", array("dsSearchAgent_Client", "Header"));
 
 		// allow wordpress to consume the page template option the user choose in the dsIDXpress settings
-		if ($action == "results" && $options["ResultsTemplate"])
+		if ($action == "results" && !empty($options["ResultsTemplate"]))
 			wp_cache_set($post_id, array("_wp_page_template" => array($options["ResultsTemplate"])), "post_meta");
-		else if ($action == "details" && $options["DetailsTemplate"])
+		else if ($action == "details" && !empty($options["DetailsTemplate"]))
 			wp_cache_set($post_id, array("_wp_page_template" => array($options["DetailsTemplate"])), "post_meta");
 
 		$apiParams = self::GetApiParams($get);
+		
+		// pull account options
+		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("AccountOptions");
+		if (!empty($apiHttpResponse["errors"]) || $apiHttpResponse["response"]["code"] != "200")
+			wp_die("We're sorry, but we ran into a temporary problem while trying to load the account data. Please check back soon.", "Account data load error");
+		else
+			$account_options = json_decode($apiHttpResponse["body"]);	
+		
 		if ($action == "results") {
+			dsidxpress_autocomplete::AddScripts(false);
+			
+			// save search
+			if(!empty($get["idx-save"]) && $get["idx-save"] == "true") {
+				$apiParams["name"] = $get["idx-save-name"];
+				$apiParams["updates"] = $get["idx-save-updates"] == "on" ? "true" : "false";
+
+				$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("SaveSearch", $apiParams, false, 0);
+				
+				$response = json_decode($apiHttpResponse["body"]);				
+				
+				header('Content-Type: application/json');
+				echo $apiHttpResponse["body"];
+				die();
+			}
+			
+			// check allowed searched before registration
+			$allow_results_view = 1;
+			if (!empty($account_options->AllowedSearchesBeforeRegistration) && isset($_COOKIE['dsidx-visitor-results-views'])) {
+				if ((int) $account_options->AllowedSearchesBeforeRegistration <= (int) $_COOKIE['dsidx-visitor-results-views']) {
+					$allow_results_view = 0;
+				}
+			}
+			$apiParams["requester.AllowVisitorResultsView"] = $allow_results_view;
+
 			if (isset($apiParams["query.LinkID"]))
+				$apiParams["query.ForceUsePropertySearchConstraints"] = "true";
+			if (isset($apiParams["query.PropertySearchID"]))
 				$apiParams["query.ForceUsePropertySearchConstraints"] = "true";
 			$apiParams["directive.ResultsPerPage"] = 25;
 			if (isset($apiParams["directive.ResultPage"]))
 				$apiParams["directive.ResultPage"] = $apiParams["directive.ResultPage"] - 1;
 			$apiParams["responseDirective.IncludeMetadata"] = "true";
 			$apiParams["responseDirective.IncludeLinkMetadata"] = "true";
+		} else if($action == "details"){
+			$apiParams["query.ListingStatuses"] = 15; // all statuses
+
+			// check allowed searched before registration
+			$allow_details_view = 1;
+			if (!empty($account_options->AllowedDetailViewsBeforeRegistration) && isset($_COOKIE['dsidx-visitor-details-views'])) {
+				if ((int) $account_options->AllowedDetailViewsBeforeRegistration <= (int) $_COOKIE['dsidx-visitor-details-views']) {
+					$allow_details_view = 0;
+				}
+			}
+			$apiParams["requester.AllowVisitorDetailView"] = $allow_details_view;
+			
+			// if we have an auth cookie then record a property visit
+			if(@$_COOKIE['dsidx-visitor-auth']) {
+				$visitParams = array( "mlsNumber" => $apiParams["query.MlsNumber"] );
+				$apiVisitResponse = dsSearchAgent_ApiRequest::FetchData("RecordVisit", $visitParams, false, 0);
+			}
+			
+			$screen_name = get_option('zillow_screen_name');
+			if (!empty($screen_name))
+				$apiParams["responseDirective.ZillowScreenName"] = $screen_name;
 		}
 		$apiParams["responseDirective.IncludeDisclaimer"] = "true";
+		$apiParams["responseDirective.IncludeDsDisclaimer"] = (defined('ZPRESS_API') && ZPRESS_API != '') ? "false" : "true";
+		$apiParams["responseDirective.RemoveDsDisclaimerLinks"] = (isset($options['RemoveDsDisclaimerLinks']) && $options['RemoveDsDisclaimerLinks'] == 'Y') ? "true" : "false";
 
 		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData($wp_query->query["idx-action"], $apiParams, false);
 		$apiData = $apiHttpResponse["body"];
+		
+		$apiData = str_replace('{$contentDomId}', $post_id, $apiData);
 
-		if ($_SERVER["REMOTE_ADDR"] == self::$DebugAllowedFrom) {
+		if (in_array($_SERVER["REMOTE_ADDR"], self::$DebugAllowedFrom)) {
 			if (isset($get["debug-api-response"])) {
 				print_r($apiHttpResponse);
 				exit();
 			}
 		}
-
+		
 		if ($apiHttpResponse["response"]["code"] == "404") {
-			$wp_query->query_vars['error'] = '404';
-			return array();
+			$wp_query->set('is_404', true);
+			add_action('get_header', function ($header) { return status_header(404);});
 		} else if ($apiHttpResponse["response"]["code"] == "302") {
 			$redirect = dsSearchAgent_Client::GetBasePath() . self::ExtractValueFromApiData($apiData, "redirect");
 			header("Location: $redirect", true, 302);
@@ -295,17 +366,24 @@ class dsSearchAgent_Client {
 		} else if (empty($apiHttpResponse["body"]) || !empty($apiHttpResponse["errors"]) || substr($apiHttpResponse["response"]["code"], 0, 1) == "5") {
 			wp_die("We're sorry, but we ran into a temporary problem while trying to load the real estate data. Please check back soon.", "Real estate data load error");
 		}
-
+		/*if ($options['ResultsTitle'] != '')
+			$title = $options['ResultsTitle'];
+		else */
+		$seo_title = self::ExtractValueFromApiData($apiData, "seo_title");
+		$seo_description = self::ExtractValueFromApiData($apiData, "seo_description");
+		$seo_keywords = self::ExtractValueFromApiData($apiData, "seo_keywords");
 		$title = self::ExtractValueFromApiData($apiData, "title");
 		$dateaddedgmt = self::ExtractValueFromApiData($apiData, "dateaddedgmt");
 		$description = self::ExtractValueFromApiData($apiData, "description");
 		self::$CanonicalUri = self::ExtractValueFromApiData($apiData, "canonical");
 		self::$TriggeredAlternateUrlStructure = self::ExtractValueFromApiData($apiData, "alternate-urls");
-		self::EnsureBaseUri();
+		if ($apiHttpResponse["response"]["code"] != "404")
+			self::EnsureBaseUri();
 
 		set_query_var("name", "dsidxpress-{$action}"); // at least a few themes require _something_ to be set here to display a good <title> tag
 		set_query_var("pagename", "dsidxpress-{$action}"); // setting pagename in case someone wants to do a custom theme file for this "page"
-		$posts = array((object)array(
+		
+		$post = (object)array(
 			"ID"				=> $post_id,
 			"comment_count"		=> 0,
 			"comment_status"	=> "closed",
@@ -320,7 +398,9 @@ class dsSearchAgent_Client {
 			"post_status"		=> "publish",
 			"post_title"		=> $title,
 			"post_type"			=> "page"
-		));
+		);
+		wp_cache_set( $post_id, $post, 'posts');
+		$posts = array( $post );
 
 		if(
 			!self::IsStyleUrlEnqueued('jqueryui') &&
@@ -328,6 +408,16 @@ class dsSearchAgent_Client {
 			!self::IsStyleUrlEnqueued('jquery-ui')
 		) wp_enqueue_style('jqueryui', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.7/themes/smoothness/jquery-ui.css');
 
+		// track the detail & result views, do this at the end in case something errors or w/e
+		$views = intval(@$_COOKIE["dsidx-visitor-$action-views"]);
+		setcookie("dsidx-visitor-$action-views", $views + 1, time()+60*60*24*30, '/');
+		
+		if (isset($seo_keywords) || isset($seo_description) || isset($seo_title)) {
+			$dsidxpress_seo = new dsidxpress_seo($seo_title, $seo_description, $seo_keywords);
+			add_action('wp_head', array($dsidxpress_seo, 'wp_head'));
+			add_filter('wp_title', array($dsidxpress_seo, 'dsidxpress_title'));
+		}
+		
 		return $posts;
 	}
 	static function ExtractValueFromApiData(&$apiData, $key) {
@@ -359,10 +449,10 @@ class dsSearchAgent_Client {
 			$redirect = $basePath . self::$CanonicalUri;
 			$sortColumnKey = "idx-d-SortOrders<0>-Column";
 			$sortDirectionKey = "idx-d-SortOrders<0>-Direction";
-			$sortColumn = $_GET[$sortColumnKey];
-			$sortDirection = $_GET[$sortDirectionKey];
+			$sortColumn = (isset($_GET[$sortColumnKey])) ? $_GET[$sortColumnKey] : null;
+			$sortDirection = (isset($_GET[$sortDirectionKey])) ? $_GET[$sortDirectionKey] : null;
 
-			if ($sortColumn && $sortDirection) {
+			if ($sortColumn !== null && $sortDirection !== null) {
 				if (substr($redirect, strlen($redirect) - 1, 1) == "/")
 					$redirect .= "?";
 				else
@@ -377,7 +467,7 @@ class dsSearchAgent_Client {
 	static function GetBasePath(){
 		$urlSlug = empty(self::$TriggeredAlternateUrlStructure) ? "idx/" : "";
 
-		$blogUrlWithoutProtocol = str_replace("http://", "", get_bloginfo("url"));
+		$blogUrlWithoutProtocol = str_replace("http://", "", get_home_url());
 		$blogUrlDirIndex = strpos($blogUrlWithoutProtocol, "/");
 		$blogUrlDir = "";
 		if ($blogUrlDirIndex) // don't need to check for !== false here since WP prevents trailing /'s
@@ -396,12 +486,11 @@ class dsSearchAgent_Client {
 	static function CancelAllRedirects($location) {
 		return false;
 	}
-	static function HeaderUnconditional() {
-		$pluginUrl = DSIDXPRESS_PLUGIN_URL;
-		echo "<link rel=\"stylesheet\" href=\"{$pluginUrl}css/client.css\" />\n";
+	static function NoIndex(){
+		echo "<meta name=\"robots\" content=\"noindex\">\n";
 	}
 	static function GetPermalink($incomingLink = null) {
-		$blogUrl = get_bloginfo("url");
+		$blogUrl = get_home_url();
 		$urlSlug = dsSearchAgent_Rewrite::GetUrlSlug();
 		$canonicalUri = self::$CanonicalUri;
 
