@@ -390,7 +390,7 @@ HTML;
 					<span class="description">See all Zips <a href="javascript:void(0);" onclick="dsWidgetSearch.LaunchLookupList('{$pluginUrl}locations.php?type=zip')">here</a></span>
 				</p>
 			</div>
-			<script> jQuery(document).ready(function() { dsWidgetSearch.InitFields(); }); </script>
+			<script> jQuery(document).ready(function() { if(typeof dsWidgetSearch != "undefined") { dsWidgetSearch.InitFields(); } }); </script>
 HTML;
 	}
 }
