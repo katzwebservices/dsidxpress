@@ -81,7 +81,7 @@ class dsSearchAgent_ClientAssist {
 				if(!empty($post_vars['lastName'])) $lastname = $post_vars['lastName'];
 
 				// call sns to send the contact to Zillow.com
-				$sns = new \AmazonSNS(array('key' => AWS_KEY, 'secret' => AWS_SECRET_KEY, 'certificate_authority' => true));
+				$sns = new AmazonSNS(array('key' => AWS_KEY, 'secret' => AWS_SECRET_KEY, 'certificate_authority' => true));
 				$sns->publish(SNS_ARN_CONTACT_REQUEST, json_encode((object) array(
 					'ContactDate' => gmdate('Y-m-d\TH:i:s.uP'),
 					'Email' => @$post_vars['emailAddress'],
@@ -174,7 +174,7 @@ class dsSearchAgent_ClientAssist {
 				$name_split = preg_split('/[\s]+/', $post_vars['name'], 2, PREG_SPLIT_NO_EMPTY);
 
 				// call sns to send the contact to Zillow.com
-				$sns = new \AmazonSNS(array('key' => AWS_KEY, 'secret' => AWS_SECRET_KEY, 'certificate_authority' => true));
+				$sns = new AmazonSNS(array('key' => AWS_KEY, 'secret' => AWS_SECRET_KEY, 'certificate_authority' => true));
 				$sns->publish(SNS_ARN_CONTACT_REQUEST, json_encode((object) array(
 					'ContactDate' => gmdate('Y-m-d\TH:i:s.uP'),
 					'Email' => $post_vars['newVisitor.Email'],

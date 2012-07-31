@@ -1083,6 +1083,16 @@ if (isset($diagnostics["error"])) {
 							<label for="dsidxpress-ShowPanel_ContactCB">Show Contact Form:</label>
 						</th>
 						<td>
+							<input type="checkbox" id="dsidxpress-ShowPanel_StreetViewCB" size="50" <?php checked('true', strtolower($account_options->ShowPanel_StreetView)); ?> onclick="dsIDXpressOptions.OptionCheckBoxClick(this);" /><br />
+							<input type="hidden" id="dsidxpress-ShowPanel_StreetView" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[ShowPanel_StreetView]" value="<?php echo $account_options->ShowPanel_StreetView; ?>" />
+							<span class="description"></span>
+						</td>
+					</tr>
+					<tr>
+						<th>
+							<label for="dsidxpress-ShowPanel_Contact">Show Contact Form:</label>
+						</th>
+						<td>
 							<input type="checkbox" id="dsidxpress-ShowPanel_ContactCB" size="50" <?php checked('true', strtolower($account_options->ShowPanel_Contact)); ?> onclick="dsIDXpressOptions.OptionCheckBoxClick(this);" /><br />
 							<input type="hidden" id="dsidxpress-ShowPanel_Contact" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[ShowPanel_Contact]" value="<?php echo $account_options->ShowPanel_Contact;?>" />
 							<span class="description"></span>

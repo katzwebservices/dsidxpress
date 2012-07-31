@@ -1,4 +1,6 @@
 <?php
+define('ZP_NO_REDIRECT', true);
+
 // bootstrap our wordpress instance
 $bootstrapSearchDir = dirname($_SERVER["SCRIPT_FILENAME"]);
 $docRoot = dirname(isset($_SERVER["APPL_PHYSICAL_PATH"]) ? $_SERVER["APPL_PHYSICAL_PATH"] : $_SERVER["DOCUMENT_ROOT"]);
