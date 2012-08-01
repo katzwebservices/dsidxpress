@@ -12,7 +12,7 @@ class dsSearchAgent_Client {
 		"q" => "query",
 		"d" => "directive"
 	);
-	static $DebugAllowedFrom = array("70.183.17.242", "127.0.0.1", "::1:", "10.10.10.10");
+	static $DebugAllowedFrom = array("127.0.0.1", "::1:", "10.10.10.10", "50.59.180.51", "50.59.180.50");
 	
 	// this is a roundabout way to make sure that any other plugin / widget / etc that uses the WP_Query object doesn't get our IDX data
 	// in their query. since we don't actually get the query itself in the "the_posts" filter, we have to step around the issue by
@@ -358,7 +358,7 @@ class dsSearchAgent_Client {
 		
 		if ($apiHttpResponse["response"]["code"] == "404") {
 			$wp_query->set('is_404', true);
-			add_action('get_header', self::Return404);
+			add_action('get_header', array("dsSearchAgent_Client", "Return404"));
 		} else if ($apiHttpResponse["response"]["code"] == "302") {
 			$redirect = dsSearchAgent_Client::GetBasePath() . self::ExtractValueFromApiData($apiData, "redirect");
 			header("Location: $redirect", true, 302);

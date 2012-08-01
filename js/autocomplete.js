@@ -29,8 +29,14 @@ jQuery().ready(function($) {
 				if (ui.item.Type == 'Listing' && ui.item.SupportingInfo.indexOf('MLS Number;') != -1) {
 					// redirect MLS selection to the details page
 					var idx_pos = window.location.pathname.indexOf('/idx');
-					var path = window.location.pathname.slice(0, idx_pos + 5);
-					window.location = path + 'mls-' + ui.item.Name + '-';// THIS URL NEEDS TO BE MADE GENERIC
+					if (idx_pos > -1) {
+						var path = window.location.pathname.slice(0, idx_pos + 5);
+						var url  = path + 'mls-' + ui.item.Name + '-';
+					} else {
+						var url = localdsidx.homeUrl + '/idx/mls-' + ui.item.Name + '-';
+					}
+					
+					window.location = url;
 				} else if (ui.item.Type == 'Listing' && ui.item.SupportingInfo.indexOf('Address;') != -1) {
 					$(this).attr('name', 'idx-q-AddressMasks<0>');
 				} else if (ui.item.Type == 'County') {

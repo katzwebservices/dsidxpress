@@ -132,7 +132,7 @@ HTML;
 			);
 		}
 		
-		usort($posts, self::Sort);
+		usort($posts, array("dsSearchAgent_Client", "Sort"));
 		
 		return $posts;
 	}

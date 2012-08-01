@@ -13,11 +13,14 @@ class dsidxpress_autocomplete {
 		wp_enqueue_style('dsidx-autocomplete-css');
 		
 		if ($needs_plugin_url) {
-			$plugin_url =  get_home_url() . '/wp-content/plugins/dsidxpress/';
+			$home_url   = get_home_url();
+			$plugin_url = get_home_url() . '/wp-content/plugins/dsidxpress/';
+			
 			echo <<<HTML
 				<script type="text/javascript">
 				if (typeof localdsidx == "undefined" || !localdsidx) { var localdsidx = {}; };
 				localdsidx.pluginUrl = "{$plugin_url}";
+				localdsidx.homeUrl = "{$home_url}";
 				</script>
 HTML;
 		}
