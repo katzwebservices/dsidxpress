@@ -1,11 +1,12 @@
 <?php
 class dsIDXWidgets_Affordability extends WP_Widget {
     function dsIDXWidgets_Affordability() {
+        global $pagenow;
         $this->WP_Widget("dsidx-affordability", "Search by Affordability", array(
             "classname" => "dsidx-widget-affordability",
             "description" => "Show a search input based on the user's affordability for your site."
             ));
-        if ($_SERVER['SCRIPT_NAME'] == '/wp-admin/widgets.php')
+        if ($pagenow == 'widgets.php')
             wp_enqueue_script('dsidxwidgets_widget_service_admin', DSIDXWIDGETS_PLUGIN_URL . 'js/widget-service-admin.js', array('jquery'), false, true);
     }
     function widget($args, $instance) {

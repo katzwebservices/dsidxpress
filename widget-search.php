@@ -1,12 +1,13 @@
 <?php
 class dsSearchAgent_SearchWidget extends WP_Widget {
 	function dsSearchAgent_SearchWidget() {
+		global $pagenow;
 		$this->WP_Widget("dsidx-search", "IDX Search", array(
 			"classname" => "dsidx-widget-search",
 			"description" => "A real estate search form"
 		));
 
-		if ($_SERVER['SCRIPT_NAME'] == '/wp-admin/widgets.php')
+		if ($pagenow == 'widgets.php')
 			wp_enqueue_script('dsidxpress_widget_search', DSIDXPRESS_PLUGIN_URL . 'js/widget-search.js', array('jquery'), DSIDXPRESS_PLUGIN_VERSION, true);
 	}
 	function widget($args, $instance) {

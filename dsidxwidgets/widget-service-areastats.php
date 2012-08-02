@@ -1,11 +1,12 @@
 <?php
 class dsIDXWidgets_AreaStats extends WP_Widget {
     function dsIDXWidgets_AreaStats() {
+		global $pagenow;
         $this->WP_Widget("dsidx-areastats", "Area Statistics", array(
             "classname" => "dsidx-widget-areastats",
             "description" => "Show an interactive chart with important listing data"
             ));
-        if ($_SERVER['SCRIPT_NAME'] == '/wp-admin/widgets.php')
+        if ($pagenow == 'widgets.php')
             wp_enqueue_script('dsidxwidgets_widget_service_admin', DSIDXWIDGETS_PLUGIN_URL . 'js/widget-service-admin.js', array('jquery'), false, true);
 
     }

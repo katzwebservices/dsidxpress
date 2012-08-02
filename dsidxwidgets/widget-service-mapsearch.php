@@ -1,11 +1,12 @@
 <?php
 class dsIDXWidgets_MapSearch extends WP_Widget {
     function dsIDXWidgets_MapSearch() {
+		global $pagenow;
         $this->WP_Widget("dsidx-mapsearch", "Map Search", array(
             "classname" => "dsidx-widget-mapsearch",
             "description" => "Show specific area listings on a map"
             ));
-        if ($_SERVER['SCRIPT_NAME'] == '/wp-admin/widgets.php')
+        if ($pagenow == 'widgets.php')
             wp_enqueue_script('dsidxwidgets_widget_service_admin', DSIDXWIDGETS_PLUGIN_URL . 'js/widget-service-admin.js', array('jquery'), false, true);
     }
     function widget($args, $instance) {

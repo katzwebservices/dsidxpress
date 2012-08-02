@@ -1,11 +1,12 @@
 <?php
 class dsIDXWidgets_quicksearch extends WP_Widget {
     function dsIDXWidgets_QuickSearch() {
+		global $pagenow;
         $this->WP_Widget("dsidx-quicksearch", "Quick Search", array(
             "classname" => "dsidx-widget-quicksearch",
             "description" => "Show a quicksearch input widget"
             ));
-        if ($_SERVER['SCRIPT_NAME'] == '/wp-admin/widgets.php')
+        if ($pagenow == 'widgets.php')
             wp_enqueue_script('dsidxwidgets_widget_service_admin', DSIDXWIDGETS_PLUGIN_URL . 'js/widget-service-admin.js', array('jquery'), false, true);
     }
     function widget($args, $instance) {

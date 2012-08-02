@@ -1,12 +1,13 @@
 <?php
 class dsSearchAgent_ListingsWidget extends WP_Widget {
 	function dsSearchAgent_ListingsWidget() {
+		global $pagenow;
 		$this->WP_Widget("dsidx-listings", "IDX Listings", array(
 			"classname" => "dsidx-widget-listings",
 			"description" => "Show a list of real estate listings"
 		));
 
-		if ($_SERVER['SCRIPT_NAME'] == '/wp-admin/widgets.php')
+		if ($pagenow == 'widgets.php')
 			wp_enqueue_script('dsidxpress_widget_listings', DSIDXPRESS_PLUGIN_URL . 'js/widget-listings.js', array('jquery'), DSIDXPRESS_PLUGIN_VERSION, true);
 	}
 	function widget($args, $instance) {

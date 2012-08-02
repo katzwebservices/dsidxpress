@@ -1,12 +1,13 @@
 <?php
 class dsSearchAgent_ListAreasWidget extends WP_Widget {
 	function dsSearchAgent_ListAreasWidget() {
+		global $pagenow;
 		$this->WP_Widget("dsidx-list-areas", "IDX Areas", array(
 			"classname" => "dsidx-widget-list-areas",
 			"description" => "Lists of links for showing real estate"
 		));
 
-		if ($_SERVER['SCRIPT_NAME'] == '/wp-admin/widgets.php')
+		if ($pagenow == 'widgets.php')
 			wp_enqueue_script('dsidxpress_widget_list_areas', DSIDXPRESS_PLUGIN_URL . 'js/widget-list-areas.js', array('jquery'), DSIDXPRESS_PLUGIN_VERSION, true);
 	}
 	function widget($args, $instance) {
