@@ -63,7 +63,7 @@ class dsSearchAgent_ClientAssist {
 		$post_vars = $_POST;
 		$post_vars["referringURL"] = $referring_url;
 
-		if(ZPRESS_API != ''){
+		if(defined('ZPRESS_API') && ZPRESS_API != ''){
 			if(SNS_ARN_CONTACT_REQUEST != ''){
 				$firstname = '';
 				$lastname = '';
@@ -168,7 +168,7 @@ class dsSearchAgent_ClientAssist {
 			$post_vars[str_replace('newVisitor_', 'newVisitor.', $key)] = $_POST[$key];
 		}
 
-		if(ZPRESS_API != ''){
+		if(defined('ZPRESS_API') && ZPRESS_API != ''){
 			if(SNS_ARN_CONTACT_REQUEST != ''){
 				$name = $post_vars['name'];
 				$name_split = preg_split('/[\s]+/', $post_vars['name'], 2, PREG_SPLIT_NO_EMPTY);

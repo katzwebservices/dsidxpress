@@ -218,7 +218,7 @@ if (!defined('ZPRESS_API')) {
 									<td><input type="checkbox" id="status-1" name="status-1" value="1" />Active</td>
 									<td><input type="checkbox" id="status-2" name="status-2" value="2" />Conditional</td>
 								</tr>
-								<?php if (isset($options["dsIDXPressPackage"]) && $options["dsIDXPressPackage"] == "pro"): ?>
+								<?php if (defined('ZPRESS_API') || isset($options["dsIDXPressPackage"]) && $options["dsIDXPressPackage"] == "pro"): ?>
 								<tr>
 									<td><input type="checkbox" id="status-3" name="status-3" value="3" />Pending</td>
 									<td><input type="checkbox" id="status-4" name="status-4" value="4" />Sold</td>

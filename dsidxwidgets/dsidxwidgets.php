@@ -69,10 +69,9 @@ require_once($require_prefix . "widget-service-mapsearch.php");
 require_once($require_prefix . "widget-service-quicksearch.php");
 require_once($require_prefix . "widget-service-base.php");
 
-if (defined('ZPRESS_API')) {
-	// this is zpress, so we need to proxy the API requests
-	dsWidgets_Service_Base::$widgets_admin_api_stub = admin_url() . '?zpress_widget_ajax=true';
-}
+
+dsWidgets_Service_Base::$widgets_admin_api_stub = admin_url() . '?zpress_widget_ajax=true';
+
 
 if (defined('DS_API')) {
 	// this allows us to maintain plugin independence just in case we use this outside of zpress
@@ -109,7 +108,7 @@ HTML;
 function dsidxwidgets_InitWidgets() {
 	$options = get_option(DSIDXPRESS_OPTION_NAME);
 	
-	if (isset($options["dsIDXPressPackage"]) && $options["dsIDXPressPackage"] == "pro") {
+	if (defined('ZPRESS_API') || isset($options["dsIDXPressPackage"]) && $options["dsIDXPressPackage"] == "pro") {
 		//register_widget("dsIDXWidgets_QRCode");
 		register_widget("dsIDXWidgets_Affordability");
 		register_widget("dsIDXWidgets_AreaStats");

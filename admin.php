@@ -272,13 +272,13 @@ HTML;
 					<td>
 						<input type="radio" id="dsidxpress-ResultsDefaultState-List" name="<?php echo DSIDXPRESS_OPTION_NAME; ?>[ResultsDefaultState]" value="list" <?php echo @$options["ResultsDefaultState"] == "list" || !isset($options["ResultsDefaultState"]) ? "checked=\"checked\"" : "" ?>/> <label for="dsidxpress-ResultsDefaultState-List">List</label><br />
 						<input type="radio" id="dsidxpress-ResultsDefaultState-ListMap" name="<?php echo DSIDXPRESS_OPTION_NAME; ?>[ResultsDefaultState]" value="listmap" <?php echo @$options["ResultsDefaultState"] == "listmap" ? "checked=\"checked\"" : "" ?> /> <label for="dsidxpress-ResultsDefaultState-ListMap">List + Map</label>
-						<?php if (isset($options["dsIDXPressPackage"]) && $options["dsIDXPressPackage"] == "pro"): ?>
+						<?php if (defined('ZPRESS_API') || isset($options["dsIDXPressPackage"]) && $options["dsIDXPressPackage"] == "pro"): ?>
 						<br /><input type="radio" id="dsidxpress-ResultsDefaultState-Grid" name="<?php echo DSIDXPRESS_OPTION_NAME; ?>[ResultsDefaultState]" value="grid" <?php echo @$options["ResultsDefaultState"] == "grid" ? "checked=\"checked\"" : "" ?>/> <label for="dsidxpress-ResultsDefaultState-Grid">Grid</label>
 						<?php endif ?>
 					</td>
 				</tr>
 			</table>
-			<?php if (isset($options["dsIDXPressPackage"]) && $options["dsIDXPressPackage"] == "pro"): ?>
+			<?php if (defined('ZPRESS_API') || isset($options["dsIDXPressPackage"]) && $options["dsIDXPressPackage"] == "pro"): ?>
 			<h4>Forced Registration Settings</h4>
 			<table class="form-table">
 				<tr>
