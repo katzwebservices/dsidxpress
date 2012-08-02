@@ -27,7 +27,7 @@ if (is_ssl()) {
 }
 $adminUri = get_admin_url();
 $property_types_html = "";
-$property_types = \dsSearchAgent_ApiRequest::FetchData('AccountSearchSetupPropertyTypes', array(), false, 60 * 60 * 24);
+$property_types = dsSearchAgent_ApiRequest::FetchData('AccountSearchSetupPropertyTypes', array(), false, 60 * 60 * 24);
 if(!empty($property_types)){
     $property_types = json_decode($property_types["body"]);
     foreach ($property_types as $property_type) {
