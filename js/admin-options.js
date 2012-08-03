@@ -31,8 +31,20 @@ dsIDXpressOptions = {
 		changes_made = true;
 		var location_name = jQuery('#dsidxpress-NewSitemapLocation').val(),
 			location_type = jQuery('#dsidxpress-NewSitemapLocationType').val(),
-			location_sanitized = encodeURIComponent(location_name.replace('-', '_').replace(' ', '-').toLowerCase());
+			location_sanitized,
+			url,
 			index = jQuery('#dsidxpress-SitemapLocations').children().length;
+
+		if (/^[\w\d\s\-_]+$/.test(location_name)) {
+			location_sanitized = encodeURIComponent(location_name.replace('-', '_').replace(' ', '-').toLowerCase());
+			url = dsIDXpressOptions.UrlBase + location_type +'/' + location_sanitized + '/';
+		} else if (location_type == "city") {
+			url = dsIDXpressOptions.UrlBase + '?idx-q-Cities=' + encodeURIComponent(location_name);
+		} else if (location_type == "community") {
+			url = dsIDXpressOptions.UrlBase + '?idx-q-Communities=' + encodeURIComponent(location_name);
+		} else if (location_type == "tract") {
+			url = dsIDXpressOptions.UrlBase + '?idx-q-TractIdentifiers=' + encodeURIComponent(location_name);
+		}
 			
 		var city_selected = '', community_selected = '', tract_selected = '', zip_selected = '';
 		switch(location_type){
@@ -47,7 +59,7 @@ dsIDXpressOptions = {
 		var html = '<li class="ui-state-default dsidxpress-SitemapLocation">' +
 			'<div class="arrow"><span class="dsidxpress-up_down"></span></div>' +
 			'<div class="value">' +
-				'<a href="'+ dsIDXpressOptions.UrlBase + location_type +'/' + location_sanitized + '" target="_blank">' + location_name + '</a>'+
+				'<a href="'+ url + '" target="_blank">' + location_name + '</a>'+
 				'<input type="hidden" name="'+ dsIDXpressOptions.OptionPrefix +'[SitemapLocations]['+index+'][value]" value="'+ location_name +'" />'+
 			'</div>'+
 			'<div class="priority">'+

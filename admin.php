@@ -18,19 +18,19 @@ class dsSearchAgent_Admin {
 
 		dsSearchAgent_Admin::GenerateAdminMenus(DSIDXPRESS_PLUGIN_URL . 'assets/idxpress_LOGOicon.png');
 		dsSearchAgent_Admin::GenerateAdminSubMenus();
-		
+
 		add_filter("mce_external_plugins", array("dsSearchAgent_Admin", "AddTinyMcePlugin"));
 		add_filter("mce_buttons", array("dsSearchAgent_Admin", "RegisterTinyMceButton"));
 		// won't work until this <http://core.trac.wordpress.org/ticket/12207> is fixed
 		//add_filter("tiny_mce_before_init", array("dsSearchAgent_Admin", "ModifyTinyMceSettings"));
 	}
-	static function GenerateAdminMenus($icon_url){		
+	static function GenerateAdminMenus($icon_url){
 		add_menu_page('IDX', 'IDX', "manage_options", "dsidxpress", "", $icon_url);
 
 		$activationPage = add_submenu_page("dsidxpress", "IDX Activation", "Activation", "manage_options", "dsidxpress", array("dsSearchAgent_Admin", "Activation"));
 		add_action("admin_print_scripts-{$activationPage}", array("dsSearchAgent_Admin", "LoadHeader"));
 	}
-	
+
 	static function GenerateAdminSubMenus() {
 		$options = get_option(DSIDXPRESS_OPTION_NAME);
 
@@ -38,22 +38,22 @@ class dsSearchAgent_Admin {
 			$optionsPage = add_submenu_page("dsidxpress", "IDX Options", "General", "manage_options", "dsidxpress-options", array("dsSearchAgent_Admin", "EditOptions"));
 			add_action("admin_print_scripts-{$optionsPage}", array("dsSearchAgent_Admin", "LoadHeader"));
 		}
-		
+
 		if (isset($options["Activated"])) {
 			$filtersPage = add_submenu_page("dsidxpress", "IDX Filters", "Filters", "manage_options", "dsidxpress-filters", array("dsSearchAgent_Admin", "FilterOptions"));
 			add_action("admin_print_scripts-{$filtersPage}", array("dsSearchAgent_Admin", "LoadHeader"));
 		}
-		
+
 		if (isset($options["Activated"])) {
 			$seoSettingsPage = add_submenu_page("dsidxpress", "IDX SEO Settings", "SEO Settings", "manage_options", "dsidxpress-seo-settings", array("dsSearchAgent_Admin", "SEOSettings"));
 			add_action("admin_print_scripts-{$seoSettingsPage}", array("dsSearchAgent_Admin", "LoadHeader"));
 		}
-		
+
 		if (isset($options["Activated"])) {
 			$xmlSitemapsPage = add_submenu_page("dsidxpress", "IDX XML Sitemaps", "XML Sitemaps", "manage_options", "dsidxpress-xml-sitemaps", array("dsSearchAgent_Admin", "XMLSitemaps"));
 			add_action("admin_print_scripts-{$xmlSitemapsPage}", array("dsSearchAgent_Admin", "LoadHeader"));
 		}
-		
+
 		if (isset($options["Activated"])) {
 			$detailsPage = add_submenu_page("dsidxpress", "IDX Details", "More Options", "manage_options", "dsidxpress-details", array("dsSearchAgent_Admin", "DetailsOptions"));
 			add_action("admin_print_scripts-{$detailsPage}", array("dsSearchAgent_Admin", "LoadHeader"));
@@ -63,7 +63,7 @@ class dsSearchAgent_Admin {
 		$plugins["idxlisting"] = DSIDXPRESS_PLUGIN_URL . "tinymce/single_listing/editor_plugin.js";
 		$plugins["idxlistings"] = DSIDXPRESS_PLUGIN_URL . "tinymce/multi_listings/editor_plugin.js";
 		$plugins["idxlinkbuilder"] = DSIDXPRESS_PLUGIN_URL . "tinymce/link_builder/editor_plugin.js";
-		
+
 		return $plugins;
 	}
 	static function RegisterTinyMceButton($buttons) {
@@ -83,21 +83,21 @@ class dsSearchAgent_Admin {
 	}
 	static function Enqueue($hook) {
 		//every admin should have admin-options.js cept dsidx_footer-util
-		if(!isset($_GET['page'])){	
-			wp_enqueue_script('dsidxpress_admin_options', DSIDXPRESS_PLUGIN_URL . 'js/admin-options.js', array(), DSIDXPRESS_PLUGIN_VERSION, true);	
+		if(!isset($_GET['page'])){
+			wp_enqueue_script('dsidxpress_admin_options', DSIDXPRESS_PLUGIN_URL . 'js/admin-options.js', array(), DSIDXPRESS_PLUGIN_VERSION, true);
 		}
-		
+
 		if (isset($_GET['page']) && ($_GET['page'] == 'dsidxpress-details' || $_GET['page'] == 'dsidxpress-seo-settings' || $_GET['page'] == 'dsidxpress-options' || $_GET['page'] == 'dsidxpress-xml-sitemaps')) {
-			wp_enqueue_script('dsidxpress_admin_options', DSIDXPRESS_PLUGIN_URL . 'js/admin-options.js', array(), DSIDXPRESS_PLUGIN_VERSION, true);		
+			wp_enqueue_script('dsidxpress_admin_options', DSIDXPRESS_PLUGIN_URL . 'js/admin-options.js', array(), DSIDXPRESS_PLUGIN_VERSION, true);
 		}
-		
+
 		//We need the options script loaded in the header for this page
 		if (isset($_GET['page']) && $_GET['page'] == 'dsidxpress-xml-sitemaps') {
-			wp_enqueue_script('dsidxpress_admin_options', DSIDXPRESS_PLUGIN_URL . 'js/admin-options.js', array(), DSIDXPRESS_PLUGIN_VERSION);		
+			wp_enqueue_script('dsidxpress_admin_options', DSIDXPRESS_PLUGIN_URL . 'js/admin-options.js', array(), DSIDXPRESS_PLUGIN_VERSION);
 		}
-		
+
 		if (isset($_GET['page']) && $_GET['page'] == 'dsidxpress-filters') {
-			wp_enqueue_script('dsidxpress_admin_filters', DSIDXPRESS_PLUGIN_URL . 'js/admin-filters.js', array(), DSIDXPRESS_PLUGIN_VERSION);		
+			wp_enqueue_script('dsidxpress_admin_filters', DSIDXPRESS_PLUGIN_URL . 'js/admin-filters.js', array(), DSIDXPRESS_PLUGIN_VERSION);
 		}
 
 		if ($hook == 'nav-menus.php') {
@@ -120,7 +120,7 @@ HTML;
 			return;
 
 		$options = get_option(DSIDXPRESS_OPTION_NAME);
-		
+
 		if (!isset($options["PrivateApiKey"])) {
 			echo <<<HTML
 				<div class="error">
@@ -185,7 +185,7 @@ HTML;
 		update_option(DSIDXPRESS_OPTION_NAME, $options);
 		die();
 	}
-	
+
 	static function EditOptions() {
 		$options = get_option(DSIDXPRESS_OPTION_NAME);
 
@@ -412,7 +412,7 @@ HTML;
 					</td>
 				</tr>
 			</table>
-			
+
 			<h4>Copyright Settings</h4>
 			<span class="description">This setting allows you to remove links to <a href="http://www.diversesolutions.com">Diverse Solutions</a> that are included in the IDX disclaimer.</span>
 			<table class="form-table">
@@ -490,7 +490,7 @@ HTML;
 
 		if (@$options["PrivateApiKey"]) {
 			$diagnostics = self::RunDiagnostics($options);
-			
+
 			$previous_options  = (isset($options["Activated"])) ? $options["Activated"] : '';
 			$previous_options .= (isset($options["HasSearchAgentPro"])) ? '|'.$options["HasSearchAgentPro"] : '';
 			$previous_options .= (isset($options["DetailsRequiresRegistration"])) ? '|'.$options["DetailsRequiresRegistration"] : '';
@@ -660,10 +660,10 @@ if (isset($diagnostics["error"])) {
 
 		</form>
 	</div>
-	
-	
-	
-	
+
+
+
+
 <?php
 	}
 
@@ -770,10 +770,10 @@ if (isset($diagnostics["error"])) {
 			</form>
 		</div><?php
 	}
-	
+
 	static function SEOSettings() {
 		$options = get_option(DSIDXPRESS_OPTION_NAME);
-		
+
 		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("AccountOptions", array(), false, 0);
 		if (!empty($apiHttpResponse["errors"]) || $apiHttpResponse["response"]["code"] != "200")
 			wp_die("We're sorry, but we ran into a temporary problem while trying to load the account data. Please check back soon.", "Account data load error");
@@ -850,7 +850,7 @@ if (isset($diagnostics["error"])) {
 					</td>
 				</tr>
 			</table>
-			
+
 			</div>
 			<br />
 			<p class="submit">
@@ -859,7 +859,7 @@ if (isset($diagnostics["error"])) {
 		</form>
 	</div><?php
 	}
-	
+
 	static function XMLSitemaps() {
 		$options = get_option(DSIDXPRESS_OPTION_NAME);
 		$urlBase = get_home_url();
@@ -891,12 +891,24 @@ if (isset($diagnostics["error"])) {
 						usort($options["SitemapLocations"], array("dsSearchAgent_Admin", "CompareListObjects"));
 
 						foreach ($options["SitemapLocations"] as $key => $value) {
-							$location_sanitized = urlencode(strtolower(str_replace(array("-", " "), array("_", "-"), $value["value"])));
+							$area = $value["value"];
+							$type = $value["type"];
+
+							if (preg_match('/^[\w\d\s\-_]+$/', $area)) {
+								$location_sanitized = urlencode(strtolower(str_replace(array("-", " "), array("_", "-"), $value["value"])));
+								$url = $urlBase . $value["type"] .'/'. $location_sanitized . '/';
+							} else if ($type == "city") {
+								$url = $urlBase . "?idx-q-Cities=" . urlencode($area);
+							} else if ($type == "community") {
+								$url = $urlBase . "?idx-q-Communities=" . urlencode($area);
+							} else if ($type == "tract") {
+								$url = $urlBase . "?idx-q-TractIdentifiers=" . urlencode($area);
+							}
 					?>
 								<li class="ui-state-default dsidxpress-SitemapLocation">
 									<div class="arrow"><span class="dsidxpress-up_down"></span></div>
 									<div class="value">
-										<a href="<?php echo $urlBase . $value["type"] .'/'. $location_sanitized;?>" target="_blank"><?php echo $value["value"]; ?></a>
+										<a href="<?php echo htmlspecialchars($url) ?>" target="_blank"><?php echo $value["value"]; ?></a>
 										<input type="hidden" name="<?php echo DSIDXPRESS_OPTION_NAME ; ?>[SitemapLocations][<?php echo $location_index; ?>][value]" value="<?php echo $value["value"]; ?>" />
 									</div>
 									<div class="priority">
@@ -1153,7 +1165,7 @@ if (isset($diagnostics["error"])) {
 			$options["FullApiKey"] = trim($options["FullApiKey"]);
 			$apiKeyParts = explode("/", $options["FullApiKey"]);
 			unset($options["FullApiKey"]);
-			
+
 			if (sizeof($apiKeyParts) == 3) {
 				$options["AccountID"] = $apiKeyParts[0];
 				$options["SearchSetupID"] = $apiKeyParts[1];
@@ -1168,22 +1180,22 @@ if (isset($diagnostics["error"])) {
 
 				if (!$options["Activated"] && isset($options["HideIntroNotification"]))
 					unset($options["HideIntroNotification"]);
-			
+
 			}
 		}
-		
+
 		// different option pages fill in different parts of this options array, so we simply merge what's already there with our new data
 		if ($full_options = get_option(DSIDXPRESS_OPTION_NAME)) {
 			// clear out old ResultsMapDefaultState if its replacement, ResultsDefaultState is set
 			if (isset($options['ResultsDefaultState']) && isset($full_options['ResultsMapDefaultState'])) {
 				unset($full_options['ResultsMapDefaultState']);
 			}
-			
+
 			// make sure the option to remove diverse solutions links is removed if unchecked
 			if (isset($options['ResultsDefaultState']) && isset($full_options['RemoveDsDisclaimerLinks'])) {
 				unset($full_options['RemoveDsDisclaimerLinks']);
 			}
-			
+
 			// merge existing data with new data
 			$options = array_merge($full_options, $options);
 		}
@@ -1212,7 +1224,7 @@ if (isset($diagnostics["error"])) {
 				unset($options[$key]);
 			}
 			$result = dsSearchAgent_ApiRequest::FetchData("SaveAccountOptions", array("options" => $options_text), false, 0);
-			
+
 			// this serves to flush the cache
 			dsSearchAgent_ApiRequest::FetchData("AccountOptions", array(), false, 0);
 		}
@@ -1230,10 +1242,10 @@ if (isset($diagnostics["error"])) {
 	}
 	public static function NavMenus($posts) {
 		$options = get_option(DSIDXPRESS_OPTION_NAME);
-		
+
 		// offset the time to ensure we have a unique post id
 		$post_id = time() + sizeof($posts);
-		
+
 		if (isset($options['AgentID']) && $options['AgentID'] != '') {
 			$posts[] = (object) array(
 				'ID'           => $post_id,
@@ -1248,7 +1260,7 @@ if (isset($diagnostics["error"])) {
 				'zpress_page'  => true
 			);
 			$post_id++;
-			
+
 			$posts[] = (object) array(
 				'ID'           => $post_id,
 				'object_id'    => $post_id,
@@ -1263,7 +1275,7 @@ if (isset($diagnostics["error"])) {
 			);
 			$post_id++;
 		}
-		
+
 		if (isset($options['OfficeID']) && $options['OfficeID'] != '') {
 			$posts[] = (object) array(
 				'ID'           => $post_id,
@@ -1279,7 +1291,7 @@ if (isset($diagnostics["error"])) {
 			);
 			$post_id++;
 		}
-		
+
 		$posts[] = (object) array(
 			'ID'           => $post_id,
 			'object_id'    => $post_id,
@@ -1292,7 +1304,7 @@ if (isset($diagnostics["error"])) {
 			'url'          => get_home_url().'/idx/search/',
 			'zpress_page'  => true
 		);
-		
+
 		return $posts;
 	}
 	static function CreateLinkBuilderMenuWidget()
@@ -1319,10 +1331,10 @@ if (isset($diagnostics["error"])) {
 			'page-tab',
 			'_wpnonce',
 		);
-		
+
 		dsSearchAgent_Admin::LinkBuilderHtml(false, $_nav_menu_placeholder, $nav_menu_selected_id);
 	}
-		
+
 	public static function LinkBuilderHtml($in_post_dialog = false, $_nav_menu_placeholder = -1, $nav_menu_selected_id = 1) {
 		$label_class = (!$in_post_dialog) ? ' input-with-default-title' : '';
 		$label_value = ($in_post_dialog && isset($_GET['selected_text'])) ? ' value="'.esc_attr(strip_tags($_GET['selected_text'])).'"' : '';
@@ -1342,7 +1354,7 @@ if (isset($diagnostics["error"])) {
 HTML;
 		    }
 		}
-		$property_types_html = substr($property_types_html, 0, strlen($property_types_html)-1); 
+		$property_types_html = substr($property_types_html, 0, strlen($property_types_html)-1);
 ?>
 	<script> zpress_home_url = '<?php echo get_home_url() ?>';</script>
 	<div id="dsidxpress-link-builder" class="customlinkdiv">
@@ -1361,7 +1373,7 @@ HTML;
 				<select class="regular-text" id="dsidxpress-filter-menu" ></select>
 			</label>
 		</p>
-		
+
 		<div id="dsidxpress-editor-wrap" class="dsidxpress-item-wrap hidden">
 			<div class="dsidxpress-filter-editor">
 				<div class="dsidxpress-editor-header">
@@ -1375,7 +1387,7 @@ HTML;
 				</div>
 			</div>
 		</div>
-		
+
 		<div id="dsidxpress-filters-wrap" class="dsidxpress-item-wrap hidden">
 			<span><?php _e('Filters'); ?></span>
 			<ul id="dsidxpress-filter-list"></ul>
@@ -1387,14 +1399,14 @@ HTML;
 				<span><?php _e('Display Generated URL'); ?></span>
 			</label>
 		</p>
-		
+
 		<p id="dsidxpress-assembled-url-wrap" class="dsidxpress-item-wrap hidden">
 			<label class="howto" for="dsidxpress-assembled-url">
 				<span><?php _e('URL'); ?></span>
 				<textarea id="dsidxpress-assembled-url" name="menu-item[<?php echo $_nav_menu_placeholder; ?>][menu-item-url]" type="text" rows="4" class="code menu-item-textbox"><?php echo $url_value; ?></textarea>
 			</label>
 		</p>
-			
+
 		<p class="button-controls">
 			<span class="add-to-menu">
 				<?php if (!$in_post_dialog): ?>
