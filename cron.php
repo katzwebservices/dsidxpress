@@ -1,5 +1,8 @@
 <?php
 
+if (constant('ZPRESS_API'))
+	return;
+
 $flushCacheTask = "cron-dsidxpress-flush-cache";
 
 add_action($flushCacheTask, array("dsIDXpress_Cron", "FlushCache"));

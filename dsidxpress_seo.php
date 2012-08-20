@@ -36,7 +36,7 @@ class dsidxpress_seo {
 	
 	function dsidxpress_title($title) {
 		if($this->title)
-			return $this->title . ' ';
+			return $this->title . ' | ';
 		return $title;
 	}
 }
