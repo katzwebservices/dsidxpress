@@ -1,6 +1,6 @@
 <?php
 
-if (constant('ZPRESS_API'))
+if (defined('ZPRESS_API') && constant('ZPRESS_API'))
 	return;
 
 $flushCacheTask = "cron-dsidxpress-flush-cache";
