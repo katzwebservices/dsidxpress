@@ -132,8 +132,6 @@ HTML;
 			);
 		}
 		
-		usort($posts, array("dsSearchAgent_Client", "Sort"));
-		
 		return $posts;
 	}
 
