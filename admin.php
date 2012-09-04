@@ -1320,13 +1320,13 @@ if (isset($diagnostics["error"])) {
 		$link_mode   = (isset($_GET['idxlinkmode'])) ? $_GET['idxlinkmode'] : '';
 
 		$property_types_html = "";
-		$property_types = \dsSearchAgent_ApiRequest::FetchData('AccountPropertyTypes', array(), false, 60 * 60 * 24);
+		$property_types = \dsSearchAgent_ApiRequest::FetchData('AccountSearchSetupPropertyTypes', array(), false, 60 * 60 * 24);
 		if(!empty($property_types)){
 		    $property_types = json_decode($property_types["body"]);
 		    foreach ($property_types as $property_type) {
 		        $checked_html = '';
 		        $name = htmlentities($property_type->DisplayName);
-		        $id = $property_type->PropertyTypeID;
+				$id = $property_type->SearchSetupPropertyTypeID;
 		        $property_types_html .= <<<HTML
 {$id}: {$name},
 HTML;

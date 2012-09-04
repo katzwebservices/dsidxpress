@@ -204,7 +204,7 @@ class dsSearchAgent_ListingsWidget extends WP_Widget {
 				</tr>
 				<tr>
 					<td><p><input type="radio" name="{$baseFieldName}[querySource]" id="{$baseFieldId}[querySource-link]" value="link" {$checkedQuerySource[link]}/></p></td>
-					<td><p><label for="{$baseFieldId}[querySource-link]">Use a link you created in your Diverse Solutions control panel</label></p></td>
+					<td><p><label for="{$baseFieldId}[querySource-link]">Use a link you created in your website control panel</label></p></td>
 				</tr>
 				<tr>
 					<td></td>

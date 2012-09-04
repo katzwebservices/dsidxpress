@@ -654,7 +654,7 @@ dsIdxLinkBuilder = {
             name: 'Tracts',
             fields: [
 				{
-				    id: 'idx-q-Tracts',
+				    id: 'idx-q-TractIdentifiers',
 				    type: 'string',
 				    mode: 'multi',
 				    hint: 'One per line'
