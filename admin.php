@@ -335,6 +335,15 @@ HTML;
 				</tr>
 				<tr>
 					<th>
+						<label for="dsidxpress-RequireAuth-Details-AdditionalInfo-check">Require login to view additional info</label>
+					</th>
+					<td>
+						<input type="hidden" id="dsidxpress-RequireAuth-Details-AdditionalInfo" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[RequireAuth-Details-AdditionalInfo]" value="<?php echo $account_options->{'RequireAuth-Details-AdditionalInfo'}; ?>" />
+						<input type="checkbox" class="dsidxpress-api-checkbox" id="dsidxpress-RequireAuth-Details-AdditionalInfo-check" <?php echo @$account_options->{'RequireAuth-Details-AdditionalInfo'} == "true" ? "checked=\"checked\"" : "" ?> />
+					</td>
+				</tr>
+				<tr>
+					<th>
 						<label for="dsidxpress-RequireAuth-Details-PriceChanges-check">Require login to view price changes</label>
 					</th>
 					<td>

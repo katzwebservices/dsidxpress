@@ -296,6 +296,7 @@ class dsSearchAgent_ClientAssist {
 		$apiParams["query.SimilarToPropertyID"] = $_POST["PropertyID"];
 		$apiParams["query.ListingStatuses"] = '1';
 		$apiParams['responseDirective.ViewNameSuffix'] = 'Similar';
+		$apiParams['responseDirective.IncludeDisclaimer'] = 'true';
 		$apiParams['directive.ResultsPerPage'] = '6';
 
 		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("Results", $apiParams, false, 0);

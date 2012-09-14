@@ -561,12 +561,12 @@ dsIdxLinkBuilder = {
 				    id: 'idx-q-DistressTypes',
 				    type: 'lookup',
 				    mode: 'lookup',
-				    hint: '0',
+				    hint: '-1',
 				    options: {
 				        '1': 'only pre-foreclosures',
 				        '2': 'only foreclosed listings / REOs',
 				        '3': 'only pre-foreclosures or REOs',
-				        '4': 'neither pre-foreclosures nor REOs'
+				        '0': 'neither pre-foreclosures nor REOs'
 				    }
 				}
 			]
