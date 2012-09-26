@@ -62,7 +62,16 @@ class dsSearchAgent_ClientAssist {
 		$referring_url = @$_SERVER['HTTP_REFERER'];
 		$post_vars = $_POST;
 		$post_vars["referringURL"] = $referring_url;
-
+		
+		//Fix up post vars for Beast ContactForm API
+		if (isset($post_vars['name']) && !isset($post_vars['firstName'])) {
+			$name = $post_vars['name'];
+			$name_split = preg_split('/[\s]+/', $post_vars['name'], 2, PREG_SPLIT_NO_EMPTY);
+			$post_vars['firstName'] = count($name_split) > 0 ? $name_split[0] : '';
+			$post_vars['lastName'] = count($name_split) > 1 ? $name_split[1] : '';
+		}
+		if (!isset($post_vars['phoneNumber'])) $post_vars['phoneNumber'] = '';
+		
 		if(defined('ZPRESS_API') && ZPRESS_API != ''){
 			if(SNS_ARN_CONTACT_REQUEST != ''){
 				$firstname = '';

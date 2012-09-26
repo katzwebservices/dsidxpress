@@ -31,7 +31,7 @@ dsIDXpressOptions = {
 		changes_made = true;
 		var location_name = jQuery('#dsidxpress-NewSitemapLocation').val(),
 			location_type = jQuery('#dsidxpress-NewSitemapLocationType').val(),
-			location_sanitized = encodeURIComponent(location_name.replace('-', '_').replace(' ', '-').toLowerCase());
+			location_sanitized = encodeURIComponent(location_name.replaceAll('-', '_').replaceAll(' ', '-').toLowerCase());
 			index = jQuery('#dsidxpress-SitemapLocations').children().length;
 			
 		var city_selected = '', community_selected = '', tract_selected = '', zip_selected = '';
@@ -137,3 +137,7 @@ jQuery(document).ready(function () {
 	jQuery("#xml-options-saved").click(function() { changes_made = false; });
 	jQuery("select:not(.ignore-changes)").change(function () { changes_made = true; });
 });
+
+String.prototype.replaceAll = function(target, replacement) {
+	return this.split(target).join(replacement);
+};

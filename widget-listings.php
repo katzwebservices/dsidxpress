@@ -29,6 +29,7 @@ class dsSearchAgent_ListingsWidget extends WP_Widget {
 		$apiRequestParams["directive.ResultsPerPage"] = $listingsToShow;
 		$apiRequestParams["responseDirective.ViewNameSuffix"] = "widget";
 		$apiRequestParams["responseDirective.DefaultDisplayType"] = $defaultDisplay;
+		$apiRequestParams['responseDirective.IncludeDisclaimer'] = 'true';
 
 		if ($querySource == "area") {
 			$sort = explode("|", $areaSourceConfig["sort"]);
