@@ -7,6 +7,7 @@ class dsSearchAgent_Shortcodes {
 
 		$atts = shortcode_atts(array(
 			"mlsnumber"			=> "",
+			"statuses"			=> "",
 			"showall"			=> "false",
 			"showpricehistory"	=> "false",
 			"showschools"		=> "false",
@@ -17,6 +18,9 @@ class dsSearchAgent_Shortcodes {
 		$apiRequestParams = array();
 		$apiRequestParams["responseDirective.ViewNameSuffix"] = "shortcode";
 		$apiRequestParams["query.MlsNumber"] = str_replace(" ", "", $atts["mlsnumber"]);
+		if(self::TranslateStatuses($atts["statuses"])){
+			$apiRequestParams["query.ListingStatuses"] = self::TranslateStatuses($atts["statuses"]);
+		} //else the api will use active and conditional by default
 		$apiRequestParams["responseDirective.ShowSchools"] = $atts["showschools"];
 		$apiRequestParams["responseDirective.ShowPriceHistory"] = $atts["showpricehistory"];
 		$apiRequestParams["responseDirective.ShowAdditionalDetails"] = $atts["showextradetails"];

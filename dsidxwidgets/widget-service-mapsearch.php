@@ -11,7 +11,8 @@ class dsIDXWidgets_MapSearch extends WP_Widget {
     }
     function widget($args, $instance) {
         $randString = dsWidgets_Service_Base::get_random_string('abcdefghijklmnopqrstuvwxyz1234567890', 5);
-        wp_enqueue_script('dsidxwidgets_widget_maps', 'http://maps.googleapis.com/maps/api/js?sensor=false&callback=MapSearchWidgetCallback'.$randString, array('jquery'), false, true);
+        //wp_enqueue_script('dsidxwidgets_widget_maps', 'http://maps.googleapis.com/maps/api/js?sensor=false&callback=MapSearchWidgetCallback'.$randString, array('jquery'), false, true);
+		wp_enqueue_script('dsidxwidgets_widget_maps', 'http://maps.googleapis.com/maps/api/js?sensor=false', array('jquery'), false, true);
         extract($args);
         extract($instance);
         $options = get_option(DSIDXWIDGETS_OPTION_NAME);
@@ -52,20 +53,25 @@ class dsIDXWidgets_MapSearch extends WP_Widget {
         echo <<<HTML
         <script type="text/javascript" id="divLocal{$randString}_">
             var launchBaseCalled = false;
-            var mapSearchDep1Finished = 0;
+            var mapSearchDep1Finished = 1;
             LaunchBase{$randString} = function(){
                 var mapSearchScript,mapSearchDep1RevScript, _ds_midx, mapSearchProgress;
                 CreateObject{$randString} = function () { _ds_midx = { currentURL: '{$curURL}', curHeight: '{$height}', curWidth: '{$width}', productType: '0', curAPIStub: '{$apiStub}', curImageStub: '{$imagesStub}', targetDomain: window["zpress_widget_domain_token"],accountId: '{$aid}',searchSetupId: '{$ssid}',muteStyles: true,state: '{$state}',city: '{$city}',zip: '{$zip}',priceMin: '{$priceMin}',priceMax: '{$priceMax}',priceFloor: '{$priceFloor}',priceCeiling: '{$priceCeiling}',bedsMin: '{$bedsMin}',bathsMin: '{$bathsMin}',sqftMin: '{$sqftMin}',curDivID: 'divLocal{$randString}_',querySchema: 'HNIPilgrh/9PwdKmimpgPE05NfSeqIkyvHeXiSh+gUIUzKp3KXDCFoWJ/DzaOsYlntCSXtSk36hbB76URZk1Sirc9iLz3tiLPAN0SK/EbNCrr6XWxD7hAYVJcDwXtpN4',status: '{$statusType}',rowCount: '{$rowCountType}',sort: '{$sortType}' }; }
                 AddJavaScriptToDOM{$randString}=function(c,d,e){ if(d!=1){var a=document.createElement("script"),b=document.getElementsByTagName("script")[0];a.id=e;a.type='text/javascript';a.async=true;a.src=c;a.onload=a.onreadystatechange=function(){ if(a.readyState){  if (a.readyState == "loaded" || a.readyState == "complete") {window[e] = 1;}}else{window[e] = 1;}};b.parentNode.insertBefore(a,b)}return 1};
                 CreateWidget{$randString} = function () {
-                 (window.mapSearchFinished == 1 && mapSearchDep1Finished == 1) ? (window["ds.widget.view.mapsearch"].isProcessing = true, CreateObject{$randString}(), new window["ds.widget.view.mapsearch"](_ds_midx), window["ds.widget.view.mapsearch"].isProcessing = false, MapSearchMapCallback()) : window.setTimeout("CreateWidget{$randString}(false)", 20); 
+                 (window.mapSearchFinished == 1 && mapSearchDep1Finished == 1) ? (window["ds.widget.view.mapsearch"].isProcessing = true, CreateObject{$randString}(), new window["ds.widget.view.mapsearch"](_ds_midx), window["ds.widget.view.mapsearch"].isProcessing = false, DetectMapScripts{$randString}()) : window.setTimeout("CreateWidget{$randString}(false)", 20); 
                 }
                 if (mapSearchScript != 1 && mapSearchProgress != 1) {mapSearchProgress=1, mapSearchScript = AddJavaScriptToDOM{$randString}("http://widgets.diverse-cdn.com/Scripts/PostCompile/MapSearch.js", mapSearchScript, 'mapSearchFinished') }; 
                  CreateWidget{$randString}();
             }
-            MapSearchWidgetCallback{$randString} = function(){
-                mapSearchDep1Finished = 1;
-            }
+			DetectMapScripts{$randString} = function(){
+				if (typeof google === 'object' && typeof google.maps === 'object') {
+					MapSearchMapCallback();
+				}
+				else{
+					window.setTimeout("DetectMapScripts{$randString}()", 20)
+				}
+			}
             GetToken{$randString}=function(){
                 if(!window.zpress_widget_domain_token && window.zpress_widget_domain_token_progress!=1){
                     window.zpress_widget_domain_token_progress=1;var c=-1<navigator.userAgent.indexOf("MSIE 7.0")?!0:!1,d=-1<navigator.userAgent.indexOf("MSIE 8.0")||-1<navigator.userAgent.indexOf("MSIE 9.0")?!0:!1;

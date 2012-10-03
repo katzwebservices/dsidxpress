@@ -408,8 +408,8 @@ class dsSearchAgent_Client {
 		
 		if (isset($seo_keywords) || isset($seo_description) || isset($seo_title)) {
 			$dsidxpress_seo = new dsidxpress_seo($seo_title, $seo_description, $seo_keywords);
-			add_action('wp_head', array($dsidxpress_seo, 'wp_head'));
-			add_filter('wp_title', array($dsidxpress_seo, 'dsidxpress_title'));
+			add_action('wp_head', array($dsidxpress_seo, 'dsidxpress_head_action'));
+			add_filter('wp_title', array($dsidxpress_seo, 'dsidxpress_title_filter'));
 		}
 		
 		return $posts;

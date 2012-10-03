@@ -14,7 +14,7 @@ class dsidxpress_seo {
 	}
 	
 	
-	function wp_head() {
+	function dsidxpress_head_action() {
 		$meta_string = '';
 
 		//Keyword Section
@@ -28,13 +28,14 @@ class dsidxpress_seo {
 		//End Description Section
 		
 		if(!empty($meta_string)){
-			echo "\n<!-- ZPress SEO additions -->\n";
+			echo "\n<!-- IDX SEO settings -->\n";
 			echo "$meta_string\n";
-			echo "<!-- /ZPress SEO additions -->\n";
+			echo "<!-- /IDX SEO settings -->\n";
 		}
+		remove_action('wp_head', array($this, 'dsidxpress_head_action'));
 	}
 	
-	function dsidxpress_title($title) {
+	function dsidxpress_title_filter($title) {
 		if($this->title)
 			return $this->title . ' | ';
 		return $title;
