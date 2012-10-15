@@ -236,7 +236,7 @@ class dsSearchAgent_Client {
 		foreach ($wp_query->query as $key => $value) {
 			if (strpos($key, "idx-q") === false && ((!$onlyQueryParams && strpos($key, "idx-d") === false) || $onlyQueryParams))
 				continue;
-			if (empty($value))
+			if ($value == '') // don't use empty() here, need to pass through values of '0', and empty will return true on '0'
 				continue;
 
 			$key = str_replace(array("-", "<", ">"), array(".", "[", "]"), substr($key, 4));
@@ -248,7 +248,7 @@ class dsSearchAgent_Client {
 		foreach ($get as $key => $value) {
 			if (strpos($key, "idx-q") === false && ((!$onlyQueryParams && strpos($key, "idx-d") === false) || $onlyQueryParams))
 				continue;
-			if (empty($value))
+			if ($value == '') // don't use empty() here, need to pass through values of '0', and empty will return true on '0'
 				continue;
 
 			$key = str_replace(array("-", "<", ">"), array(".", "[", "]"), substr($key, 4));

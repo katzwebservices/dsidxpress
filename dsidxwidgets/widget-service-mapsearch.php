@@ -11,8 +11,7 @@ class dsIDXWidgets_MapSearch extends WP_Widget {
     }
     function widget($args, $instance) {
         $randString = dsWidgets_Service_Base::get_random_string('abcdefghijklmnopqrstuvwxyz1234567890', 5);
-        //wp_enqueue_script('dsidxwidgets_widget_maps', 'http://maps.googleapis.com/maps/api/js?sensor=false&callback=MapSearchWidgetCallback'.$randString, array('jquery'), false, true);
-		wp_enqueue_script('dsidxwidgets_widget_maps', 'http://maps.googleapis.com/maps/api/js?sensor=false', array('jquery'), false, true);
+		wp_enqueue_script('googlemaps3', 'http://maps.googleapis.com/maps/api/js?sensor=false', array('jquery'), false, true);
         extract($args);
         extract($instance);
         $options = get_option(DSIDXWIDGETS_OPTION_NAME);

@@ -800,7 +800,7 @@ if (isset($diagnostics["error"])) {
 			<form method="post" action="options.php">
 			<?php settings_fields("dsidxpress_api_options"); ?>
 			<h4>SEO Settings</h4>
-			<span class="description">These settings are used to improve the accuracy of how search engines find and list this site.</span>
+			<span class="description">These settings are used to improve the accuracy of how search engines find and list this site.<br/>When using a replacement field please include it using lowercase characters.</span>
 			<div style="padding-left: 30px;">
 			<h4>Details Page Settings</h4>
 			<span class="description">These settings apply to any page holding details for a specific property. <br /><br />
