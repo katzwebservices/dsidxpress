@@ -49,7 +49,7 @@ class dsIDXWidgets_OpenHouse extends WP_Widget {
                 CreateWidget{$randString} = function () {
                     (window.openHouseFinished == 1) ? (window["ds.widget.view.openhouse"].isProcessing = true, CreateObject{$randString}(), new window["ds.widget.view.openhouse"](_ds_midx), window["ds.widget.view.openhouse"].isProcessing = false) : window.setTimeout("CreateWidget{$randString}(false)", 20); 
                 }
-                if (openHouseScript != 1) { openHouseScript = AddJavaScriptToDOM{$randString}("http://widgets.diverse-cdn.com/Scripts/PostCompile/OpenHouse.js", openHouseScript, 'openHouseFinished') }; 
+                if (openHouseScript != 1) { openHouseScript = AddJavaScriptToDOM{$randString}("http://widgets.diverse-cdn.com/Scripts/PostCompile/OpenHouse_v1_1.js", openHouseScript, 'openHouseFinished') }; 
                     CreateWidget{$randString}();
             }
 

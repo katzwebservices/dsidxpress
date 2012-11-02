@@ -303,7 +303,7 @@ HTML;
 					</th>
 					<td>
 						<input type="hidden" id="dsidxpress-RequireAuth-Details-Description" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[RequireAuth-Details-Description]" value="<?php echo $account_options->{'RequireAuth-Details-Description'}; ?>" />
-						<input type="checkbox" class="dsidxpress-api-checkbox" id="dsidxpress-RequireAuth-Details-Description-check" <?php echo @$account_options->{'RequireAuth-Details-Description'} == "true" ? "checked=\"checked\"" : "" ?> />
+						<input type="checkbox" class="dsidxpress-api-checkbox" id="dsidxpress-RequireAuth-Details-Description-check" <?php checked('true', strtolower($account_options->{'RequireAuth-Details-Description'})); ?> />
 					</td>
 				</tr>
 				<tr>
@@ -312,7 +312,7 @@ HTML;
 					</th>
 					<td>
 						<input type="hidden" id="dsidxpress-RequireAuth-Property-Community" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[RequireAuth-Property-Community]" value="<?php echo $account_options->{'RequireAuth-Property-Community'}; ?>" />
-						<input type="checkbox" class="dsidxpress-api-checkbox" id="dsidxpress-RequireAuth-Property-Community-check" <?php echo @$account_options->{'RequireAuth-Property-Community'} == "true" ? "checked=\"checked\"" : "" ?> />
+						<input type="checkbox" class="dsidxpress-api-checkbox" id="dsidxpress-RequireAuth-Property-Community-check" <?php checked('true', strtolower($account_options->{'RequireAuth-Property-Community'})); ?> />
 					</td>
 				</tr>
 				<tr>
@@ -321,7 +321,7 @@ HTML;
 					</th>
 					<td>
 						<input type="hidden" id="dsidxpress-RequireAuth-Property-Tract" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[RequireAuth-Property-Tract]" value="<?php echo $account_options->{'RequireAuth-Property-Tract'}; ?>" />
-						<input type="checkbox" class="dsidxpress-api-checkbox" id="dsidxpress-RequireAuth-Property-Tract-check" <?php echo @$account_options->{'RequireAuth-Property-Tract'} == "true" ? "checked=\"checked\"" : "" ?> />
+						<input type="checkbox" class="dsidxpress-api-checkbox" id="dsidxpress-RequireAuth-Property-Tract-check" <?php checked('true', strtolower($account_options->{'RequireAuth-Property-Tract'})); ?> />
 					</td>
 				</tr>
 				<tr>
@@ -330,7 +330,7 @@ HTML;
 					</th>
 					<td>
 						<input type="hidden" id="dsidxpress-RequireAuth-Details-Schools" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[RequireAuth-Details-Schools]" value="<?php echo $account_options->{'RequireAuth-Details-Schools'}; ?>" />
-						<input type="checkbox" class="dsidxpress-api-checkbox" id="dsidxpress-RequireAuth-Details-Schools-check" <?php echo @$account_options->{'RequireAuth-Details-Schools'} == "true" ? "checked=\"checked\"" : "" ?> />
+						<input type="checkbox" class="dsidxpress-api-checkbox" id="dsidxpress-RequireAuth-Details-Schools-check" <?php checked('true', strtolower($account_options->{'RequireAuth-Details-Schools'})); ?> />
 					</td>
 				</tr>
 				<tr>
@@ -339,7 +339,7 @@ HTML;
 					</th>
 					<td>
 						<input type="hidden" id="dsidxpress-RequireAuth-Details-AdditionalInfo" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[RequireAuth-Details-AdditionalInfo]" value="<?php echo $account_options->{'RequireAuth-Details-AdditionalInfo'}; ?>" />
-						<input type="checkbox" class="dsidxpress-api-checkbox" id="dsidxpress-RequireAuth-Details-AdditionalInfo-check" <?php echo @$account_options->{'RequireAuth-Details-AdditionalInfo'} == "true" ? "checked=\"checked\"" : "" ?> />
+						<input type="checkbox" class="dsidxpress-api-checkbox" id="dsidxpress-RequireAuth-Details-AdditionalInfo-check" <?php checked('true', strtolower($account_options->{'RequireAuth-Details-AdditionalInfo'})); ?> />
 					</td>
 				</tr>
 				<tr>
@@ -348,7 +348,7 @@ HTML;
 					</th>
 					<td>
 						<input type="hidden" id="dsidxpress-RequireAuth-Details-PriceChanges" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[RequireAuth-Details-PriceChanges]" value="<?php echo $account_options->{'RequireAuth-Details-PriceChanges'}; ?>" />
-						<input type="checkbox" class="dsidxpress-api-checkbox" id="dsidxpress-RequireAuth-Details-PriceChanges-check" <?php echo @$account_options->{'RequireAuth-Details-PriceChanges'} == "true" ? "checked=\"checked\"" : "" ?> />
+						<input type="checkbox" class="dsidxpress-api-checkbox" id="dsidxpress-RequireAuth-Details-PriceChanges-check" <?php checked('true', strtolower($account_options->{'RequireAuth-Details-PriceChanges'})); ?> />
 					</td>
 				</tr>
 				<tr>
@@ -357,7 +357,7 @@ HTML;
 					</th>
 					<td>
 						<input type="hidden" id="dsidxpress-RequireAuth-Details-Features" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[RequireAuth-Details-Features]" value="<?php echo $account_options->{'RequireAuth-Details-Features'}; ?>" />
-						<input type="checkbox" class="dsidxpress-api-checkbox" id="dsidxpress-RequireAuth-Details-Features-check" <?php echo @$account_options->{'RequireAuth-Details-Features'} == "true" ? "checked=\"checked\"" : "" ?> />
+						<input type="checkbox" class="dsidxpress-api-checkbox" id="dsidxpress-RequireAuth-Details-Features-check" <?php checked('true', strtolower($account_options->{'RequireAuth-Details-Features'})); ?> />
 					</td>
 				</tr>
 				<tr>
@@ -366,7 +366,7 @@ HTML;
 					</th>
 					<td>
 						<input type="hidden" id="dsidxpress-RequireAuth-Property-DaysOnMarket" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[RequireAuth-Property-DaysOnMarket]" value="<?php echo $account_options->{'RequireAuth-Property-DaysOnMarket'}; ?>" />
-						<input type="checkbox" class="dsidxpress-api-checkbox" id="dsidxpress-RequireAuth-Property-DaysOnMarket-check" <?php echo @$account_options->{'RequireAuth-Property-DaysOnMarket'} == "true" ? "checked=\"checked\"" : "" ?> />
+						<input type="checkbox" class="dsidxpress-api-checkbox" id="dsidxpress-RequireAuth-Property-DaysOnMarket-check" <?php checked('true', strtolower($account_options->{'RequireAuth-Property-DaysOnMarket'})); ?> />
 					</td>
 				</tr>
 				<tr>
@@ -375,7 +375,7 @@ HTML;
 					</th>
 					<td>
 						<input type="hidden" id="dsidxpress-RequireAuth-Property-LastUpdated" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[RequireAuth-Property-LastUpdated]" value="<?php echo $account_options->{'RequireAuth-Property-LastUpdated'}; ?>" />
-						<input type="checkbox" class="dsidxpress-api-checkbox" id="dsidxpress-RequireAuth-Property-LastUpdated-check" <?php echo @$account_options->{'RequireAuth-Property-LastUpdated'} == "true" ? "checked=\"checked\"" : "" ?> />
+						<input type="checkbox" class="dsidxpress-api-checkbox" id="dsidxpress-RequireAuth-Property-LastUpdated-check" <?php checked('true', strtolower($account_options->{'RequireAuth-Property-LastUpdated'})); ?> />
 					</td>
 				</tr>
 				<tr>
@@ -384,7 +384,7 @@ HTML;
 					</th>
 					<td>
 						<input type="hidden" id="dsidxpress-RequireAuth-Property-YearBuilt" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[RequireAuth-Property-YearBuilt]" value="<?php echo $account_options->{'RequireAuth-Property-YearBuilt'}; ?>" />
-						<input type="checkbox" class="dsidxpress-api-checkbox" id="dsidxpress-RequireAuth-Property-YearBuilt-check" <?php echo @$account_options->{'RequireAuth-Property-YearBuilt'} == "true" ? "checked=\"checked\"" : "" ?> />
+						<input type="checkbox" class="dsidxpress-api-checkbox" id="dsidxpress-RequireAuth-Property-YearBuilt-check" <?php checked('true', strtolower($account_options->{'RequireAuth-Property-YearBuilt'})); ?> />
 					</td>
 				</tr>
 			</table>

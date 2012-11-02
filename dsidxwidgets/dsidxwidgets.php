@@ -25,30 +25,12 @@ Version: 1.0.0
 */
 global $wp_version;
 
-require_once(ABSPATH . "wp-admin/includes/plugin.php");
-$pluginData = get_plugin_data(__FILE__);
-
 define("DSIDXWIDGETS_OPTION_NAME", "dsidxwidgets-options");
 define("DSIDXWIDGETS_API_OPTIONS_NAME", "dsidxwidgets-api-options");
 
 define("DSIDXWIDGETS_MIN_VERSION_PHP", "5.2.0");
 define("DSIDXWIDGETS_MIN_VERSION_WORDPRESS", "2.8");
 define("DSIDXWIDGETS_PLUGIN_URL", plugins_url('/', __FILE__));
-define("DSIDXWIDGETS_PLUGIN_VERSION", $pluginData["Version"]);
-
-if (version_compare(phpversion(), DSIDXWIDGETS_MIN_VERSION_PHP) == -1 || version_compare($wp_version, DSIDXWIDGETS_MIN_VERSION_WORDPRESS) == -1) {
-	add_action("admin_notices", "dsidxwidgets_DisplayVersionWarnings");
-	return;
-}
-
-if (get_option("dsidxwidgets-wordpress-edition")) {
-	$mergedOption = get_option("dsidxwidgets-wordpress-edition");
-	if (is_array(get_option("dsidxwidgets-custom-options")))
-		$mergedOption = array_merge($mergedOption, get_option("dsidxwidgets-custom-options"));
-	update_option(DSIDXWIDGETS_OPTION_NAME, $mergedOption);
-	delete_option("dsidxwidgets-wordpress-edition");
-	delete_option("dsidxwidgets-custom-options");
-}
 
 // sometimes dirname( __FILE__ ) gives us a bad location, but sometimes require_once(...) doesn't require from the correct directory.
 // so we're splitting the difference here and seeing if dirname( __FILE__ ) is valid by checking the existence of a well-known file,
@@ -87,24 +69,6 @@ if (is_admin()) {
 }
 
 add_action("widgets_init", "dsidxwidgets_InitWidgets");
-
-// not in a static class to prevent PHP < 5 from failing when including and interpreting this particular file
-function dsidxwidgets_DisplayVersionWarnings() {
-	global $wp_version;
-
-	$currentVersionPhp = phpversion();
-	$currentVersionWordPress = $wp_version;
-
-	$minVersionPhp = DSIDXWIDGETS_MIN_VERSION_PHP;
-	$minVersionWordPress = DSIDXWIDGETS_MIN_VERSION_WORDPRESS;
-
-	echo <<<HTML
-		<div class="error">
-			In order to use the dsIDXWidgets plugin, your web server needs to be running at least PHP {$minVersionPhp} and WordPress {$minVersionWordPress}.
-			You're currently using PHP {$currentVersionPhp} and WordPress {$currentVersionWordPress}. Please consider upgrading.
-		</div>
-HTML;
-}
 function dsidxwidgets_InitWidgets() {
 	$options = get_option(DSIDXPRESS_OPTION_NAME);
 	

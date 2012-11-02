@@ -63,7 +63,7 @@ class dsIDXWidgets_AreaStats extends WP_Widget {
                 else {
                 window.setTimeout('CreateWidget{$randString}(false)', 20);} 
                 }
-                if (historicalChartScript != 1) { historicalChartScript = AddJavaScriptToDOM{$randString}("http://widgets.diverse-cdn.com/Scripts/PostCompile/HistoricalChart.js", historicalChartScript, 'historicalChartFinished') }; 
+                if (historicalChartScript != 1) { historicalChartScript = AddJavaScriptToDOM{$randString}("http://widgets.diverse-cdn.com/Scripts/PostCompile/HistoricalChart_v1_1.js", historicalChartScript, 'historicalChartFinished') }; 
                 if (historicalChartDep1Script != 1) { historicalChartDep1Script = AddJavaScriptToDOM{$randString}("http://widgets.diverse-cdn.com/Scripts/Dependencies/raphael-min.js", historicalChartDep1Script, 'historicalChartDep1Finished') };
                 CreateWidget{$randString}();
             }

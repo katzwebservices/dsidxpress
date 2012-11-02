@@ -8,26 +8,13 @@ class dsWidgetAgent_ApiRequest {
 	static function FetchData($action, $params = array(), $echoAssetsIfNotEnqueued = true, $cacheSecondsOverride = null, $options = null, $headers = array()) {
 		global $wp_query, $wp_version;
 
+		require_once(ABSPATH . "wp-admin/includes/plugin.php");
+		$pluginData = get_plugin_data(__FILE__);
+		$pluginVersion = $pluginData["Version"];
+
 		$options = $options ? $options : get_option(DSIDXWIDGETS_OPTION_NAME);
 		$requestUri = self::$ApiEndPoint . $action;
 		$compressCache = function_exists('gzdeflate') && function_exists('gzinflate');
-
-		if(!class_exists('Memcached'))
-			$memcached = null;
-		else if(isset($options["MemcacheHost"]) && isset($options["MemcachePort"])) {
-			$memcached = new Memcached();
-			if($memcached->addServer($options["MemcacheHost"], $options["MemcachePort"]) === false)
-				$memcached = null;
-		} else
-			$memcached = null;
-		if(!class_exists('Memcache'))
-			$memcache = null;
-		else if(isset($options["MemcacheHost"]) && isset($options["MemcachePort"])) {
-			$memcache = new Memcache;
-			if($memcache->connect($options["MemcacheHost"], $options["MemcachePort"]) === false)
-				$memcache = null;
-		} else
-			$memcache = null;
 
 		$idxpress_options = get_option(DSIDXPRESS_OPTION_NAME);
 
@@ -43,7 +30,7 @@ class dsWidgetAgent_ApiRequest {
 		if(!isset($params["requester.ApplicationProfile"]))
 			$params["requester.ApplicationProfile"] = "WordPressIdxModule";
 		$params["requester.ApplicationVersion"] = $wp_version;
-		$params["requester.PluginVersion"] = DSIDXWIDGETS_PLUGIN_VERSION;
+		$params["requester.PluginVersion"] = $pluginVersion;
 		$params["requester.RequesterUri"] = get_home_url();
 		
 		if(isset($_COOKIE['dsidx-visitor-public-id']))
@@ -60,12 +47,7 @@ class dsWidgetAgent_ApiRequest {
 		$transientKey = "idx_" . sha1($action . "_" . http_build_query($params));
 
 		if ($cacheSecondsOverride !== 0) {
-			if(isset($memcache))
-				$cachedRequestData = $memcache->get($transientKey);
-			else if(isset($memcached))
-				$cachedRequestData = $memcached->get($transientKey);
-			else
-				$cachedRequestData = get_transient($transientKey);
+			$cachedRequestData = get_transient($transientKey);
 			if ($cachedRequestData) {
 				$cachedRequestData = $compressCache ? unserialize(gzinflate(base64_decode($cachedRequestData))) : $cachedRequestData;
 				return $cachedRequestData;
@@ -95,12 +77,7 @@ class dsWidgetAgent_ApiRequest {
 		));
 		if (empty($response["errors"]) && substr($response["response"]["code"], 0, 1) != "5") {
 			if ($cacheSecondsOverride !== 0 && $response["body"]){
-				if(isset($memcache))
-					$memcache->set($transientKey, $compressCache ? base64_encode(gzdeflate(serialize($response))) : $response, MEMCACHE_COMPRESSED, $cacheSecondsOverride === null ? self::$CacheSeconds : $cacheSecondsOverride);
-				else if(isset($memcached))
-					$memcached->set($transientKey, $compressCache ? base64_encode(gzdeflate(serialize($response))) : $response, time() + ($cacheSecondsOverride === null ? self::$CacheSeconds : $cacheSecondsOverride));
-				else
-					set_transient($transientKey, $compressCache ? base64_encode(gzdeflate(serialize($response))) : $response, $cacheSecondsOverride === null ? self::$CacheSeconds : $cacheSecondsOverride);
+				set_transient($transientKey, $compressCache ? base64_encode(gzdeflate(serialize($response))) : $response, $cacheSecondsOverride === null ? self::$CacheSeconds : $cacheSecondsOverride);
 			}
 		}
 

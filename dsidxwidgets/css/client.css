@@ -51,20 +51,22 @@
 /* generic widget */
 .widget_auth_wall
 {
-    background: url(http://widgets.diverse-cdn.com/Content/Images/widgets/auth-wall.png) 0px 0px; 
+    background: url(http://widgets.diverse-cdn.com/Content/Images/widgets/missing-widget_notext.jpg) 0px 0px; 
     background-repeat:no-repeat;  
     background-position:center top;
-    height: 213px;
-    text-align: center;
+    height: 207px;
+    width:230px;
+    text-align: left;
     vertical-align:middle;
 }
 .widget_auth_wall_listings
 {
-    background: url(http://widgets.diverse-cdn.com/Content/Images/widgets/auth-wall.png)  0px -213px; 
+    background: url(http://widgets.diverse-cdn.com/Content/Images/widgets/missing-widget_notext.jpg)  0px 0px; 
     background-repeat:no-repeat; 
-    background-position:center bottom; 
-    height: 213px;
-    text-align: center;
+    background-position:center top; 
+    height: 207px;
+    width:230px;
+    text-align: left;
     vertical-align:middle;
 }
 .widget_title
@@ -108,6 +110,18 @@
     vertical-align: bottom;
 }
 /* gallery control styles*/
+.gallery_big_left_arrow
+{
+	opacity: 1.0; filter: alpha(opacity = 100);cursor:default;height:147px;width:25px;background-image:url(http://widgets.diverse-cdn.com/content/images/widgets/button_left_tall.png);background-position:center;background-repeat:no-repeat;background-size:30px 147px;background-color:transparent;-moz-border-top-left-radius: 8px;-webkit-border-top-left-radius: 8px;-khtml-border-top-left-radius: 8px;border-top-left-radius: 8px;-moz-border-bottom-left-radius: 8px;-webkit-border-bottom-left-radius: 8px;-khtml-border-bottom-left-radius: 8px;border-bottom-left-radius: 8px;
+}
+.gallery_big_right_arrow
+{
+	opacity: 1.0; filter: alpha(opacity = 100);cursor:default;height:147px;width:25px;background-image:url(http://widgets.diverse-cdn.com/content/images/widgets/button_right_tall.png);background-position:center;background-repeat:no-repeat;background-size:30px 147px;background-color:transparent;-moz-border-top-right-radius: 8px;-webkit-border-top-right-radius: 8px;-khtml-border-top-right-radius: 8px;border-top-right-radius: 8px;-moz-border-bottom-right-radius: 8px;-webkit-border-bottom-right-radius: 8px;-khtml-border-bottom-right-radius: 8px;border-bottom-right-radius: 8px;
+}
+.gallery_big_right_arrow_dis
+{
+	opacity: 0.5; filter: alpha(opacity = 100);cursor:default;height:147px;width:25px;background-image:url(http://widgets.diverse-cdn.com/content/images/widgets/button_right_tall.png);background-position:center;background-repeat:no-repeat;background-size:30px 147px;background-color:transparent;-moz-border-top-right-radius: 8px;-webkit-border-top-right-radius: 8px;-khtml-border-top-right-radius: 8px;border-top-right-radius: 8px;-moz-border-bottom-right-radius: 8px;-webkit-border-bottom-right-radius: 8px;-khtml-border-bottom-right-radius: 8px;border-bottom-right-radius: 8px;
+}
 .gallery_main_table
 {
     border-spacing: 2px;

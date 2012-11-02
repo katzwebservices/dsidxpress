@@ -60,7 +60,7 @@ class dsIDXWidgets_MapSearch extends WP_Widget {
                 CreateWidget{$randString} = function () {
                  (window.mapSearchFinished == 1 && mapSearchDep1Finished == 1) ? (window["ds.widget.view.mapsearch"].isProcessing = true, CreateObject{$randString}(), new window["ds.widget.view.mapsearch"](_ds_midx), window["ds.widget.view.mapsearch"].isProcessing = false, DetectMapScripts{$randString}()) : window.setTimeout("CreateWidget{$randString}(false)", 20); 
                 }
-                if (mapSearchScript != 1 && mapSearchProgress != 1) {mapSearchProgress=1, mapSearchScript = AddJavaScriptToDOM{$randString}("http://widgets.diverse-cdn.com/Scripts/PostCompile/MapSearch.js", mapSearchScript, 'mapSearchFinished') }; 
+                if (mapSearchScript != 1 && mapSearchProgress != 1) {mapSearchProgress=1, mapSearchScript = AddJavaScriptToDOM{$randString}("http://widgets.diverse-cdn.com/Scripts/PostCompile/MapSearch_v1_1.js", mapSearchScript, 'mapSearchFinished') }; 
                  CreateWidget{$randString}();
             }
 			DetectMapScripts{$randString} = function(){

@@ -48,7 +48,7 @@ class dsIDXWidgets_Slideshow extends WP_Widget {
                 CreateWidget{$randString} = function () {
                     (window.slideshowFinished == 1) ? (window["ds.widget.view.slideshow"].isProcessing = true, CreateObject{$randString}(), new window["ds.widget.view.slideshow"](_ds_midx), window["ds.widget.view.slideshow"].isProcessing = false) : window.setTimeout("CreateWidget{$randString}(false)", 20); 
                 }
-                if (slideshowScript != 1) { slideshowScript = AddJavaScriptToDOM{$randString}("http://widgets.diverse-cdn.com/Scripts/PostCompile/Slideshow.js", slideshowScript, 'slideshowFinished') }; 
+                if (slideshowScript != 1) { slideshowScript = AddJavaScriptToDOM{$randString}("http://widgets.diverse-cdn.com/Scripts/PostCompile/Slideshow_v1_1.js", slideshowScript, 'slideshowFinished') }; 
                 CreateWidget{$randString}();
             }
 
