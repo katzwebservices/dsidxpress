@@ -135,6 +135,9 @@ class dsSearchAgent_Client {
 			// we used to null out the $posts here, but we're going to try to just noindex instead, so we don't block a 
 			// user from using the search intarface however they want.
 			add_action("wp_head", array("dsSearchAgent_Client", "NoIndex"));
+		} else if($options["SearchSetupID"] == "124") {
+			// set no-index on test-data pages
+			add_action("wp_head", array("dsSearchAgent_Client", "NoIndex"));
 		}
 
 		// keep wordpress from mucking up our HTML

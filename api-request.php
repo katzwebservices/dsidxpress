@@ -32,6 +32,8 @@ class dsSearchAgent_ApiRequest {
 			$params["requester.VisitorPublicID"] = $_COOKIE['dsidx-visitor-public-id'];
 		if(isset($_COOKIE['dsidx-visitor-auth']))
 			$params["requester.VisitorAuth"] = $_COOKIE['dsidx-visitor-auth'];
+		if($options["dsIDXPressPackage"] == "lite")
+			$params["requester.IsRegistered"] = current_user_can(dsSearchAgent_Roles::$Role_ViewDetails) ? "true" : "false";
 
 		foreach (self::$NumericValues as $key) {
 			if (array_key_exists($key, $params))

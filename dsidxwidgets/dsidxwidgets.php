@@ -43,7 +43,7 @@ if(file_exists(dirname( __FILE__ ) . "/dsidxwidgets.php")){
 require_once($require_prefix . "api-request.php");
 //require_once($require_prefix . "widget-service-qrcode.php");
 require_once($require_prefix . "widget-service-affordability.php");
-require_once($require_prefix . "widget-service-areastats.php");
+//require_once($require_prefix . "widget-service-areastats.php");
 require_once($require_prefix . "widget-service-recentstatus.php");
 require_once($require_prefix . "widget-service-openhouse.php");
 require_once($require_prefix . "widget-service-slideshow.php");
@@ -75,7 +75,7 @@ function dsidxwidgets_InitWidgets() {
 	if (defined('ZPRESS_API') || isset($options["dsIDXPressPackage"]) && $options["dsIDXPressPackage"] == "pro") {
 		//register_widget("dsIDXWidgets_QRCode");
 		register_widget("dsIDXWidgets_Affordability");
-		register_widget("dsIDXWidgets_AreaStats");
+		//register_widget("dsIDXWidgets_AreaStats");
 		register_widget("dsIDXWidgets_RecentStatus");
 		register_widget("dsIDXWidgets_OpenHouse");
 		register_widget("dsIDXWidgets_Slideshow");

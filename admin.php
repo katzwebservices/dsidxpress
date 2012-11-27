@@ -205,7 +205,7 @@ HTML;
 		<?php if (isset($_REQUEST['settings-updated']) && $_REQUEST['settings-updated'] == 'true') : ?>
 		<div class="updated"><p><strong><?php _e( 'Options saved' ); ?></strong></p></div>
 		<?php endif; ?>
-		<form method="post" action="options.php">
+		<form method="post" action="options.php" onsubmit="return dsIDXpressOptions.FilterViews();">
 		<?php settings_fields("dsidxpress_options"); ?>
 		<h4>Display Settings</h4>
 			<table class="form-table">
@@ -278,7 +278,7 @@ HTML;
 					</td>
 				</tr>
 			</table>
-			<?php if (defined('ZPRESS_API') || isset($options["dsIDXPressPackage"]) && $options["dsIDXPressPackage"] == "pro"): ?>
+						<?php if (defined('ZPRESS_API') || isset($options["dsIDXPressPackage"]) && $options["dsIDXPressPackage"] == "pro"): ?>
 			<h4>Forced Registration Settings</h4>
 			<table class="form-table">
 				<tr>
@@ -984,7 +984,7 @@ if (isset($diagnostics["error"])) {
 			</table>
 			<br />
 			<p class="submit">
-				<input id="xml-options-saved" type="submit" class="button-primary" name="Submit" value="Save Options" />
+							<input id="xml-options-saved" type="submit" class="button-primary" name="Submit" value="Save Options" />
 			</p>
 			</form>
 		</div>
