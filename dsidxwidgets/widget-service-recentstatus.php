@@ -46,12 +46,13 @@ class dsIDXWidgets_RecentStatus extends WP_Widget {
         echo <<<HTML
         <h3 class="widget-title">{$title}</h3>
         <script type="text/javascript" id="divLocal{$randString}_">
+				window.recentStatusHasDependency = true;
                 LaunchBase{$randString} = function(){
                 var recentStatusScript, _ds_midx;
                 CreateObject{$randString} = function () { _ds_midx = { currentURL: '{$curURL}', curHeight: '{$height}', curWidth: '{$width}', showHeader: false, productType: '0', curAPIStub: '{$apiStub}', curImageStub: '{$imagesStub}', targetDomain: window["zpress_widget_domain_token"], accountId: '{$aid}',searchSetupId: '{$ssid}',muteStyles: true,curTitle: '{$title}',rowCount: '{$rowCount}',community: '{$community}',state: '{$state}',city: '{$city}',zip: '{$zip}',linkTitle: '{$linkTitle}',curDivID: 'divLocal{$randString}_',querySchema: 'MmZDz28oMETkfu/J7uVDj5me5CwqyWZUYbd0g3HEW8Ar73U98rI41MBxO894vgPN',status: '{$statusType}' }; }
                 AddJavaScriptToDOM{$randString}=function(c,d,e){if(1!=d){var a=document.createElement("script"),b=document.getElementsByTagName("script")[0];a.async=!0;a.src=c;a.onload=function(){ window[e] = 1;};b.parentNode.insertBefore(a,b)}return 1};
                 CreateWidget{$randString} = function () {
-                 (window.recentStatusFinished == 1) ? (window["ds.widget.view.recentstatus"].isProcessing = true, CreateObject{$randString}(), new window["ds.widget.view.recentstatus"](_ds_midx), window["ds.widget.view.recentstatus"].isProcessing = false) : window.setTimeout("CreateWidget{$randString}(false)", 20); 
+                 (window.recentStatusFinished == 1) ? (window["ds.widget.view.recentstatus"].isProcessing = true, CreateObject{$randString}(), new window["ds.widget.view.recentstatus"](_ds_midx), window["ds.widget.view.recentstatus"].isProcessing = false, window.recentStatusHasDependency = false) : window.setTimeout("CreateWidget{$randString}(false)", 20); 
                 }
                 if (recentStatusScript != 1) { recentStatusScript = AddJavaScriptToDOM{$randString}("http://widgets.diverse-cdn.com/Scripts/PostCompile/RecentStatus_v1_1.js", recentStatusScript, 'recentStatusFinished') }; 
                   CreateWidget{$randString}();

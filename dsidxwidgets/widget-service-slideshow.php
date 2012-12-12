@@ -41,12 +41,12 @@ class dsIDXWidgets_Slideshow extends WP_Widget {
         echo <<<HTML
         <script type="text/javascript" id="divLocal{$randString}_">
             var slideshowScript, _ds_midx;
-
+			window.slideshowHasDependency = true;
             LaunchBase{$randString} = function(){
                 CreateObject{$randString} = function () { _ds_midx = { currentURL: '{$curURL}', productType: '0', curAPIStub: '{$apiStub}', curImageStub: '{$imagesStub}', targetDomain: window["zpress_widget_domain_token"],accountId: '{$aid}',searchSetupId: '{$ssid}',muteStyles: true,horzCount: '{$horzCount}',maxPrice: '{$maxPrice}',state: '{$state}',city: '{$city}',zip: '{$zip}',curDivID: 'divLocal{$randString}_',querySchema: '12dGTTViUjEzC1rrNlw6Lq6A6wZQlgBarlIcucpGTkQrUP3gCimYF6deRFaavu2IbPpaOkZ9I4K42QaAhLVEcA==' }; }
                 AddJavaScriptToDOM{$randString}=function(c,d,e){if(1!=d){var a=document.createElement("script"),b=document.getElementsByTagName("script")[0];a.async=!0;a.src=c;a.onload=function(){ window[e] = 1;};b.parentNode.insertBefore(a,b)}return 1};
                 CreateWidget{$randString} = function () {
-                    (window.slideshowFinished == 1) ? (window["ds.widget.view.slideshow"].isProcessing = true, CreateObject{$randString}(), new window["ds.widget.view.slideshow"](_ds_midx), window["ds.widget.view.slideshow"].isProcessing = false) : window.setTimeout("CreateWidget{$randString}(false)", 20); 
+                    (window.slideshowFinished == 1) ? (window["ds.widget.view.slideshow"].isProcessing = true, CreateObject{$randString}(), new window["ds.widget.view.slideshow"](_ds_midx), window["ds.widget.view.slideshow"].isProcessing = false, window.slideshowHasDependency = false) : window.setTimeout("CreateWidget{$randString}(false)", 20); 
                 }
                 if (slideshowScript != 1) { slideshowScript = AddJavaScriptToDOM{$randString}("http://widgets.diverse-cdn.com/Scripts/PostCompile/Slideshow_v1_1.js", slideshowScript, 'slideshowFinished') }; 
                 CreateWidget{$randString}();

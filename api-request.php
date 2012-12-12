@@ -139,9 +139,9 @@ class dsSearchAgent_ApiRequest {
 				$data = str_replace($style[0], "", $data);
 
 			if ($echoAssetsIfNotEnqueued)
-				wp_register_style($style["handle"], $style["href"], false, "-");
+				wp_register_style($style["handle"], $style["href"], false, null);
 			else
-				wp_enqueue_style($style["handle"], $style["href"], false, "-");
+				wp_enqueue_style($style["handle"], $style["href"], false, null);
 		}
 
 		return $data;
@@ -155,9 +155,9 @@ class dsSearchAgent_ApiRequest {
 				$data = str_replace($script[0], "", $data);
 
 			if ($echoAssetsIfNotEnqueued)
-				wp_register_script($script["handle"], $script["src"], false, "-");
+				wp_register_script($script["handle"], $script["src"], false, null);
 			else
-				wp_enqueue_script($script["handle"], $script["src"], false, "-");
+				wp_enqueue_script($script["handle"], $script["src"], false, null);
 		}
 
 		return $data;

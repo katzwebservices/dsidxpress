@@ -42,12 +42,13 @@ class dsIDXWidgets_Affordability extends WP_Widget {
         echo <<<HTML
         <div>
             <script type="text/javascript" id="divLocal{$randString}_">
+				window.affordabilityHasDependency = true;
                 LaunchBase{$randString} = function(){
                     var affordabilityScript, _ds_midx;
                     CreateObject{$randString} = function () { _ds_midx = {currentURL: '{$curURL}',  curAPIStub: '{$apiStub}', curImageStub: '{$imagesStub}', targetDomain: window["zpress_widget_domain_token"], accountId: '{$aid}',searchSetupId: '{$ssid}',muteStyles: true,income: '{$income}',downPayment: '{$downPayment}',monthlyDebts: '{$monthlyDebts}',state: '{$state}',city: '{$city}',zip: '{$zip}',curDivID: 'divLocal{$randString}_',querySchema: '12dGTTViUjEzC1rrNlw6Lq6A6wZQlgBarlIcucpGTkQrUP3gCimYF6deRFaavu2IbPpaOkZ9I4K42QaAhLVEcA==',productType: '0' }; }
                     AddJavaScriptToDOM{$randString}=function(c,d,e){if(1!=d){var a=document.createElement("script"),b=document.getElementsByTagName("script")[0];a.async=!0;a.src=c;a.onload=function(){ window[e] = 1;};b.parentNode.insertBefore(a,b)}return 1};
                     CreateWidget{$randString} = function () {
-                     (window.affordabilityFinished == 1) ? (window["ds.widget.view.affordability"].isProcessing = true, CreateObject{$randString}(), new window["ds.widget.view.affordability"](_ds_midx), window["ds.widget.view.affordability"].isProcessing = false) : window.setTimeout("CreateWidget{$randString}(false)", 20); 
+                     (window.affordabilityFinished == 1) ? (window["ds.widget.view.affordability"].isProcessing = true, CreateObject{$randString}(), new window["ds.widget.view.affordability"](_ds_midx), window["ds.widget.view.affordability"].isProcessing = false, window.affordabilityHasDependency = false) : window.setTimeout("CreateWidget{$randString}(false)", 20); 
                     }
                     if (affordabilityScript != 1) { affordabilityScript = AddJavaScriptToDOM{$randString}("http://widgets.diverse-cdn.com/Scripts/PostCompile/Affordability_v1_1.js", affordabilityScript, 'affordabilityFinished') }; 
                       CreateWidget{$randString}();

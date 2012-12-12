@@ -711,14 +711,14 @@ dsIdxLinkBuilder = {
 				{
 				    label: 'Minimum Longitude',
 				    id: 'idx-q-LongitudeMin',
-				    type: 'int',
+				    type: 'decimal',
 				    mode: 'single',
 				    hint: ''
 				},
 				{
 				    label: 'Maximum Longitude',
 				    id: 'idx-q-LongitudeMax',
-				    type: 'int',
+				    type: 'decimal',
 				    mode: 'single',
 				    hint: ''
 				}

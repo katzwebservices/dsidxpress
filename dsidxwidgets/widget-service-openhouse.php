@@ -42,12 +42,13 @@ class dsIDXWidgets_OpenHouse extends WP_Widget {
         echo <<<HTML
         <h3 class="widget-title">{$title}</h3>
         <script type="text/javascript" id="divLocal{$randString}_">
+			window.openHouseHasDependency = true;
             LaunchBase{$randString} = function(){
                 var openHouseScript, _ds_midx;
                 CreateObject{$randString} = function () { _ds_midx = { currentURL: '{$curURL}', curWidth: '{$width}', showHeader: false, productType: '0', curAPIStub: '{$apiStub}', curImageStub: '{$imagesStub}', targetDomain: window["zpress_widget_domain_token"],accountId: '{$aid}',searchSetupId: '{$ssid}',muteStyles: true,curTitle: '{$title}',maxPrice: '{$maxPrice}',state: '{$state}',city: '{$city}',zip: '{$zip}',curDivID: 'divLocal{$randString}_',querySchema: '12dGTTViUjEzC1rrNlw6Lq6A6wZQlgBarlIcucpGTkQrUP3gCimYF6deRFaavu2IclpZHIg4RCzrHG9c9wL/T6KlYf/XKRDteSXSnjQSMq4=' }; }
                 AddJavaScriptToDOM{$randString}=function(c,d,e){if(1!=d){var a=document.createElement("script"),b=document.getElementsByTagName("script")[0];a.async=!0;a.src=c;a.onload=function(){ window[e] = 1;};b.parentNode.insertBefore(a,b)}return 1};
                 CreateWidget{$randString} = function () {
-                    (window.openHouseFinished == 1) ? (window["ds.widget.view.openhouse"].isProcessing = true, CreateObject{$randString}(), new window["ds.widget.view.openhouse"](_ds_midx), window["ds.widget.view.openhouse"].isProcessing = false) : window.setTimeout("CreateWidget{$randString}(false)", 20); 
+                    (window.openHouseFinished == 1) ? (window["ds.widget.view.openhouse"].isProcessing = true, CreateObject{$randString}(), new window["ds.widget.view.openhouse"](_ds_midx), window["ds.widget.view.openhouse"].isProcessing = false, window.openHouseHasDependency = false) : window.setTimeout("CreateWidget{$randString}(false)", 20); 
                 }
                 if (openHouseScript != 1) { openHouseScript = AddJavaScriptToDOM{$randString}("http://widgets.diverse-cdn.com/Scripts/PostCompile/OpenHouse_v1_1.js", openHouseScript, 'openHouseFinished') }; 
                     CreateWidget{$randString}();

@@ -45,6 +45,7 @@ class dsIDXWidgets_AreaStats extends WP_Widget {
         echo $before_widget;
         echo <<<HTML
         <script type="text/javascript" id="divLocal{$randString}_">
+			window.areaStatsHasDependency = true;
             LaunchBase{$randString} = function(){
                 var historicalChartScript,historicalChartDep1Script,historicalChartDep2Script,historicalChartDep3Script, _ds_midx;
                 CreateObject{$randString} = function () { _ds_midx = { currentURL: '{$curURL}', curAPIStub: '{$apiStub}', curImageStub: '{$imagesStub}', targetDomain: window["zpress_widget_domain_token"], accountId: '{$aid}',searchSetupId: '{$ssid}',muteStyles: true,message: '{$title}',tract: '{$tract}',community: '{$community}',city: '{$city}',state: '{$state}',zipCode: '{$zip}',propType: '{$propType}',curDivID: 'divLocal{$randString}_',chartType: 'line',querySchema: 'oXXi0sb6XR5WdK/vSGYAn12rcEoBW2Ngd/Oyx3/RCbZIV8mSvXrYIR4K5vWeaMSblc0c8/SrrXsKuifcmW5MBItoNGdGTYzHxJcxh9ISsYPoAsVhF+pY5eUXDftnio37',period: '{$periodType}',status: '{$statusType}' }; }
@@ -57,7 +58,7 @@ class dsIDXWidgets_AreaStats extends WP_Widget {
                 if (1 != historicalChartDep3Script)
                 {historicalChartDep3Script = AddJavaScriptToDOM{$randString}('http://widgets.diverse-cdn.com/Scripts/Dependencies/g.line-min.js', historicalChartDep3Script, 'historicalChartDep3Finished');
                 window.historicalChartDep3Finished == 1;}if (window.historicalChartDep3Finished == 1) 
-                {window['ds.widget.view.historicalchart'].isProcessing = true;CreateObject{$randString}(); new window['ds.widget.view.historicalchart'](_ds_midx); window['ds.widget.view.historicalchart'].isProcessing = false;}
+                {window['ds.widget.view.historicalchart'].isProcessing = true;CreateObject{$randString}(); new window['ds.widget.view.historicalchart'](_ds_midx); window['ds.widget.view.historicalchart'].isProcessing = false; window.areaStatsHasDependency = false;}
                 else {
                  window.setTimeout('CreateWidget{$randString}(false)', 20);}}
                 else {

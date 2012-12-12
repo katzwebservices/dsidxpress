@@ -37,11 +37,12 @@ class dsIDXWidgets_quicksearch extends WP_Widget {
         echo <<<HTML
         <script type="text/javascript" id="divLocal{$randString}_">
             LaunchBase{$randString} = function(){
+				window.quickSearchHasDependency = true;
                 var quickSearchScript, _ds_midx;
                 CreateObject{$randString} = function () { _ds_midx = { currentURL: '{$curURL}', widgetType: '{$widgetType}', curAPIStub: '{$apiStub}', curImageStub: '{$imagesStub}', targetDomain: window["zpress_widget_domain_token"], accountId: '{$aid}',searchSetupId: '{$ssid}',muteStyles: true,curDivID: 'divLocal{$randString}_',product: '0' }; }
                 AddJavaScriptToDOM{$randString}=function(c,d,e){if(1!=d){var a=document.createElement("script"),b=document.getElementsByTagName("script")[0];a.async=!0;a.src=c;a.onload=function(){ window[e] = 1;};b.parentNode.insertBefore(a,b)}return 1};
                 CreateWidget{$randString} = function () {
-                 (window.quickSearchFinished == 1) ? (window["ds.widget.view.quicksearch"].isProcessing = true, CreateObject{$randString}(), new window["ds.widget.view.quicksearch"](_ds_midx), window["ds.widget.view.quicksearch"].isProcessing = false) : window.setTimeout("CreateWidget{$randString}(false)", 20); 
+                 (window.quickSearchFinished == 1) ? (window["ds.widget.view.quicksearch"].isProcessing = true, CreateObject{$randString}(), new window["ds.widget.view.quicksearch"](_ds_midx), window["ds.widget.view.quicksearch"].isProcessing = false, window.quickSearchHasDependency = false) : window.setTimeout("CreateWidget{$randString}(false)", 20); 
                 }
                 if (quickSearchScript != 1) { quickSearchScript = AddJavaScriptToDOM{$randString}("http://widgets.diverse-cdn.com/Scripts/PostCompile/QuickSearch_v1_1.js", quickSearchScript, 'quickSearchFinished') }; 
                   CreateWidget{$randString}();

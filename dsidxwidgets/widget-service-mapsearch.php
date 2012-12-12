@@ -51,6 +51,7 @@ class dsIDXWidgets_MapSearch extends WP_Widget {
         echo $before_widget;
         echo <<<HTML
         <script type="text/javascript" id="divLocal{$randString}_">
+			window.mapSearchHasDependency = true;
             var launchBaseCalled = false;
             var mapSearchDep1Finished = 1;
             LaunchBase{$randString} = function(){
@@ -58,7 +59,7 @@ class dsIDXWidgets_MapSearch extends WP_Widget {
                 CreateObject{$randString} = function () { _ds_midx = { currentURL: '{$curURL}', curHeight: '{$height}', curWidth: '{$width}', productType: '0', curAPIStub: '{$apiStub}', curImageStub: '{$imagesStub}', targetDomain: window["zpress_widget_domain_token"],accountId: '{$aid}',searchSetupId: '{$ssid}',muteStyles: true,state: '{$state}',city: '{$city}',zip: '{$zip}',priceMin: '{$priceMin}',priceMax: '{$priceMax}',priceFloor: '{$priceFloor}',priceCeiling: '{$priceCeiling}',bedsMin: '{$bedsMin}',bathsMin: '{$bathsMin}',sqftMin: '{$sqftMin}',curDivID: 'divLocal{$randString}_',querySchema: 'HNIPilgrh/9PwdKmimpgPE05NfSeqIkyvHeXiSh+gUIUzKp3KXDCFoWJ/DzaOsYlntCSXtSk36hbB76URZk1Sirc9iLz3tiLPAN0SK/EbNCrr6XWxD7hAYVJcDwXtpN4',status: '{$statusType}',rowCount: '{$rowCountType}',sort: '{$sortType}' }; }
                 AddJavaScriptToDOM{$randString}=function(c,d,e){ if(d!=1){var a=document.createElement("script"),b=document.getElementsByTagName("script")[0];a.id=e;a.type='text/javascript';a.async=true;a.src=c;a.onload=a.onreadystatechange=function(){ if(a.readyState){  if (a.readyState == "loaded" || a.readyState == "complete") {window[e] = 1;}}else{window[e] = 1;}};b.parentNode.insertBefore(a,b)}return 1};
                 CreateWidget{$randString} = function () {
-                 (window.mapSearchFinished == 1 && mapSearchDep1Finished == 1) ? (window["ds.widget.view.mapsearch"].isProcessing = true, CreateObject{$randString}(), new window["ds.widget.view.mapsearch"](_ds_midx), window["ds.widget.view.mapsearch"].isProcessing = false, DetectMapScripts{$randString}()) : window.setTimeout("CreateWidget{$randString}(false)", 20); 
+                 (window.mapSearchFinished == 1 && mapSearchDep1Finished == 1) ? (window["ds.widget.view.mapsearch"].isProcessing = true, CreateObject{$randString}(), new window["ds.widget.view.mapsearch"](_ds_midx), window["ds.widget.view.mapsearch"].isProcessing = false, window.mapSearchHasDependency = false, DetectMapScripts{$randString}()) : window.setTimeout("CreateWidget{$randString}(false)", 20); 
                 }
                 if (mapSearchScript != 1 && mapSearchProgress != 1) {mapSearchProgress=1, mapSearchScript = AddJavaScriptToDOM{$randString}("http://widgets.diverse-cdn.com/Scripts/PostCompile/MapSearch_v1_1.js", mapSearchScript, 'mapSearchFinished') }; 
                  CreateWidget{$randString}();
