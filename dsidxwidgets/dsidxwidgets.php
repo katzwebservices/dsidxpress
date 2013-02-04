@@ -68,7 +68,10 @@ if (is_admin()) {
 	//require_once($require_prefix . "shortcodes.php");
 }
 
-add_action("widgets_init", "dsidxwidgets_InitWidgets");
+if (defined('DSIDXPRESS_PLUGIN_VERSION')) {
+	add_action("widgets_init", "dsidxwidgets_InitWidgets");
+}
+
 function dsidxwidgets_InitWidgets() {
 	$options = get_option(DSIDXPRESS_OPTION_NAME);
 	

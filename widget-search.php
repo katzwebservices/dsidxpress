@@ -167,12 +167,12 @@ HTML;
 		}
 		echo <<<HTML
 					<tr>
-						<th><label for="idx-q-PriceMin">Min price</label></th>
-						<td><input id="idx-q-PriceMin" name="idx-q-PriceMin" type="text" class="dsidx-price" /></td>
-					</tr>
-					<tr>
-						<th><label for="idx-q-PriceMax">Max price</label></th>
-						<td><input id="idx-q-PriceMax" name="idx-q-PriceMax" type="text" class="dsidx-price" /></td>
+						<th><label for="idx-q-PriceMin">Price</label></th>
+						<td>
+							<input id="idx-q-PriceMin" name="idx-q-PriceMin" type="text" class="dsidx-price" placeholder="min price" />
+							<span class="separator"> > </span>
+							<input id="idx-q-PriceMax" name="idx-q-PriceMax" type="text" class="dsidx-price" placeholder="max price" />
+						</td>
 					</tr>
 HTML;
 		foreach ($defaultSearchPanels as $key => $value) {
@@ -180,7 +180,7 @@ HTML;
 				echo <<<HTML
 					<tr>
 						<th><label for="idx-q-ImprovedSqFtMin">Size</label></th>
-						<td><input id="idx-q-ImprovedSqFtMin" name="idx-q-ImprovedSqFtMin" type="text" class="dsidx-improvedsqft" />+ sq ft</td>
+						<td><input id="idx-q-ImprovedSqFtMin" name="idx-q-ImprovedSqFtMin" type="text" class="dsidx-improvedsqft" placeholder="min sqft" /></td>
 					</tr>
 HTML;
 				break;
@@ -189,15 +189,15 @@ HTML;
 		echo <<<HTML
 					<tr>
 						<th><label for="idx-q-BedsMin">Beds</label></th>
-						<td><input id="idx-q-BedsMin" name="idx-q-BedsMin" type="text" class="dsidx-beds" />+</td>
+						<td><input id="idx-q-BedsMin" name="idx-q-BedsMin" type="text" class="dsidx-beds" placeholder="min bedrooms" /></td>
 					</tr>
 					<tr>
 						<th><label for="idx-q-BathsMin">Baths</label></th>
-						<td><input id="idx-q-BathsMin" name="idx-q-BathsMin" type="text" class="dsidx-baths" />+</td>
+						<td><input id="idx-q-BathsMin" name="idx-q-BathsMin" type="text" class="dsidx-baths" placeholder="min bathrooms" /></td>
 					</tr>
 				</table>
-				<div class="dsidx-search-button">
-					<input type="submit" value="Search for properties" /><br /><br />
+				<div class="dsidx-search-button search-form">
+					<input type="submit" class="submit" value="Search for properties" /><br /><br />
 HTML;
 		if($options["HasSearchAgentPro"] == "yes" && $searchOptions["show_advanced"] == "yes"){
 			echo <<<HTML

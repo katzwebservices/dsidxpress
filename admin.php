@@ -116,7 +116,7 @@ HTML;
 		self::$HeaderLoaded = true;
 	}
 	static function DisplayAdminNotices() {
-		if (!current_user_can("manage_options"))
+		if (!current_user_can("manage_options") || (defined('ZPRESS_API') && ZPRESS_API != ''))
 			return;
 
 		$options = get_option(DSIDXPRESS_OPTION_NAME);

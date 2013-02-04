@@ -332,6 +332,7 @@ class dsSearchAgent_Client {
 				}
 			}
 			$apiParams["requester.AllowVisitorDetailView"] = $allow_details_view;
+			$apiParams["responseDirective.UseJuiceBoxSlideShow"] = "true";
 			
 			// if we have an auth cookie then record a property visit
 			if(@$_COOKIE['dsidx-visitor-auth']) {

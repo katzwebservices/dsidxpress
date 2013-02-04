@@ -1,6 +1,6 @@
 <?php
 class dsSearchAgent_SingleListingWidget extends WP_Widget {
-	public function __construct() {
+	public function dsSearchAgent_SingleListingWidget() {
 		$this->WP_Widget('dsidx-single-listing', 'IDX Single Listing', array(
 			'classname' => 'dsidx-widget-single-listing-wrap',
 			'description' => 'Show a single real estate listing'

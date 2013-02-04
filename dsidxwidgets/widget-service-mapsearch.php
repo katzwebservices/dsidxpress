@@ -16,7 +16,11 @@ class dsIDXWidgets_MapSearch extends WP_Widget {
         extract($instance);
         $options = get_option(DSIDXWIDGETS_OPTION_NAME);
         $state = htmlspecialchars($instance["state"]);
-        $city = htmlspecialchars($instance["city"]);
+		$city = str_replace(" \r\n ", ",", htmlspecialchars($instance["city"]));
+		$city = str_replace(" \r\n", ",", $city);
+		$city = str_replace("\r\n ", ",", $city);
+		$city = str_replace("\r\n", ",", $city);
+		
         $zip = htmlspecialchars($instance["zip"]);
         $priceMin = htmlspecialchars($instance["priceMin"]);
         $priceMax = htmlspecialchars($instance["priceMax"]);
@@ -239,8 +243,8 @@ HTML;
 				<input id="{$widthFieldId}" name="{$widthFieldName}" value="{$width}" class="widefat" type="text" />
 			</p>
             <p>
-				<label for="{$cityFieldId}">City</label>
-				<input id="{$cityFieldId}" name="{$cityFieldName}" value="{$city}" class="widefat" type="text" />
+				<label for="{$cityFieldId}">City (Press enter after each city)</label>
+				<textarea id="{$cityFieldId}" name="{$cityFieldName}" rows="4" class="widefat" type="text" >{$city}</textarea>
 			</p>
             <p>
 				<label for="{$stateFieldId}">State</label>

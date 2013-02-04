@@ -59,6 +59,7 @@ class dsSearchAgent_ClientAssist {
 		die();
 	}
 	static function ContactForm(){
+		global $z_site_type;
 		$referring_url = @$_SERVER['HTTP_REFERER'];
 		$post_vars = $_POST;
 		$post_vars["referringURL"] = $referring_url;
@@ -72,6 +73,7 @@ class dsSearchAgent_ClientAssist {
 		}
 		if (!isset($post_vars['phoneNumber'])) $post_vars['phoneNumber'] = '';
 		
+
 		if(defined('ZPRESS_API') && ZPRESS_API != ''){
 			if(SNS_ARN_CONTACT_REQUEST != ''){
 				$firstname = '';
@@ -127,6 +129,14 @@ class dsSearchAgent_ClientAssist {
 				echo $apiHttpResponse["body"];
 				die();
 			}
+		}
+		if (is_array($z_site_type) && in_array('PMW', $z_site_type)) {
+			$apiRequestParams = array();
+			$apiRequestParams['query.email'] = $post_vars['emailAddress'];
+			$apiRequestParams['query.name'] = $post_vars['firstName'] . ' ' . $post_vars['lastName'];
+			$apiRequestParams['query.phone'] = $post_vars['phoneNumber'];
+			$apiRequestParams['query.notes'] = $post_vars['comments'];
+			$apiHttpResponse = \zRentals_ApiRequest::call('leads/add', $apiRequestParams);
 		}
 	}
 	static function PrintListing(){
@@ -370,6 +380,15 @@ class dsSearchAgent_ClientAssist {
 		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData('AutoCompleteOmniBox', $apiParams, false, 0);
 		
 		header('Content-Type: application/json');
+		echo $apiHttpResponse['body'];
+		die();
+	}
+	static function GetPhotosXML() {
+		$post_vars = array_map("stripcslashes", $_GET);
+		$apiRequestParams = array();
+		$apiRequestParams['propertyid'] = $post_vars['pid'];
+		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData('Photos', $apiRequestParams, false, 0);
+		header('Content-type: text/xml');
 		echo $apiHttpResponse['body'];
 		die();
 	}
