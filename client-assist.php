@@ -59,7 +59,6 @@ class dsSearchAgent_ClientAssist {
 		die();
 	}
 	static function ContactForm(){
-		global $z_site_type;
 		$referring_url = @$_SERVER['HTTP_REFERER'];
 		$post_vars = $_POST;
 		$post_vars["referringURL"] = $referring_url;
@@ -129,14 +128,6 @@ class dsSearchAgent_ClientAssist {
 				echo $apiHttpResponse["body"];
 				die();
 			}
-		}
-		if (is_array($z_site_type) && in_array('PMW', $z_site_type)) {
-			$apiRequestParams = array();
-			$apiRequestParams['query.email'] = $post_vars['emailAddress'];
-			$apiRequestParams['query.name'] = $post_vars['firstName'] . ' ' . $post_vars['lastName'];
-			$apiRequestParams['query.phone'] = $post_vars['phoneNumber'];
-			$apiRequestParams['query.notes'] = $post_vars['comments'];
-			$apiHttpResponse = \zRentals_ApiRequest::call('leads/add', $apiRequestParams);
 		}
 	}
 	static function PrintListing(){
