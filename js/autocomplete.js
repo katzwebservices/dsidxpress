@@ -8,7 +8,7 @@ jQuery().ready(function($) {
 				var term = request.term;
 			
 				// since we no longer know what the correct search type is, revert to the default
-				$(this.element).attr('name', 'idx-q-Locations<0>');
+				$(this.element).attr('name', 'idx-q-Locations');
 			
 				// check if we've cached this autocomplete locally
 				if (term in cache) {
@@ -46,7 +46,7 @@ jQuery().ready(function($) {
 					} else if (ui.item.Type == 'Zip') {
 						$(this).attr('name', 'idx-q-ZipCodes<0>');
 					} else {
-						$(this).attr('name', 'idx-q-Locations<0>');
+						$(this).attr('name', 'idx-q-Locations');
 					}
 				
 					$(this).val(ui.item.Name);

@@ -13,7 +13,7 @@ class dsSearchAgent_Client {
 		"d" => "directive"
 	);
 	static $DebugAllowedFrom = array("127.0.0.1", "::1:", "10.10.10.10", "50.59.180.51", "50.59.180.50");
-	
+	static $meta_tag_data = null;
 	// this is a roundabout way to make sure that any other plugin / widget / etc that uses the WP_Query object doesn't get our IDX data
 	// in their query. since we don't actually get the query itself in the "the_posts" filter, we have to step around the issue by
 	// checking it BEFORE it gets to the the_posts filter. later, in the the_posts filter, we restore the previous state of things.
@@ -379,6 +379,8 @@ class dsSearchAgent_Client {
 		$title = self::ExtractValueFromApiData($apiData, "title");
 		$dateaddedgmt = self::ExtractValueFromApiData($apiData, "dateaddedgmt");
 		$description = self::ExtractValueFromApiData($apiData, "description");
+		$firstimage = self::ExtractValueFromApiData($apiData, "firstimage");
+		self::$meta_tag_data = array('firstimage' => $firstimage, 'title' => $title, 'description' => $description);
 		self::$CanonicalUri = self::ExtractValueFromApiData($apiData, "canonical");
 		self::$TriggeredAlternateUrlStructure = self::ExtractValueFromApiData($apiData, "alternate-urls");
 		if ($apiHttpResponse["response"]["code"] != "404")
@@ -415,6 +417,8 @@ class dsSearchAgent_Client {
 			add_action('wp_head', array($dsidxpress_seo, 'dsidxpress_head_action'));
 			add_filter('wp_title', array($dsidxpress_seo, 'dsidxpress_title_filter'));
 		}
+		if (!empty($firstimage))
+ 		 	add_action('wp_head', array( "dsSearchAgent_Client", 'ImageMetaLinkForSharing'));
 		
 		return $posts;
 	}
@@ -506,6 +510,23 @@ class dsSearchAgent_Client {
 		// let thesis handle the canonical
 		if (self::$CanonicalUri && !$thesis)
 			echo "<link rel=\"canonical\" href=\"" . self::GetPermalink() . "\" />\n";
+	}
+	static function ImageMetaLinkForSharing() {
+		$firstimage = self::$meta_tag_data['firstimage'];
+		$title = self::$meta_tag_data['title'];
+		$description = self::$meta_tag_data['description'];
+		if (!empty($firstimage)) {
+			echo "<meta property='og:image' content='" . $firstimage . "0-medium.jpg' />";
+		}
+		$blogUrl = get_home_url();
+		//Twitter Card
+		echo <<<HTML
+			<meta name="twitter:card" content="summary">
+		    <meta name="twitter:url" content="{$blogUrl}">
+		    <meta name="twitter:title" content="{$title}">
+		    <meta name="twitter:description" content="{$description}">
+		    <meta name="twitter:image" content="{$firstimage}0-medium.jpg">
+HTML;
 	}
 }
 ?>

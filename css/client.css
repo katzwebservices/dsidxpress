@@ -31,7 +31,8 @@ p.dsidx-error
 	width: 42%;
 }
 .dsidx-search-widget .dsidx-beds,
-.dsidx-search-widget .dsidx-baths
+.dsidx-search-widget .dsidx-baths,
+.dsidx-search-widget .dsidx-improvedsqft
 {
 	width: 94%;
 }
