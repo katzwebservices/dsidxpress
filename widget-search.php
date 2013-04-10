@@ -175,15 +175,17 @@ HTML;
 						</td>
 					</tr>
 HTML;
-		foreach ($defaultSearchPanels as $key => $value) {
-			if ($value->DomIdentifier == "search-input-home-size") {
-				echo <<<HTML
-					<tr>
-						<th><label for="idx-q-ImprovedSqFtMin">Size</label></th>
-						<td><input id="idx-q-ImprovedSqFtMin" name="idx-q-ImprovedSqFtMin" type="text" class="dsidx-improvedsqft" placeholder="min sqft" /></td>
-					</tr>
+		if(isset($defaultSearchPanels)){
+			foreach ($defaultSearchPanels as $key => $value) {
+				if ($value->DomIdentifier == "search-input-home-size") {
+					echo <<<HTML
+						<tr>
+							<th><label for="idx-q-ImprovedSqFtMin">Size</label></th>
+							<td><input id="idx-q-ImprovedSqFtMin" name="idx-q-ImprovedSqFtMin" type="text" class="dsidx-improvedsqft" placeholder="min sqft" /></td>
+						</tr>
 HTML;
-				break;
+					break;
+				}
 			}
 		}
 		echo <<<HTML

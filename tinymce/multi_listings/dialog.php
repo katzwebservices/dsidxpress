@@ -142,6 +142,7 @@ if (!defined('ZPRESS_API')) {
 						<select id="area-type">
 							<option value="city">City</option>
 							<option value="community">Community</option>
+							<option value="county">County</option>
 							<option value="tract">Tract</option>
 							<option value="zip">Zip</option>
 						</select>

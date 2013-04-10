@@ -32,7 +32,8 @@ p.dsidx-error
 }
 .dsidx-search-widget .dsidx-beds,
 .dsidx-search-widget .dsidx-baths,
-.dsidx-search-widget .dsidx-improvedsqft
+.dsidx-search-widget .dsidx-improvedsqft,
+.dsidx-search-widget .dsidx-mlsnumber
 {
 	width: 94%;
 }

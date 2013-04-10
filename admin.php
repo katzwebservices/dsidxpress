@@ -732,7 +732,82 @@ if (isset($diagnostics["error"])) {
 							<label for="dsidxpress-FirstName">Restrict Results to a State:</label>
 						</th>
 						<td>
-							<textarea class="linkInputTextArea" id="dsidxpress-RestrictResultsToState" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[RestrictResultsToState]"><?php echo ereg_replace(",", "\n", $account_options->RestrictResultsToState); ?></textarea><br />
+							<input type="hidden" class="linkInputTextArea" id="dsidxpress-RestrictResultsToState" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[RestrictResultsToState]" value="<?php echo ereg_replace(",", "\n", $account_options->RestrictResultsToState); ?>"></input>
+							<select size="4" style="width:140px;" multiple="yes" class="linkInputTextArea"  id="dsidxpress-states" name="dsidxpress-states">
+							<?php
+							
+							$states = array(
+								"None"=>'',
+								"Alabama"=>'AL',
+								"Alaska"=>'AK',  
+								"Arizona"=>'AZ',  
+								"Arkansas"=>'AR',  
+								"California"=>'CA',  
+								"Colorado"=>'CO',  
+								"Connecticut"=>'CT',  
+								"Delaware"=>'DE',  
+								"District of Columbia"=>'DC',  
+								"Florida"=>'FL',  
+								"Georgia"=>'GA',  
+								"Hawaii"=>'HI',  
+								"Idaho"=>'ID',  
+								"Illinois"=>'IL',  
+								"Indiana"=>'IN',  
+								"Iowa"=>'IA',  
+								"Kansas"=>'KS',  
+								"Kentucky"=>'KY',  
+								"Louisiana"=>'LA',  
+								"Maine"=>'ME',  
+								"Maryland"=>'MD',  
+								"Massachusetts"=>'MA',  
+								"Michigan"=>'MI',  
+								"Minnesota"=>'MN',  
+								"Mississippi"=>'MS',  
+								"Missouri"=>'MO',  
+								"Montana"=>'MT',
+								"Nebraska"=>'NE',
+								"Nevada"=>'NV',
+								"New Hampshire"=>'NH',
+								"New Jersey"=>'NJ',
+								"New Mexico"=>'NM',
+								"New York"=>'NY',
+								"North Carolina"=>'NC',
+								"North Dakota"=>'ND',
+								"Ohio"=>'OH',  
+								"Oklahoma"=>'OK',  
+								"Oregon"=>'OR',  
+								"Pennsylvania"=>'PA',  
+								"Rhode Island"=>'RI',  
+								"South Carolina"=>'SC',  
+								"South Dakota"=>'SD',
+								"Tennessee"=>'TN',  
+								"Texas"=>'TX',  
+								"Utah"=>'UT',  
+								"Vermont"=>'VT',  
+								"Virginia"=>'VA',  
+								"Washington"=>'WA',  
+								"West Virginia"=>'WV',  
+								"Wisconsin"=>'WI',  
+								"Wyoming"=>'WY');
+							
+							foreach ($states as $key => $value) {
+								if(isset($account_options->RestrictResultsToState)){//already a value, ignore defaults
+									if(strstr(ereg_replace(",", "\n", $account_options->RestrictResultsToState), (string)$value)> -1){
+										$opt_checked = "selected='selected'";
+									}
+									else{
+										$opt_checked = "";
+									}
+									if($value == "" && $account_options->RestrictResultsToState == ""){
+										$opt_checked = "selected='selected'";
+									}
+								}
+								echo '<option class="dsidxpress-states-filter" '.$opt_checked.' value="' . $value . '">' . $key . '</option>';
+							}
+							?>
+							</select><br/>
+						
+
 							<span class="description">If you need/want to restrict dsIDXpress to a specific state, put the abbreviation in this field. Separate a list of values by hitting the 'Enter' key after each entry. <a href="http://en.wikipedia.org/wiki/List_of_U.S._state_abbreviations" target="_blank">List of U.S. State Abbreviations</a></span>
 						</td>
 					</tr>

@@ -98,8 +98,9 @@ class dsSearchAgent_ClientAssist {
 					'FirstName' => $firstname,
 					'LastName' => $lastname,
 					'Message' => 
-						($post_vars['scheduleYesNo'] == 'on' ? "Schedule showing on {$post_vars['scheduleDateDay']} / {$post_vars['scheduleDateMonth']}\r\n" : '') . 
-						@$post_vars['comments'],
+						(!empty($post_vars['scheduleYesNo']) && $post_vars['scheduleYesNo'] == 'on' ? "Schedule showing on {$post_vars['scheduleDateDay']} / {$post_vars['scheduleDateMonth']} " : "Schedule showing ") . 
+						@"for ".(!empty($post_vars['propertyStreetAddress']) ? $post_vars['propertyStreetAddress']:"")." ".(!empty($post_vars['propertyCity']) ? $post_vars['propertyCity'] : "").", ".(!empty($post_vars['propertyState']) ? $post_vars['propertyState'] : "")." ".(!empty($post_vars['propertyZip']) ? $post_vars['propertyZip'] : "").
+						@". ".$post_vars['comments'],
 					'Phone' => @$post_vars['phoneNumber'],
 					'ListingUrl' => @$post_vars['referringURL'],
 					//'Subject' => "",
