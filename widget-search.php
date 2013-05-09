@@ -20,7 +20,7 @@ class dsSearchAgent_SearchWidget extends WP_Widget {
 			return;
 		
 
-		$pluginUrl = get_home_url() . '/wp-content/plugins/dsidxpress/';
+		$pluginUrl = plugins_url() . '/dsidxpress/';
 
 		wp_enqueue_script('dsidxpress_widget_search_view', $pluginUrl . 'js/widget-client.js', array('jquery'), DSIDXPRESS_PLUGIN_VERSION, true);
 

@@ -67,11 +67,11 @@ class dsSearchAgent_Shortcodes {
 			"maxdom"		=> "",
 			"minyear"		=> "",
 			"maxyear"		=> "",
-			"impsqftmin"	=> "",
-			"impsqftmax"	=> "",
-			"lotsqftmin"	=> "",
-			"lotsqftmax"	=> "",
-			"statuses" => "",
+			"minimpsqft"	=> "",
+			"maximpsqft"	=> "",
+			"minlotsqft"	=> "",
+			"maxlotsqft"	=> "",
+			"statuses"		=> "",
 			"propertytypes"	=> "",
 			"linkid"		=> "",
 			"count"			=> "5",
@@ -79,6 +79,9 @@ class dsSearchAgent_Shortcodes {
 			"orderdir"		=> "DESC",
 			"showlargerphotos"	=> "false"
 		), $atts);
+
+		print_r($atts);
+
 		$apiRequestParams = array();
 		$apiRequestParams["responseDirective.ViewNameSuffix"] = "shortcode";
 		$apiRequestParams["responseDirective.IncludeMetadata"] = "true";
@@ -98,10 +101,10 @@ class dsSearchAgent_Shortcodes {
 		$apiRequestParams["query.DaysOnMarketMax"] = $atts["maxdom"];
 		$apiRequestParams["query.YearBuiltMin"] = $atts["minyear"];
 		$apiRequestParams["query.YearBuiltMax"] = $atts["maxyear"];
-		$apiRequestParams["query.ImprovedSqFtMin"] = $atts["impsqftmin"];
-		$apiRequestParams["query.ImprovedSqFtMax"] = $atts["impsqftmax"];
-		$apiRequestParams["query.LotSqFtMin"] = $atts["lotsqftmin"];
-		$apiRequestParams["query.LotSqFtMax"] = $atts["lotsqftmax"];
+		$apiRequestParams["query.ImprovedSqFtMin"] = $atts["minimpsqft"];
+		$apiRequestParams["query.ImprovedSqFtMax"] = $atts["maximpsqft"];
+		$apiRequestParams["query.LotSqFtMin"] = $atts["minlotsqft"];
+		$apiRequestParams["query.LotSqFtMax"] = $atts["maxlotsqft"];
 		if(self::TranslateStatuses($atts["statuses"]))
 			$apiRequestParams["query.ListingStatuses"] = self::TranslateStatuses($atts["statuses"]);
 		else

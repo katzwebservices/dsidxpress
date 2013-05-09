@@ -17,7 +17,7 @@ class dsidxpress_autocomplete {
 		
 		if ($needs_plugin_url) {
 			$home_url   = get_home_url();
-			$plugin_url = get_home_url() . '/wp-content/plugins/dsidxpress/';
+			$plugin_url = plugins_url() . '/dsidxpress/';
 			
 			echo <<<HTML
 				<script type="text/javascript">

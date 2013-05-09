@@ -39,7 +39,7 @@ class dsSearchAgent_ClientAssist {
 		$uriSuffix = @$_GET['uriSuffix'];
 		$uriBase = @$_GET['uriBase'];
 
-		$slideshow_xml_url = get_home_url() . '/wp-content/plugins/dsidxpress/' . "client-assist.php?action=SlideshowXml&count=$count&uriSuffix=$uriSuffix&uriBase=$uriBase";
+		$slideshow_xml_url = plugins_url() . '/dsidxpress/' . "client-assist.php?action=SlideshowXml&count=$count&uriSuffix=$uriSuffix&uriBase=$uriBase";
 		$param_xml = file_get_contents('assets/slideshowpro-generic-params.xml');
 
 		$param_xml = str_replace("{xmlFilePath}", htmlspecialchars($slideshow_xml_url), $param_xml);
@@ -57,6 +57,29 @@ class dsSearchAgent_ClientAssist {
 
 		echo $apiHttpResponse["body"];
 		die();
+	}
+	static function LoginRecovery(){
+		global $curent_site, $current_blog, $blog_id;
+		
+		$referring_url = $_SERVER['HTTP_REFERER'];
+		$post_vars = $_POST;
+		$post_vars["referringURL"] = $referring_url;
+		
+		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("LoginRecovery", $post_vars, false, 0);
+		
+		echo $apiHttpResponse["body"];
+		die();
+	}
+	static function ResetPassword()
+	{
+		$referring_url = $_SERVER['HTTP_REFERER'];
+		$post_vars = $_POST;
+		$post_vars["referringURL"] = $referring_url;
+
+		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("ResetPassword", $post_vars, false, 0);
+		
+		echo $apiHttpResponse["body"];
+		die();	
 	}
 	static function ContactForm(){
 		$referring_url = @$_SERVER['HTTP_REFERER'];

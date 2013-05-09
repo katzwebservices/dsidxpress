@@ -444,9 +444,9 @@ HTML;
 						<label for="dsidxpress-AgentID">Agent ID:</label>
 					</th>
 					<td>
-						<input type="hidden" id="dsidxpress-API-AgentID" maxlength="35" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[AgentID]" value="<?php echo (!empty($options['AgentID']) ? $options['AgentID'] : $account_options->AgentID); ?>" /><br />
 						<input type="text" id="dsidxpress-AgentID" maxlength="35" name="<?php echo DSIDXPRESS_OPTION_NAME; ?>[AgentID]" value="<?php echo (!empty($options['AgentID']) ? $options['AgentID'] : $account_options->AgentID); ?>" /><br />
-						<span class="description"></span>
+						<span class="description">This is the Agent ID as assigned to you by the MLS you are using to provide data to this site.</span>
+						<input type="hidden" id="dsidxpress-API-AgentID" maxlength="35" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[AgentID]" value="<?php echo (!empty($options['AgentID']) ? $options['AgentID'] : $account_options->AgentID); ?>" /><br />
 					</td>
 				</tr>
 				<tr>
@@ -454,9 +454,9 @@ HTML;
 						<label for="dsidxpress-OfficeID">Office ID:</label>
 					</th>
 					<td>
-						<input type="hidden" id="dsidxpress-API-OfficeID" maxlength="35" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[OfficeID]" value="<?php echo (!empty($options['OfficeID']) ? $options['OfficeID'] : $account_options->OfficeID); ?>" /><br />
 						<input type="text" id="dsidxpress-OfficeID" maxlength="35" name="<?php echo DSIDXPRESS_OPTION_NAME; ?>[OfficeID]" value="<?php echo (!empty($options['OfficeID']) ? $options['OfficeID'] : $account_options->OfficeID); ?>" /><br />
-						<span class="description"></span>
+						<span class="description">This is the Office ID as assigned to your office by the MLS you are using to provide data to this site.</span>
+						<input type="hidden" id="dsidxpress-API-OfficeID" maxlength="35" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[OfficeID]" value="<?php echo (!empty($options['OfficeID']) ? $options['OfficeID'] : $account_options->OfficeID); ?>" /><br />
 					</td>
 				</tr>
 			</table>
@@ -705,7 +705,7 @@ if (isset($diagnostics["error"])) {
 							<label for="dsidxpress-FirstName">Restrict Results to a Zipcode:</label>
 						</th>
 						<td>
-							<textarea class="linkInputTextArea" id="dsidxpress-RestrictResultsToZipcode" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[RestrictResultsToZipcode]"><?php echo ereg_replace(",", "\n", $account_options->RestrictResultsToZipcode); ?></textarea><br />
+							<textarea class="linkInputTextArea" id="dsidxpress-RestrictResultsToZipcode" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[RestrictResultsToZipcode]"><?php echo preg_replace("/,/", "\n", $account_options->RestrictResultsToZipcode); ?></textarea><br />
 							<span class="description">If you need/want to restrict dsIDXpress to a specific zipcode, put the zipcode in this field. Separate a list of values by hitting the 'Enter' key after each entry.</span>
 						</td>
 					</tr>
@@ -714,7 +714,7 @@ if (isset($diagnostics["error"])) {
 							<label for="dsidxpress-FirstName">Restrict Results to a City:</label>
 						</th>
 						<td>
-							<textarea class="linkInputTextArea" id="dsidxpress-RestrictResultsToCity" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[RestrictResultsToCity]"><?php echo ereg_replace(",", "\n", $account_options->RestrictResultsToCity); ?></textarea><br />
+							<textarea class="linkInputTextArea" id="dsidxpress-RestrictResultsToCity" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[RestrictResultsToCity]"><?php echo preg_replace('/,/', "\n", $account_options->RestrictResultsToCity); ?></textarea><br />
 							<span class="description">If you need/want to restrict dsIDXpress to a specific city, put the name in this field. Separate a list of values by hitting the 'Enter' key after each entry. </span>
 						</td>
 					</tr>
@@ -723,7 +723,7 @@ if (isset($diagnostics["error"])) {
 							<label for="dsidxpress-FirstName">Restrict Results to a County:</label>
 						</th>
 						<td>
-							<textarea class="linkInputTextArea" id="dsidxpress-RestrictResultsToCounty" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[RestrictResultsToCounty]"><?php echo ereg_replace(",", "\n", $account_options->RestrictResultsToCounty); ?></textarea><br />
+							<textarea class="linkInputTextArea" id="dsidxpress-RestrictResultsToCounty" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[RestrictResultsToCounty]"><?php echo preg_replace("/,/", "\n", $account_options->RestrictResultsToCounty); ?></textarea><br />
 							<span class="description">If you need/want to restrict dsIDXpress to a specific county, put the name in this field. Separate a list of values by hitting the 'Enter' key after each entry. </span>
 						</td>
 					</tr>
@@ -732,7 +732,7 @@ if (isset($diagnostics["error"])) {
 							<label for="dsidxpress-FirstName">Restrict Results to a State:</label>
 						</th>
 						<td>
-							<input type="hidden" class="linkInputTextArea" id="dsidxpress-RestrictResultsToState" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[RestrictResultsToState]" value="<?php echo ereg_replace(",", "\n", $account_options->RestrictResultsToState); ?>"></input>
+							<input type="hidden" class="linkInputTextArea" id="dsidxpress-RestrictResultsToState" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[RestrictResultsToState]" value="<?php echo preg_replace("/,/", "\n", $account_options->RestrictResultsToState); ?>"></input>
 							<select size="4" style="width:140px;" multiple="yes" class="linkInputTextArea"  id="dsidxpress-states" name="dsidxpress-states">
 							<?php
 							
@@ -792,7 +792,7 @@ if (isset($diagnostics["error"])) {
 							
 							foreach ($states as $key => $value) {
 								if(isset($account_options->RestrictResultsToState)){//already a value, ignore defaults
-									if(strstr(ereg_replace(",", "\n", $account_options->RestrictResultsToState), (string)$value)> -1){
+									if(strstr(preg_replace('/,/', "\n", $account_options->RestrictResultsToState), (string)$value)> -1){
 										$opt_checked = "selected='selected'";
 									}
 									else{
@@ -816,7 +816,7 @@ if (isset($diagnostics["error"])) {
 							<label for="dsidxpress-FirstName">Restrict Results to a Property Type:</label>
 						</th>
 						<td>
-							<input type="hidden" class="linkInputTextArea" id="dsidxpress-RestrictResultsToPropertyType" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[RestrictResultsToPropertyType]" value="<?php echo ereg_replace(",", "\n", $account_options->RestrictResultsToPropertyType); ?>"></input>
+							<input type="hidden" class="linkInputTextArea" id="dsidxpress-RestrictResultsToPropertyType" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[RestrictResultsToPropertyType]" value="<?php echo preg_replace("/,/", "\n", $account_options->RestrictResultsToPropertyType); ?>"></input>
 							<div id="dsidxpress-property-types" name="dsidxpress-property-types">
 								<?php
 									$property_types = json_decode($property_types["body"]);
@@ -827,7 +827,7 @@ if (isset($diagnostics["error"])) {
 										$id = $property_type->SearchSetupPropertyTypeID;
 										$opt_checked = "";
 										if(isset($account_options->RestrictResultsToPropertyType)){//already a value, ignore defaults
-											if(strstr(ereg_replace(",", "\n", $account_options->RestrictResultsToPropertyType), (string)$id)> -1){
+											if(strstr(preg_replace("/,/", "\n", $account_options->RestrictResultsToPropertyType), (string)$id)> -1){
 												$opt_checked = "checked";
 											}
 										}
@@ -1280,7 +1280,7 @@ if (isset($diagnostics["error"])) {
 			foreach ($options as $key => $value) {
 				if ($options_text != "") $options_text .= ",";
 				if ($key == 'RestrictResultsToZipcode' || $key == 'RestrictResultsToCity' || $key == 'RestrictResultsToCounty' || $key == 'RestrictResultsToState' || $key == 'RestrictResultsToPropertyType') {
-				$value = ereg_replace("\n", ",", $value);//replace these values with new commas in api db
+				$value = preg_replace("/\n/", ",", $value);//replace these values with new commas in api db
 				}
 				$options_text .= $key.'|'.urlencode($value);
 				unset($options[$key]);

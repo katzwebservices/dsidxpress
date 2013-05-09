@@ -116,7 +116,7 @@ class dsSearchAgent_ApiRequest {
 			}
 		}
 
-		$data = str_replace('{$pluginUrlPath}', get_home_url() . '/wp-content/plugins/dsidxpress/', $data);
+		$data = str_replace('{$pluginUrlPath}', plugins_url() . '/dsidxpress/', $data);
 		$data = str_replace('{$pluginVersion}', DSIDXPRESS_PLUGIN_VERSION, $data);
 		$data = str_replace('{$wordpressVersion}', $wp_version, $data);
 		$data = str_replace('{$wordpressBlogUrl}', $blog_url, $data);
