@@ -80,8 +80,6 @@ class dsSearchAgent_Shortcodes {
 			"showlargerphotos"	=> "false"
 		), $atts);
 
-		print_r($atts);
-
 		$apiRequestParams = array();
 		$apiRequestParams["responseDirective.ViewNameSuffix"] = "shortcode";
 		$apiRequestParams["responseDirective.IncludeMetadata"] = "true";
