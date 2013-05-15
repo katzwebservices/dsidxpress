@@ -54,6 +54,7 @@ class dsIDXWidgets_quicksearch extends WP_Widget {
         </script>
 HTML;
         echo $after_widget;
+        dsidx_footer::ensure_disclaimer_exists("search");
     }
     function update($new_instance, $old_instance) {
         $new_instance["quicksearchOptions"]["eDomain"] = $new_instance["eDomain"];

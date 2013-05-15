@@ -64,6 +64,8 @@ class dsSearchAgent_ClientAssist {
 		$referring_url = $_SERVER['HTTP_REFERER'];
 		$post_vars = $_POST;
 		$post_vars["referringURL"] = $referring_url;
+		$post_vars["domain"] = $current_blog->domain;
+		$post_vars["path"] = $current_blog->path;
 		
 		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("LoginRecovery", $post_vars, false, 0);
 		
@@ -408,5 +410,12 @@ class dsSearchAgent_ClientAssist {
 		die();
 	}
 }
-call_user_func(array('dsSearchAgent_ClientAssist',  $_REQUEST['action']));
+if(!empty($_REQUEST['action']))
+{
+	call_user_func(array('dsSearchAgent_ClientAssist',  $_REQUEST['action']));
+}
+else
+{
+	die;
+}
 ?>

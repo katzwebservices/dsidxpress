@@ -420,6 +420,9 @@ class dsSearchAgent_Client {
 		if (!empty($firstimage))
  		 	add_action('wp_head', array( "dsSearchAgent_Client", 'ImageMetaLinkForSharing'));
 		
+ 		 if ($action == "search")
+ 		 	dsidx_footer::ensure_disclaimer_exists("search");
+
 		return $posts;
 	}
 	static function Return404($header) { 

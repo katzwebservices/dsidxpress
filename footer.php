@@ -2,12 +2,14 @@
 
 class dsidx_footer {
 	static $disclaimer_queued = false;
+	static $viewName = null;
 
-	static function ensure_disclaimer_exists() {
+	static function ensure_disclaimer_exists($view = null) {
 		if (self::$disclaimer_queued)
 			return;
 
 		add_action("wp_footer", array("dsidx_footer", "insert_disclaimer"));
+		if (!empty($view)) self::$viewName = $view;
 		self::$disclaimer_queued = true;
 	}
 
@@ -20,8 +22,11 @@ class dsidx_footer {
 		   )
 			return;
 
+
 		$apiParams = array();
 		$apiParams["responseDirective.IncludeDsDisclaimer"] = (defined('ZPRESS_API') && ZPRESS_API != '') ? "false" : "true";
+		if (!empty(self::$viewName))
+			$apiParams["responseDirective.ViewName"] = self::$viewName;
 
 		$disclaimer = dsSearchAgent_ApiRequest::FetchData("Disclaimer", $apiParams);
 		echo $disclaimer["body"];

@@ -219,6 +219,7 @@ HTML;
 HTML;
 		
 		echo $after_widget;
+		dsidx_footer::ensure_disclaimer_exists("search");
 	}
 	function update($new_instance, $old_instance) {
 		$new_instance["title"] = strip_tags($new_instance["title"]);

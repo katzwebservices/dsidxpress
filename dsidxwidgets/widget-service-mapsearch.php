@@ -123,6 +123,7 @@ class dsIDXWidgets_MapSearch extends WP_Widget {
         </script>
 HTML;
         echo $after_widget;
+        dsidx_footer::ensure_disclaimer_exists("search");
     }
     function update($new_instance, $old_instance) {
         // we need to do this first-line awkwardness so that the title comes through in the sidebar display thing
