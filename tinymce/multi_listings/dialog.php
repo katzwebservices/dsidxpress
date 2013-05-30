@@ -49,6 +49,7 @@ if (!defined('ZPRESS_API')) {
 			uriBase: '<?php echo str_replace('tinymce/multi_listings/', '', plugin_dir_url(__FILE__)) . 'client-assist.php' ?>',
 			searchSetupID: <?php echo $options["SearchSetupID"] ?>
 		};
+		var tabsEnabled = false;
 	</script>
 	<script src="js/dialog.js?ver=<?php echo urlencode(DSIDXPRESS_PLUGIN_VERSION) ?>"></script>
 	<style type="text/css">
@@ -131,8 +132,8 @@ if (!defined('ZPRESS_API')) {
 			<li id="saved_links_tab"><span><a href="javascript:void(0);" onclick="dsidxMultiListings.changeTab('pre-saved-links')">Pre-saved Links</a></span></li>
 		</ul>
 	</div>
+	<script type="text/javascript"> tabsEnabled = true; </script>	
 	<?php endif ?>	
-
 	<div class="panel_wrapper">
 		<div id="custom_search_panel" class="panel current">
 			<table style="width: 100%;">

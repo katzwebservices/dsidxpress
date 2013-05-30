@@ -55,6 +55,7 @@ class dsSearchAgent_Shortcodes {
 		$atts = shortcode_atts(array(
 			"city"			=> "",
 			"community"		=> "",
+			"county"		=> "",
 			"tract"			=> "",
 			"zip"			=> "",
 			"minprice"		=> "",
@@ -87,6 +88,7 @@ class dsSearchAgent_Shortcodes {
 		$apiRequestParams["responseDirective.ShowLargerPhotos"] = $atts["showlargerphotos"];
 		$apiRequestParams["query.Cities"] = htmlspecialchars_decode($atts["city"]);
 		$apiRequestParams["query.Communities"] = htmlspecialchars_decode($atts["community"]);
+		$apiRequestParams["query.Counties"] = htmlspecialchars_decode($atts["county"]);
 		$apiRequestParams["query.TractIdentifiers"] = htmlspecialchars_decode($atts["tract"]);
 		$apiRequestParams["query.ZipCodes"] = $atts["zip"];
 		$apiRequestParams["query.PriceMin"] = $atts["minprice"];

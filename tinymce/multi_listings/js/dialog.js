@@ -21,7 +21,7 @@ var dsidxMultiListings = (function() {
 				if (linkId) {
 					$('#saved-link').val(linkId[1]);
 				} else {
-					area = /^[^\]]+ (city|community|tract|zip)=['"]([^'"]+)/.exec(nodeTextContent);
+					area = /^[^\]]+ (city|community|county|tract|zip)=['"]([^'"]+)/.exec(nodeTextContent);
 					minPrice = /^[^\]]+ minprice=['"]?(\d+)/.exec(nodeTextContent);
 					maxPrice = /^[^\]]+ maxprice=['"]?(\d+)/.exec(nodeTextContent);
 					minBeds = /^[^\]]+ minbeds=['"]?(\d+)/.exec(nodeTextContent);
@@ -40,7 +40,7 @@ var dsidxMultiListings = (function() {
 					checkedPropertyTypes = /^[^\]]+ propertytypes=['"]?([\d,]+)/.exec(nodeTextContent);
 					sortColumn = /^[^\]]+ orderby=['"]?([^'" ]+)/.exec(nodeTextContent);
 					sortDirection = /^[^\]]+ orderdir=['"]?([^'" ]+)/.exec(nodeTextContent);
-					if (area)
+					if (area) 
 						$('#area-type').val(area[1]);
 					if (minPrice)
 						$('#min-price').val(minPrice[1]);
@@ -91,7 +91,8 @@ var dsidxMultiListings = (function() {
 				if (showlargerphotos)
 					$('#larger-photos').attr("checked", "checked");
 				
-				this.changeTab(linkId ? 'pre-saved-links' : 'quick-search');
+				if (tabsEnabled) //error occurs when trying to switch tabs for zpress sites so check first
+					this.changeTab(linkId ? 'pre-saved-links' : 'quick-search');
 			}
 			
 			$('#area-type').change(this.loadAreasByType);

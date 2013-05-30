@@ -123,7 +123,7 @@ class dsSearchAgent_ClientAssist {
 					'FirstName' => $firstname,
 					'LastName' => $lastname,
 					'Message' => 
-						(!empty($post_vars['scheduleYesNo']) && $post_vars['scheduleYesNo'] == 'on' ? "Schedule showing on {$post_vars['scheduleDateDay']} / {$post_vars['scheduleDateMonth']} " : "Schedule showing ") . 
+						(!empty($post_vars['scheduleYesNo']) && $post_vars['scheduleYesNo'] == 'on' ? "Schedule showing on {$post_vars['scheduleDateDay']} / {$post_vars['scheduleDateMonth']} " : "Request info ") . 
 						@"for ".(!empty($post_vars['propertyStreetAddress']) ? $post_vars['propertyStreetAddress']:"")." ".(!empty($post_vars['propertyCity']) ? $post_vars['propertyCity'] : "").", ".(!empty($post_vars['propertyState']) ? $post_vars['propertyState'] : "")." ".(!empty($post_vars['propertyZip']) ? $post_vars['propertyZip'] : "").
 						@". ".$post_vars['comments'],
 					'Phone' => @$post_vars['phoneNumber'],
@@ -182,7 +182,7 @@ class dsSearchAgent_ClientAssist {
 	}
 	static function Login(){
 		$post_vars = $_POST;
-		
+
 		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("Login", $post_vars, false, 0);
 
 		$response = json_decode($apiHttpResponse["body"]);
@@ -193,7 +193,18 @@ class dsSearchAgent_ClientAssist {
 			setcookie('dsidx-visitor-public-id', $response->Visitor->PublicID, $remember, '/');
 			setcookie('dsidx-visitor-auth', $response->Visitor->Auth, $remember, '/');
 		}
-		
+
+		header('Content-Type: application/json');
+		echo $apiHttpResponse["body"];
+		die();
+	}
+	static function GetVisitor() {
+		$post_vars = $_POST;
+
+		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("GetVisitor", $post_vars, false, 0);
+
+		$response = json_decode($apiHttpResponse["body"]);
+
 		header('Content-Type: application/json');
 		echo $apiHttpResponse["body"];
 		die();
@@ -252,7 +263,7 @@ class dsSearchAgent_ClientAssist {
 		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("UpdatePersonalInfo", $post_vars, false, 0);
 
 		$response = json_decode($apiHttpResponse["body"]);
-				
+		
 		header('Content-Type: application/json');
 		echo $apiHttpResponse["body"];
 		die();
