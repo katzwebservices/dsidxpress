@@ -189,7 +189,7 @@ HTML;
         }
 
         echo <<<HTML
-            <input type='hidden' id='{$eDomainFieldId}' value='{$eDomain}' name="{$eDomainFieldName}" />
+			<input type='hidden' id='ds_widgets_area_stats_domain' value='{$eDomain}' name="ds_widgets_area_stats_domain" />
         	<p>
 				<label for="{$titleFieldId}">Title</label>
 				<input id="{$titleFieldId}" name="{$titleFieldName}" value="{$title}" class="widefat" type="text" />
@@ -263,13 +263,13 @@ HTML;
 			</p>
             <script>
                 jQuery(function(){
-                    var a = document.getElementById('{$eDomainFieldId}');
+                    var a = document.getElementById('ds_widgets_area_stats_domain');
                     if(a.value == ''){
                         zWidgetsAdmin.fetchEncryptedValue(window.location.hostname, 'domain', a, '{$apiStub}');
                     }
                 })
                 zWidgets_Area_Listener = function (event){
-                    zWidgetsAdmin.checkForAreaData_(event, '$randString', document.getElementById('{$eDomainFieldId}').value, '$apiStub', {$aid}, {$ssid} )
+                    zWidgetsAdmin.checkForAreaData_(event, '$randString', document.getElementById('ds_widgets_area_stats_domain').value, '$apiStub', {$aid}, {$ssid} )
                 };
             </script>
 HTML;

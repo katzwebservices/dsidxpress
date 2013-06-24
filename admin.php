@@ -277,6 +277,15 @@ HTML;
 						<?php endif ?>
 					</td>
 				</tr>
+				<tr>
+					<th>
+						<label for="dsidxpress-ResultsMapDefaultState">Property Details Image Display:</label>
+					</th>
+					<td>
+						<input type="radio" id="dsidxpress-ImageDisplay-Slideshow" name="<?php echo DSIDXPRESS_OPTION_NAME; ?>[ImageDisplay]" value="slideshow" <?php echo @$options["ImageDisplay"] == "slideshow" || !isset($options["ImageDisplay"]) ? "checked=\"checked\"" : "" ?>/> <label for="dsidxpress-ImageDisplay-Slideshow">Rotating Slideshow</label><br />
+						<input type="radio" id="dsidxpress-ImageDisplay-Thumbnail" name="<?php echo DSIDXPRESS_OPTION_NAME; ?>[ImageDisplay]" value="thumbnail" <?php echo @$options["ImageDisplay"] == "thumbnail" ? "checked=\"checked\"" : "" ?> /> <label for="dsidxpress-ImageDisplay-Thumbnail">Thumbnail Display</label>
+					</td>
+				</tr>
 			</table>
 						<?php if (defined('ZPRESS_API') || isset($options["dsIDXPressPackage"]) && $options["dsIDXPressPackage"] == "pro"): ?>
 			<h4>Forced Registration Settings</h4>
@@ -961,8 +970,11 @@ if (isset($diagnostics["error"])) {
 			<form method="post" action="options.php">
 			<?php settings_fields("dsidxpress_xml_sitemap"); ?>
 			<h4>XML Sitemaps Locations</h4>
-			<?php if ( in_array('google-sitemap-generator/sitemap.php', get_option('active_plugins')) || class_exists('zpress\admin\Theme')) {?>
+		<?php if ( in_array('google-sitemap-generator/sitemap.php', get_option('active_plugins')) || in_array('bwp-google-xml-sitemaps/bwp-simple-gxs.php', get_option('active_plugins')) || class_exists('zpress\admin\Theme')) {?>
 			<span class="description">Add the Locations (City, Community, Tract, or Zip) to your XML Sitemap by adding them via the dialogs below.</span>
+			<?php if (in_array('bwp-google-xml-sitemaps/bwp-simple-gxs.php', get_option('active_plugins'))): ?>
+				<p><span class="description">REQUIRED: In the BWP GXS Sitemap Generator settings page, ensure that the option to include external pages is checked</span></p>
+			<?php endif; ?>
 			<div class="dsidxpress-SitemapLocations stuffbox">
 				<script type="text/javascript">jQuery(function() { xmlsitemap_page = true; dsIDXpressOptions.UrlBase = '<?php echo $urlBase; ?>'; dsIDXpressOptions.OptionPrefix = '<?php echo DSIDXPRESS_OPTION_NAME; ?>';});</script>
 				<h3><span class="hndle">Locations for Sitemap</span></h3>
@@ -1063,9 +1075,12 @@ if (isset($diagnostics["error"])) {
 			</p>
 			</form>
 		</div>
-							<?php } else { ?>
-			<span class="description">To enable this functionality, install and activate this plugin: <a class="thickbox onclick" title="Google XML Sitemaps" href="<?php echo admin_url('plugin-install.php?tab=plugin-information&plugin=google-sitemap-generator&TB_iframe=true&width=640')?>" target="_blank">Google XML Sitemaps</a></span>
-			<?php }
+		<?php } else { ?>
+			<span class="description">To enable this functionality, install and activate one of these plugins: <br />
+				<a class="thickbox onclick" title="Google XML Sitemaps" href="<?php echo admin_url('plugin-install.php?tab=plugin-information&plugin=google-sitemap-generator&TB_iframe=true&width=640')?>" target="_blank">Google XML Sitemaps</a><br />
+				<a class="thickbox onclick" title="BWP Google XML Sitemaps" href="<?php echo admin_url('plugin-install.php?tab=plugin-information&plugin=bwp-google-xml-sitemaps&TB_iframe=true&width=640')?>" target="_blank">BWP Google XML Sitemaps</a> (for Multi-Site wordpress installs)
+			</span>
+		<?php }
 	}
 
 	static function DetailsOptions() {

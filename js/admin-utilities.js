@@ -571,18 +571,32 @@ dsIdxLinkBuilder = {
 				}
 			]
         },
-        schools: {
-            name: 'Schools',
-            fields: [
+		schools: {
+			name: 'Schools/Type',
+			fields: [
 				{
-				    id: 'idx-q-Schools__DSIDXINDEX__-Name',
-				    suffix: '-Name',
-				    type: 'string',
-				    mode: 'multi',
-				    hint: 'One per line'
+					id: 'idx-q-Schools__DSIDXINDEX__-Name',
+					suffix: '-Name',
+					type: 'string',
+					mode: 'multi',
+					hint: 'One per line'
+				},
+				{
+					id: 'idx-q-Schools__DSIDXINDEX__-Type',
+					type: 'lookup',
+					mode: 'lookup',
+					hint: '-1',
+					options: {
+						'Elementary School': 'Elementary School',
+						'Grade School': 'Grade School',
+						'High School': 'High School',
+						'Jr. High School': 'Jr. High School',
+						'Middle School': 'Middle School',
+						'School District': 'School District'
+					}
 				}
 			]
-        },
+		},
         listing_agent_id: {
             name: 'Listing Agent IDs',
             fields: [

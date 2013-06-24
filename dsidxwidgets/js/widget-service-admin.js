@@ -19,15 +19,15 @@
                 if (curID) {
                     if (curID.indexOf('tract') > -1 && curNodes[i].childNodes[ii].className == 'widefat') {
                         tractControlValue = curNodes[i].childNodes[ii].value;
-                        tractControlValue = tractControlValue.replace(' ', '+');
+                        tractControlValue = tractControlValue.split(' ').join('+');
                     }
                     if (curID.indexOf('community') > -1 && curNodes[i].childNodes[ii].className == 'widefat') {
                         communityControlValue = curNodes[i].childNodes[ii].value;
-                        communityControlValue = communityControlValue.replace(' ', '+');
+                        communityControlValue = communityControlValue.split(' ').join('+');
                     }
                     if (curID.indexOf('city') > -1 && curNodes[i].childNodes[ii].className == 'widefat') {
                         cityControlValue = curNodes[i].childNodes[ii].value;
-                        cityControlValue = cityControlValue.replace(' ', '+');
+                        cityControlValue = cityControlValue.split(' ').join('+');
                     }
                     if (curID.indexOf('state') > -1 && curNodes[i].childNodes[ii].className == 'widefat') {
                         stateControlValue = curNodes[i].childNodes[ii].value;

@@ -91,6 +91,7 @@ class dsSearchAgent_ListingsWidget extends WP_Widget {
 		return $new_instance;
 	}
 	function form($instance) {
+		$options = get_option(DSIDXPRESS_OPTION_NAME);
 		$instance = wp_parse_args($instance, array(
 			"title"				=> "Latest Real Estate",
 			"listingsToShow"	=> "25",
@@ -123,6 +124,15 @@ class dsSearchAgent_ListingsWidget extends WP_Widget {
 		$availableLinks = json_decode($availableLinks["body"]);
 		$pluginUrl = DSIDXPRESS_PLUGIN_URL;
 
+		$agentListingsNote = null;
+		$officeListingsNote = null;
+		if ($options['AgentID'] == null) {
+			$agentListingsNote = "There are no listings to show with your current settings.  Please make sure you have provided your Agent ID on the IDX > General page of your site dashboard, or change this widget's settings to show other listings.";
+		}
+		if ($options['OfficeID'] == null) {
+			$officeListingsNote = "There are no listings to show with your current settings.  Please make sure you have provided your Office ID on the IDX > General page of your site dashboard, or change this widget's settings to show other listings.";
+		}
+
 		echo <<<HTML
 			<p>
 				<label for="{$titleFieldId}">Widget title</label>
@@ -137,7 +147,10 @@ class dsSearchAgent_ListingsWidget extends WP_Widget {
 				<label for="{$baseFieldId}[defaultDisplay-listed]">Show in list by default</label>
 				<br />
 				<input type="radio" name="{$baseFieldName}[defaultDisplay]" id="{$baseFieldId}[defaultDisplay-slideshow]" value="slideshow" {$checkedDefaultDisplay[slideshow]}/>
-				<label for="{$baseFieldId}[defaultDisplay-slideshow]">Show details by default</label>
+				<label for="{$baseFieldId}[defaultDisplay-slideshow]">Show slideshow details by default</label>
+				<br />
+				<input type="radio" name="{$baseFieldName}[defaultDisplay]" id="{$baseFieldId}[defaultDisplay-expanded]" value="expanded" onclick="document.getElementById('{$baseFieldId}[listingsToShow]').value = 4;" {$checkedDefaultDisplay[expanded]}/>
+				<label for="{$baseFieldId}[defaultDisplay-expanded]">Show expanded details by default</label>
 				<br />
 				<input type="radio" name="{$baseFieldName}[defaultDisplay]" id="{$baseFieldId}[defaultDisplay-map]" value="map" {$checkedDefaultDisplay[map]}/>
 				<label for="{$baseFieldId}[defaultDisplay-map]">Show on map by default</label>
@@ -190,15 +203,21 @@ class dsSearchAgent_ListingsWidget extends WP_Widget {
 					<th colspan="2"><p> - OR - </p></th>
 				</tr>
 				<tr>
-					<td><p><input type="radio" name="{$baseFieldName}[querySource]" id="{$baseFieldId}[querySource-agentlistings]" value="agentlistings" {$checkedQuerySource[agentlistings]}/></p></td>
-					<td><p><label for="{$baseFieldId}[querySource-agentlistings]">My own listings (via agent ID, newest listings first)</label></p></td>
+					<td valign="top"><p><input type="radio" name="{$baseFieldName}[querySource]" id="{$baseFieldId}[querySource-agentlistings]" value="agentlistings" {$checkedQuerySource[agentlistings]}/></p></td>
+					<td>
+						<p><label for="{$baseFieldId}[querySource-agentlistings]">My own listings (via agent ID, newest listings first)</label></p>
+						<p><i>{$agentListingsNote}</i></p>
+					</td>
 				</tr>
 				<tr>
 					<th colspan="2"><p> - OR - </p></th>
 				</tr>
 				<tr>
-					<td><p><input type="radio" name="{$baseFieldName}[querySource]" id="{$baseFieldId}[querySource-officelistings]" value="officelistings" {$checkedQuerySource[officelistings]}/></p></td>
-					<td><p><label for="{$baseFieldId}[querySource-officelistings]">My office's listings (via office ID, newest listings first)</label></p></td>
+					<td valign="top"><p><input type="radio" name="{$baseFieldName}[querySource]" id="{$baseFieldId}[querySource-officelistings]" value="officelistings" {$checkedQuerySource[officelistings]}/></p></td>
+					<td>
+						<p><label for="{$baseFieldId}[querySource-officelistings]">My office's listings (via office ID, newest listings first)</label></p>
+						<p><i>{$officeListingsNote}</i></p>
+					</td>
 				</tr>
 				<tr>
 					<th colspan="2"><p> - OR - </p></th>

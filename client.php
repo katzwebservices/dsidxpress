@@ -168,7 +168,7 @@ class dsSearchAgent_Client {
 		$wp_query->is_page = 1;
 		$wp_query->is_home = null;
 		$wp_query->is_singular = 1;
-		
+
 		if($action == "framed")
 			return self::FrameAction($action, $get);
 		else
@@ -263,7 +263,7 @@ class dsSearchAgent_Client {
 	}
 	static function ApiAction($action, $get) {
 		global $wp_query;
-		
+
 		$options = get_option(DSIDXPRESS_OPTION_NAME);
 		$post_id = time();
 
@@ -331,8 +331,15 @@ class dsSearchAgent_Client {
 					$allow_details_view = 0;
 				}
 			}
+
+			$useJuiceBox = 'true';
+
+			if (isset($options['ImageDisplay']))
+				$useJuiceBox = $options['ImageDisplay'] == "slideshow" ? 'true' : 'false';
+
+			// echo $useJuiceBox;
 			$apiParams["requester.AllowVisitorDetailView"] = $allow_details_view;
-			$apiParams["responseDirective.UseJuiceBoxSlideShow"] = "true";
+			$apiParams["responseDirective.UseJuiceBoxSlideShow"] = $useJuiceBox;
 			
 			// if we have an auth cookie then record a property visit
 			if(@$_COOKIE['dsidx-visitor-auth']) {
