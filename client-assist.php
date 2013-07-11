@@ -228,7 +228,7 @@ class dsSearchAgent_ClientAssist {
 					'FirstName' => $post_vars['newVisitor.FirstName'],
 					'LastName' => $post_vars['newVisitor.LastName'],
 					'Message' => 'Registered new IDX account',
-					//'Phone' => '',
+					'Phone' => $post_vars['newVisitor.PhoneNumber'],
 					//'Subject' => '',
 					'Zuid' => get_option('zuid'),
 					'ListingUrl' => @$post_vars['newVisitor.ListingUrl'],

@@ -262,6 +262,8 @@ HTML;
 							<option value="LastUpdated|DESC">Last updated, newest first</option>
 							<option value="Price|ASC">Price, lowest first</option>
 							<option value="Price|DESC">Price, highest first</option>
+							<option value="SalePrice|ASC">Sale Price, lowest first</option>
+							<option value="SalePrice|DESC">Sale Price, highest first</option>
 							<option value="ImprovedSqFt|DESC">Home size, largest first</option>
 							<option value="LotSqFt|DESC">Lot size, largest first</option>
 							<option value="WalkScore|DESC">Walk Score&trade;, highest first</option>

@@ -61,13 +61,13 @@ class dsSearchAgent_ListingsWidget extends WP_Widget {
 				}
 			}
 		} else if ($querySource == "agentlistings") {
-			$apiRequestParams["responseDirective.OnlyAgentsListings"] = "true";
 			$apiRequestParams["directive.SortOrders[0].Column"] = "DateAdded";
 			$apiRequestParams["directive.SortOrders[0].Direction"] = "DESC";
+			if (isset($options['AgentID']) && is_numeric($options['AgentID'])) $apiRequestParams["query.ListingAgentID"] = $options['AgentID'];
 		} else if ($querySource == "officelistings") {
-			$apiRequestParams["responseDirective.OnlyOfficesListings"] = "true";
 			$apiRequestParams["directive.SortOrders[0].Column"] = "DateAdded";
 			$apiRequestParams["directive.SortOrders[0].Direction"] = "DESC";
+			if (isset($options['OfficeID']) && is_numeric($options['OfficeID'])) $apiRequestParams["query.ListingOfficeID"] = $options['OfficeID'];
 		}
 		
 		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("Results", $apiRequestParams);

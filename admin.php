@@ -79,6 +79,7 @@ class dsSearchAgent_Admin {
 		register_setting("dsidxpress_options", DSIDXPRESS_OPTION_NAME, array("dsSearchAgent_Admin", "SanitizeOptions"));
 		register_setting("dsidxpress_options", DSIDXPRESS_API_OPTIONS_NAME, array("dsSearchAgent_Admin", "SanitizeApiOptions"));
 		register_setting("dsidxpress_api_options", DSIDXPRESS_API_OPTIONS_NAME, array("dsSearchAgent_Admin", "SanitizeApiOptions"));
+		register_setting("dsidxpress_api_options", DSIDXPRESS_OPTION_NAME, array("dsSearchAgent_Admin", "SanitizeOptions"));
 		register_setting("dsidxpress_xml_sitemap", DSIDXPRESS_OPTION_NAME, array("dsSearchAgent_Admin", "SanitizeOptions"));
 	}
 	static function Enqueue($hook) {
@@ -444,7 +445,6 @@ HTML;
 				</tr>
 			</table>
 			<?php endif; ?>
-			<?php if(defined('ZPRESS_API') && ZPRESS_API != '') : ?>
 			<h4>My Listings</h4>
 			<span class="description">When filled in, these settings will make pages for "My Listings" and "My Office Listings" available in your navigation menus page list.</span>
 			<table class="form-table">
@@ -469,7 +469,6 @@ HTML;
 					</td>
 				</tr>
 			</table>
-			<?php endif; ?>
 			<?php if((!defined('ZPRESS_API') || ZPRESS_API == '') && isset($account_options->EnableMemcacheInDsIdxPress) && strtolower($account_options->EnableMemcacheInDsIdxPress) == "true") {?>
 			<h4>Memcache Options</h4>
 			<?php if(!class_exists('Memcache') && !class_exists('Memcached')) {?>
@@ -970,9 +969,9 @@ if (isset($diagnostics["error"])) {
 			<form method="post" action="options.php">
 			<?php settings_fields("dsidxpress_xml_sitemap"); ?>
 			<h4>XML Sitemaps Locations</h4>
-		<?php if ( in_array('google-sitemap-generator/sitemap.php', get_option('active_plugins')) || in_array('bwp-google-xml-sitemaps/bwp-simple-gxs.php', get_option('active_plugins')) || class_exists('zpress\admin\Theme')) {?>
+		<?php if ( is_plugin_active('google-sitemap-generator/sitemap.php') || is_plugin_active('bwp-google-xml-sitemaps/bwp-simple-gxs.php') || class_exists('zpress\admin\Theme')) {?>
 			<span class="description">Add the Locations (City, Community, Tract, or Zip) to your XML Sitemap by adding them via the dialogs below.</span>
-			<?php if (in_array('bwp-google-xml-sitemaps/bwp-simple-gxs.php', get_option('active_plugins'))): ?>
+			<?php if (is_plugin_active('bwp-google-xml-sitemaps/bwp-simple-gxs.php')): ?>
 				<p><span class="description">REQUIRED: In the BWP GXS Sitemap Generator settings page, ensure that the option to include external pages is checked</span></p>
 			<?php endif; ?>
 			<div class="dsidxpress-SitemapLocations stuffbox">
@@ -1084,6 +1083,7 @@ if (isset($diagnostics["error"])) {
 	}
 
 	static function DetailsOptions() {
+		$options = get_option(DSIDXPRESS_OPTION_NAME);
 		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("AccountOptions", array(), false, 0);
 		if (!empty($apiHttpResponse["errors"]) || $apiHttpResponse["response"]["code"] != "200")
 			wp_die("We're sorry, but we ran into a temporary problem while trying to load the account data. Please check back soon.", "Account data load error");
@@ -1188,6 +1188,20 @@ if (isset($diagnostics["error"])) {
 						</td>
 					</tr>
 				</table>
+				<?php if(!defined('ZPRESS_API') || ZPRESS_API == '') : ?>
+					<br /><p class="description">WARNING: This is an advanced setting. Disabling the cache will negatively affect the loading speed of IDX components on your site.</p>
+					<table class="form-table">
+						<tr>
+							<th>
+								<label for="dsidxpress-DisableCache">Disable Caching:</label>
+							</th>
+							<td>
+								<input type="checkbox" id="dsidxpress-DisableCacheCB" size="50" <?php checked('true', strtolower($options["DisableCache"])); ?> onclick="dsIDXpressOptions.OptionCheckBoxClick(this);" /><br />
+								<input type="hidden" id="dsidxpress-DisableCache" name="<?php echo DSIDXPRESS_OPTION_NAME; ?>[DisableCache]" value="<?php echo $options["DisableCache"]; ?>" />
+							</td>
+						</tr>
+					</table>
+				<?php endif; ?>
 				<br />
 				<p class="submit">
 					<input type="submit" class="button-primary" name="Submit" value="Save Options" />

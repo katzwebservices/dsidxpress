@@ -41,12 +41,16 @@ jQuery().ready(function($) {
 						window.location = url;
 					} else if (ui.item.Type == 'Listing' && ui.item.SupportingInfo.indexOf('Address;') != -1) {
 						$(this).attr('name', 'idx-q-AddressMasks<0>');
+						$(this).after('<input type="hidden" id="dsidxpress-auto-listing-status" name="idx-q-ListingStatuses" value="15" />');// add listing status = all
 					} else if (ui.item.Type == 'County') {
 						$(this).attr('name', 'idx-q-Counties<0>');
+						$('#dsidxpress-auto-listing-status').remove();
 					} else if (ui.item.Type == 'Zip') {
 						$(this).attr('name', 'idx-q-ZipCodes<0>');
+						$('#dsidxpress-auto-listing-status').remove();
 					} else {
 						$(this).attr('name', 'idx-q-Locations');
+						$('#dsidxpress-auto-listing-status').remove();
 					}
 				
 					$(this).val(ui.item.Name);

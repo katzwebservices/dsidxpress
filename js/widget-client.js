@@ -4,7 +4,10 @@ dsidx_w.searchWidget = (function () {
 	var $ = jQuery;
 	
     function isLocationValid() {
-    	var valid = false;
+        // Deactivating the location validation for case 9360
+        // We will now accept no location fields and the - Any - value
+        // This file doesn't do anything now.
+    	var valid = true;
     	$('.idx-q-Location-Filter :selected').each(function(index) {
     		if($(this).val().length)
     			valid = true;
