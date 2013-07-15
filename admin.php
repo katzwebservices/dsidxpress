@@ -1252,6 +1252,8 @@ if (isset($diagnostics["error"])) {
 		return $setDiagnostics;
 	}
 	static function SanitizeOptions($options) {
+		if(!isset($options) || !$options) $options = array();
+		
 		if (!empty($options["FullApiKey"])) {
 			$options["FullApiKey"] = trim($options["FullApiKey"]);
 			$apiKeyParts = explode("/", $options["FullApiKey"]);
