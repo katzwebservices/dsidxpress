@@ -800,7 +800,7 @@ if (isset($diagnostics["error"])) {
 							
 							foreach ($states as $key => $value) {
 								if(isset($account_options->RestrictResultsToState)){//already a value, ignore defaults
-									if(strstr(preg_replace('/,/', "\n", $account_options->RestrictResultsToState), (string)$value)> -1){
+									if(!empty($value) && strstr(preg_replace('/,/', "\n", $account_options->RestrictResultsToState), (string)$value)> -1){
 										$opt_checked = "selected='selected'";
 									}
 									else{

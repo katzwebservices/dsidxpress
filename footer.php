@@ -5,8 +5,13 @@ class dsidx_footer {
 	static $viewName = null;
 
 	static function ensure_disclaimer_exists($view = null) {
-		if (self::$disclaimer_queued)
+		//empty view takes precedence since it always shows while specific views check rules first
+		if (self::$disclaimer_queued && empty(self::$viewName))
 			return;
+		else if (self::$disclaimer_queued && !empty(self::$viewName) && !isset($view)) {
+			self::$viewName = '';
+			return;
+		}
 
 		add_action("wp_footer", array("dsidx_footer", "insert_disclaimer"));
 		if (!empty($view)) self::$viewName = $view;
@@ -21,7 +26,6 @@ class dsidx_footer {
 		    || (isset($wp_query->query["idx-action"]) && $wp_query->query["idx-action"] == "results"))
 		   )
 			return;
-
 
 		$apiParams = array();
 		$apiParams["responseDirective.IncludeDsDisclaimer"] = (defined('ZPRESS_API') && ZPRESS_API != '') ? "false" : "true";

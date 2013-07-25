@@ -571,6 +571,24 @@ dsIdxLinkBuilder = {
 				}
 			]
         },
+		listing_statuses: {
+            name: 'Listing Statuses',
+            fields: [
+                {
+                    id: 'idx-q-ListingStatuses',
+                    type: 'lookup',
+                    mode: 'lookup',
+                    hint: '-1',
+                    options: {
+                        '1': 'Active',
+                        '2': 'Conditional',
+                        '4': 'Pending',
+                        '8': 'Sold',
+                        '15': 'All statuses',
+                    }
+                }
+            ]
+        },
 		schools: {
 			name: 'Schools/Type',
 			fields: [
@@ -602,6 +620,17 @@ dsIdxLinkBuilder = {
             fields: [
 				{
 				    id: 'idx-q-ListingAgentID',
+				    type: 'string',
+				    mode: 'multi',
+				    hint: 'One per line'
+				}
+			]
+        },
+		listing_office_id: {
+            name: 'Listing Office IDs',
+            fields: [
+				{
+				    id: 'idx-q-ListingOfficeID',
 				    type: 'string',
 				    mode: 'multi',
 				    hint: 'One per line'
