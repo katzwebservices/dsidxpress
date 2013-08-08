@@ -36,7 +36,7 @@ class dsIDXWidgets_quicksearch extends WP_Widget {
         echo $before_widget;
 		
         if(defined('ZPRESS_API') && ZPRESS_API != ''){
-    		$widget_header = zpress\themes\Options::GetOption('theme_widgets_require_header');
+            $widget_header = call_user_func('\zpress\themes\Options::GetOption', 'theme_widgets_require_header');
     		if(!empty($widget_header->meta) && $widget_header->meta == 'true'){
     			echo $before_title;
     			echo 'Quick Search';

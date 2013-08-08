@@ -117,7 +117,7 @@ class dsSearchAgent_ApiRequest {
 			}
 		}
 
-		$data = str_replace('{$pluginUrlPath}', plugins_url() . '/dsidxpress/', $data);
+		$data = str_replace('{$pluginUrlPath}', self::MakePluginsUrlRelative(plugins_url() . '/dsidxpress/'), $data);
 		$data = str_replace('{$pluginVersion}', DSIDXPRESS_PLUGIN_VERSION, $data);
 		$data = str_replace('{$wordpressVersion}', $wp_version, $data);
 		$data = str_replace('{$wordpressBlogUrl}', $blog_url, $data);
@@ -128,6 +128,11 @@ class dsSearchAgent_ApiRequest {
 		$data = str_replace('{$idxActivationPathEncoded}', urlencode($idxActivationPath), $data);
 
 		return $data;
+	}
+	public static function MakePluginsUrlRelative($url){
+		preg_match('/http:\/\/[^\/]+((\/[^\/]+)?\/wp-content\/plugins\/dsidxpress\/.*)/i', $url, $matches);
+		
+		return $matches[1];
 	}
 	private static function ExtractAndEnqueueStyles($data, $echoAssetsIfNotEnqueued) {
 		// since we 100% control the data coming from the API, we can set up a regex to look for what we need. regex
