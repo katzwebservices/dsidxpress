@@ -59,13 +59,13 @@ jQuery().ready(function($) {
 				return false;
 			},
 			selectFirst: true
-		}).data("autocomplete")._renderItem = function(ul, item) {
+		}).data("ui-autocomplete")._renderItem = function(ul, item) {
 			var name = (item.Type == 'County') ? item.Name + ' (County)' : item.Name;
-			return $('<li></li>').data('item.autocomplete', item).append('<a>' + name + '</a>').appendTo(ul);
+			return $('<li>').data('ui-autocomplete-item', item).append('<a>' + name + '</a>').appendTo(ul);
 		};
 	}
 	
-	$('.ui-autocomplete-input').live('autocompleteopen', function() {
+	$('.ui-autocomplete-input').on('autocompleteopen', function() {
 		var autocomplete = $(this).data('autocomplete'),
 		menu = autocomplete.menu;
 		

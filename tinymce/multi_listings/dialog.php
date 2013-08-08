@@ -87,7 +87,7 @@ if (!defined('ZPRESS_API')) {
 			padding-bottom: 7px;
 		}
 		.panel_wrapper div.current {
-			height: 430px;
+			height: 475px;
 		}
 		#universal-options {
 			margin:10px auto 0;

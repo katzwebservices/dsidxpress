@@ -39,6 +39,14 @@ class dsIDXWidgets_Affordability extends WP_Widget {
 		}
 
         echo $before_widget;
+		
+		$widget_header = zpress\themes\Options::GetOption('theme_widgets_require_header');
+		if(!empty($widget_header->meta) && $widget_header->meta == 'true'){
+			echo $before_title;
+			echo 'Affordability';
+			echo $after_title;
+		}
+		
         echo <<<HTML
         <div>
             <script type="text/javascript" id="divLocal{$randString}_">

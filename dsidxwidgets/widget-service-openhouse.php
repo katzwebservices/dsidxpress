@@ -39,6 +39,7 @@ class dsIDXWidgets_OpenHouse extends WP_Widget {
 		}
 
         echo $before_widget;
+		
         echo <<<HTML
         <h3 class="widget-title">{$title}</h3>
         <script type="text/javascript" id="divLocal{$randString}_">

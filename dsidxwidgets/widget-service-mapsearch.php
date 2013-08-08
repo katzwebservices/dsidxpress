@@ -20,6 +20,25 @@ class dsIDXWidgets_MapSearch extends WP_Widget {
 		$city = str_replace(" \r\n", ",", $city);
 		$city = str_replace("\r\n ", ",", $city);
 		$city = str_replace("\r\n", ",", $city);
+
+        $instance = wp_parse_args($instance, array(
+            "state"                 => $state,
+            "city"                  => $city,
+            "zip"                   => "",
+            "priceMin"                 => "250000",
+            "priceMax"              => "550000",
+            "priceFloor"            => "100000",
+            "priceCeiling"          => "1000000",
+            "bedsMin"               => "2",
+            "bathsMin"              => "2",
+            "sqftMin"               => "1500",
+            "statusType"        => "1",
+            "rowCountType"      => "25",
+            "sortType"          => "0",
+            "eDomain" =>   "",
+            "height" =>     "494",
+            "width" =>      "548"
+            ));
 		
         $zip = htmlspecialchars($instance["zip"]);
         $priceMin = htmlspecialchars($instance["priceMin"]);
@@ -53,6 +72,14 @@ class dsIDXWidgets_MapSearch extends WP_Widget {
 		}
 
         echo $before_widget;
+		
+		$widget_header = zpress\themes\Options::GetOption('theme_widgets_require_header');
+		if(!empty($widget_header->meta) && $widget_header->meta == 'true'){
+			echo $before_title;
+			echo 'Map Search';
+			echo $after_title;
+		}
+		
         echo <<<HTML
         <script type="text/javascript" id="divLocal{$randString}_">
 			window.mapSearchHasDependency = true;

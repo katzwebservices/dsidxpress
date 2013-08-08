@@ -24,7 +24,8 @@ $apiHttpResponse = (array)wp_remote_post($requestUri, array(
 		type			=> $_REQUEST["type"]
 	),
 	"httpversion"	=> "1.1",
-	"redirection"	=> "0"
+	"redirection"	=> "0",
+	"reject_unsafe_urls" => false
 ));
 $locations = json_decode($apiHttpResponse["body"]);
 ?>

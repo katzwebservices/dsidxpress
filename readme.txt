@@ -2,8 +2,8 @@
 Contributors: Diverse Solutions
 Tags: mls, idx, rets, housing, real estate
 Requires at least: 2.8
-Tested up to: 3.5.2
-Stable tag: 2.0.30
+Tested up to: 3.6
+Stable tag: 2.0.31
 
 This plugin allows WordPress to embed live real estate data from an MLS directly into a blog. You MUST have a dsIDXpress account to use this plugin.
 
@@ -45,6 +45,13 @@ If you'd like to **see the plugin in action**, you can check out our [dsIDXpress
 *Note: If you're searching for idx press, idxpress, ds idxpress, id xpress, or id express, this is the plugin you're probably looking for.*
 
 == Changelog ==
+
+= 2.0.31 =
+* WordPress v3.6 compatibility fixes
+* Added listing status as a filter option in the admin screen
+* Add checkbox options for default property types on the Filters screen
+* Prevent the coverage areas widget from breaking on the front-end if no options are set
+* Added missing description for the new status type filters
 
 = 2.0.30 =
 * Removed numeric check in listings widget for agent/office ids

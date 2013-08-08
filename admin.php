@@ -692,8 +692,11 @@ if (isset($diagnostics["error"])) {
 			$account_options = json_decode($apiHttpResponse["body"]);
 		$urlBase = get_home_url();
 
-		$property_types = \dsSearchAgent_ApiRequest::FetchData('AccountSearchSetupPropertyTypes', array(), false, 60 * 60 * 24);
-		$default_types = \dsSearchAgent_ApiRequest::FetchData('DefaultPropertyTypes', array(), false,  60 * 60 * 24);
+		$property_types = \dsSearchAgent_ApiRequest::FetchData('AccountSearchSetupPropertyTypes', array(), false, 0);
+		$default_types = \dsSearchAgent_ApiRequest::FetchData('DefaultPropertyTypes', array(), false, 0);
+
+		$property_types = json_decode($property_types["body"]);
+		$default_types = json_decode($default_types["body"]);
 
 		if (substr($urlBase, strlen($urlBase), 1) != "/") $urlBase .= "/";
 			$urlBase .= dsSearchAgent_Rewrite::GetUrlSlug(); ?>
@@ -823,35 +826,72 @@ if (isset($diagnostics["error"])) {
 						<th>
 							<label for="dsidxpress-FirstName">Restrict Results to a Property Type:</label>
 						</th>
+						<?php
+							$default_values = array();
+							foreach ($default_types as $default_type) {
+								array_push($default_values, $default_type->SearchSetupPropertyTypeID);
+							}
+						?>
 						<td>
 							<input type="hidden" class="linkInputTextArea" id="dsidxpress-RestrictResultsToPropertyType" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[RestrictResultsToPropertyType]" value="<?php echo preg_replace("/,/", "\n", $account_options->RestrictResultsToPropertyType); ?>"></input>
-							<div id="dsidxpress-property-types" name="dsidxpress-property-types">
-								<?php
-									$property_types = json_decode($property_types["body"]);
-									$default_types = json_decode($default_types["body"]);
-
+							<input type="hidden" class="linkInputTextArea" id="dsidxpress-DefaultPropertyType" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[DefaultPropertyType]" value="<?php echo (count($default_values) > 0) ? implode("\n", $default_values) : ""; ?>" />
+							<table id="dsidxpress-property-types" name="dsidxpress-property-types">
+									<tr>
+										<td></td>
+										<td>Filter</td>
+										<td>Default</td>
+									</tr>
+									<?php
 									foreach ($property_types as $property_type) {
 										$name = htmlentities($property_type->DisplayName);
 										$id = $property_type->SearchSetupPropertyTypeID;
-										$opt_checked = "";
+										$filter_checked = "";
+										$default_checked = "";
 										if(isset($account_options->RestrictResultsToPropertyType)){//already a value, ignore defaults
 											if(strstr(preg_replace("/,/", "\n", $account_options->RestrictResultsToPropertyType), (string)$id)> -1){
-												$opt_checked = "checked";
+												$filter_checked = "checked";
 											}
 										}
-										else{//nothing has been saved yet, use the defaults from api
-											foreach ($default_types as $default_type) {
-												if(htmlentities($default_type->SearchSetupPropertyTypeID) == (string)$id){
-													$opt_checked = "checked";
-													break;
-												}
+										foreach ($default_types as $default_type) {
+											if(htmlentities($default_type->SearchSetupPropertyTypeID) == (string)$id){
+												$default_checked = "checked";
+												break;
 											}
 										}
-										echo '<input class="dsidxpress-proptype-filter" '.$opt_checked.' type="checkbox" value="' . $id . '"/>'. $name . '<br>';
+										?>
+										<tr>
+											<td><?php echo $name; ?></td>
+											<td><input class="dsidxpress-proptype-filter" <?php echo $filter_checked; ?> type="checkbox" value="<?php echo $id; ?>"/></td>
+											<td><input class="dsidxpress-proptype-default" <?php echo $default_checked; ?> type="checkbox" value="<?php echo $id; ?>"/></td>
+										</tr>
+										<?php
 									}
 								?>
-							</div>
-							<span class="description">If you need/want to restrict dsIDXpress to specific property types, select the types you would like to have return results.</span>
+							</table>
+							<span class="description">If you need/want to restrict dsIDXpress to specific property types, select the types you would like to have return results.  This setting will also restrict the property types shown in search form options.  You may also choose which types are included in the default property type selection.</span>
+						</td>
+					</tr>
+					<tr>
+						<th>
+							<label>Restrict Results by Status:</label>
+						</th>
+						<td>
+							<input type="hidden" id="dsidxpress-DefaultListingStatusTypeIDs" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[DefaultListingStatusTypeIDs]" value="<?php echo preg_replace("/,/", "\n", $account_options->DefaultListingStatusTypeIDs); ?>" />
+							<table class="dsidxpress-status-types">
+								<?php
+								$listing_status_types = array('Active' => 1, 'Conditional' => 2, 'Pending' => 4, 'Sold' => 8);
+								foreach ($listing_status_types as $label => $value) :
+									$status_checked = '';
+									if (strpos($account_options->DefaultListingStatusTypeIDs, (string)$value) !== false) 
+										$status_checked = 'checked';
+									?>
+									<tr>
+										<td><?php echo $label.' '; ?></td>
+										<td><input class="dsidxpress-statustype-filter" <?php echo $status_checked; ?> type="checkbox" value="<?php echo $value; ?>" /></td>
+									</tr>
+								<?php endforeach; ?>
+							</table>
+							<span class="description">If you need / want to restrict the properties shown on your website by property status, check the statuses you would like visitors to see in search results here</span>
 						</td>
 					</tr>
 				</table>
@@ -1310,8 +1350,8 @@ if (isset($diagnostics["error"])) {
 
 			foreach ($options as $key => $value) {
 				if ($options_text != "") $options_text .= ",";
-				if ($key == 'RestrictResultsToZipcode' || $key == 'RestrictResultsToCity' || $key == 'RestrictResultsToCounty' || $key == 'RestrictResultsToState' || $key == 'RestrictResultsToPropertyType') {
-				$value = preg_replace("/\n/", ",", $value);//replace these values with new commas in api db
+				if ($key == 'RestrictResultsToZipcode' || $key == 'RestrictResultsToCity' || $key == 'RestrictResultsToCounty' || $key == 'RestrictResultsToState' || $key == 'RestrictResultsToPropertyType' || $key == 'DefaultPropertyType' || $key == 'DefaultListingStatusTypeIDs') {
+				$value = preg_replace("/\r\n|\r|\n/", ",", $value);//replace these values with new commas in api db
 				}
 				$options_text .= $key.'|'.urlencode($value);
 				unset($options[$key]);

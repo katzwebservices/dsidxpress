@@ -14,6 +14,9 @@ while (!file_exists($bootstrapSearchDir . "/wp-load.php")) {
 	}
 }
 require_once($bootstrapSearchDir . "/wp-load.php");
+if(defined('ZPRESS_API') && ZPRESS_API != '') {
+	require_once(WPMU_PLUGIN_DIR . '/akismet/akismet.class.php');
+}
 
 class dsSearchAgent_ClientAssist {
 	static function SlideshowXml() {
@@ -97,46 +100,66 @@ class dsSearchAgent_ClientAssist {
 		}
 		if (!isset($post_vars['phoneNumber'])) $post_vars['phoneNumber'] = '';
 		
+		$message = (!empty($post_vars['scheduleYesNo']) && $post_vars['scheduleYesNo'] == 'on' ? "Schedule showing on {$post_vars['scheduleDateDay']} / {$post_vars['scheduleDateMonth']} " : "Request info ") . 
+						@"for ".(!empty($post_vars['propertyStreetAddress']) ? $post_vars['propertyStreetAddress']:"")." ".(!empty($post_vars['propertyCity']) ? $post_vars['propertyCity'] : "").", ".(!empty($post_vars['propertyState']) ? $post_vars['propertyState'] : "")." ".(!empty($post_vars['propertyZip']) ? $post_vars['propertyZip'] : "").
+						@". ".$post_vars['comments'];
 
 		if(defined('ZPRESS_API') && ZPRESS_API != ''){
-			if(SNS_ARN_CONTACT_REQUEST != ''){
-				$firstname = '';
-				$lastname = '';
-				if(!empty($post_vars['name'])){
-					$name = $post_vars['name'];
-					$name_split = preg_split(' ', $post_vars['name'], 2, PREG_SPLIT_NO_EMPTY);
-					if(!empty($name_split)){
-						$firstname = $name_split[0];
-						if(count($name_split) > 1)
-							$lastname = $name_split[1];
+			$z_akismet_values = array(
+                'author' => isset($post_vars['name']) ? $post_vars['name'] : $post_vars['firstName']." ".$post_vars['lastName'],
+                'email' => $post_vars['emailAddress'],
+                'website' => '', 
+                'body' => $message,
+                'permalink' => '', 
+                'comment_type' => 'ContactFormSubmission', //set for all contact requests
+	        );
+			$z_akismet = new \zpress\plugins\z_Akismet(get_option('siteurl'), Z_AKISMET_API_KEY, $z_akismet_values);
+			if ($z_akismet->errorsExist()) {
+				\zpress\api_request::call('/Spam/SaveMessage', array( 'TypeID' => 3, 'Message' => json_encode($z_akismet->getErrors()) ));
+				header('Content-type: application/json');
+				echo '{ "Error": true, "Message": "Failed to submit." }';
+				die();
+			} else {
+				if ($z_akismet->isSpam()) {
+					\zpress\api_request::call('/Spam/SaveMessage', array( 'TypeID' => 1, 'Message' => json_encode($z_akismet_values) ));
+				} else {
+					\zpress\api_request::call('/Spam/SaveMessage', array( 'TypeID' => 2, 'Message' => json_encode($z_akismet_values) ));
+					if(SNS_ARN_CONTACT_REQUEST != ''){
+						$firstname = '';
+						$lastname = '';
+						if(!empty($post_vars['name'])){
+							$name = $post_vars['name'];
+							$name_split = preg_split(' ', $post_vars['name'], 2, PREG_SPLIT_NO_EMPTY);
+							if(!empty($name_split)){
+								$firstname = $name_split[0];
+								if(count($name_split) > 1)
+									$lastname = $name_split[1];
+							}
+						}
+
+						if(!empty($post_vars['firstName'])) $firstname = $post_vars['firstName'];
+						if(!empty($post_vars['lastName'])) $lastname = $post_vars['lastName'];
+
+						// call sns to send the contact to Zillow.com
+						$sns = new AmazonSNS(array('key' => AWS_KEY, 'secret' => AWS_SECRET_KEY, 'certificate_authority' => true));
+						$sns->publish(SNS_ARN_CONTACT_REQUEST, json_encode((object) array(
+							'ContactDate' => gmdate('Y-m-d\TH:i:s.uP'),
+							'Email' => @$post_vars['emailAddress'],
+							'FirstName' => $firstname,
+							'LastName' => $lastname,
+							'Message' => $message,
+							'Phone' => @$post_vars['phoneNumber'],
+							'ListingUrl' => @$post_vars['referringURL'],
+							//'Subject' => "",
+							'Zuid' => get_option('zuid'),
+							'Uid' => md5(uniqid())
+						)));
 					}
+					header('Content-type: application/json');
+					echo '{ "Error": false, "Message": "" }';
+					die();
 				}
-
-				if(!empty($post_vars['firstName'])) $firstname = $post_vars['firstName'];
-				if(!empty($post_vars['lastName'])) $lastname = $post_vars['lastName'];
-
-				// call sns to send the contact to Zillow.com
-				$sns = new AmazonSNS(array('key' => AWS_KEY, 'secret' => AWS_SECRET_KEY, 'certificate_authority' => true));
-				$sns->publish(SNS_ARN_CONTACT_REQUEST, json_encode((object) array(
-					'ContactDate' => gmdate('Y-m-d\TH:i:s.uP'),
-					'Email' => @$post_vars['emailAddress'],
-					'FirstName' => $firstname,
-					'LastName' => $lastname,
-					'Message' => 
-						(!empty($post_vars['scheduleYesNo']) && $post_vars['scheduleYesNo'] == 'on' ? "Schedule showing on {$post_vars['scheduleDateDay']} / {$post_vars['scheduleDateMonth']} " : "Request info ") . 
-						@"for ".(!empty($post_vars['propertyStreetAddress']) ? $post_vars['propertyStreetAddress']:"")." ".(!empty($post_vars['propertyCity']) ? $post_vars['propertyCity'] : "").", ".(!empty($post_vars['propertyState']) ? $post_vars['propertyState'] : "")." ".(!empty($post_vars['propertyZip']) ? $post_vars['propertyZip'] : "").
-						@". ".$post_vars['comments'],
-					'Phone' => @$post_vars['phoneNumber'],
-					'ListingUrl' => @$post_vars['referringURL'],
-					//'Subject' => "",
-					'Zuid' => get_option('zuid'),
-					'Uid' => md5(uniqid())
-				)));
 			}
-
-			header('Content-type: application/json');
-			echo '{ "Error": false, "Message": "" }';
-			die();
 		} else {
 			$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("ContactForm", $post_vars, false, 0);
 
@@ -155,6 +178,9 @@ class dsSearchAgent_ClientAssist {
 				die();
 			}
 		}
+		header('Content-type: application/json');
+		echo '{ "Error": false, "Message": "" }';
+		die();
 	}
 	static function PrintListing(){
 		if($_REQUEST["PropertyID"]) $apiParams["query.PropertyID"] = $_REQUEST["PropertyID"];

@@ -4,7 +4,7 @@ tinymce.create('tinymce.plugins.dsidxListings', {
 			ed.windowManager.open({
 				file : url + '/dialog.php',
 				width : 380,
-				height : 565,
+				height : 700,
 				inline : 1
 			}, {
 				plugin_url : url
@@ -18,6 +18,7 @@ tinymce.create('tinymce.plugins.dsidxListings', {
 		ed.onNodeChange.add(function(ed, cm, n) {
 			cm.setActive('idxlistings', !tinymce.isIE && /^\[idx-listings /.test(n.innerHTML));
 		});
+		body_class: 'dsidx-dialog'
 	},
 	createControl : function(n, cm) {
 		return null;

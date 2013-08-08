@@ -21,6 +21,9 @@ class dsSearchAgent_ListAreasWidget extends WP_Widget {
 
 		$urlBase = get_home_url() . "/idx/";
 
+		if (empty($areaOptions["areas"]))
+			return;
+
 		echo $before_widget;
 		if ($title)
 			echo $before_title . $title . $after_title;

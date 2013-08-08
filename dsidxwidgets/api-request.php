@@ -73,7 +73,8 @@ class dsWidgetAgent_ApiRequest {
 			"body"			=> $params,
 			"redirection"	=> "0",
 			"headers"       => $headers,
-			"timeout"		=> 15 // we look into anything that takes longer than 2 seconds to return
+			"timeout"		=> 15, // we look into anything that takes longer than 2 seconds to return
+			"reject_unsafe_urls" => false
 		));
 		if (empty($response["errors"]) && substr($response["response"]["code"], 0, 1) != "5") {
 			if ($cacheSecondsOverride !== 0 && $response["body"]){
