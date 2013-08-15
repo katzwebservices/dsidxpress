@@ -285,10 +285,10 @@ class dsSearchAgent_Client {
 			wp_die("We're sorry, but we ran into a temporary problem while trying to load the account data. Please check back soon.", "Account data load error");
 		else
 			$account_options = json_decode($apiHttpResponse["body"]);	
-		
+
+		if ($action == "results" || $action == "search") dsidxpress_autocomplete::AddScripts(false);
+
 		if ($action == "results") {
-			dsidxpress_autocomplete::AddScripts(false);
-			
 			// save search
 			if(!empty($get["idx-save"]) && $get["idx-save"] == "true") {
 				$apiParams["name"] = $get["idx-save-name"];
@@ -359,6 +359,13 @@ class dsSearchAgent_Client {
 		$apiData = $apiHttpResponse["body"];
 		
 		$apiData = str_replace('{$contentDomId}', $post_id, $apiData);
+
+		if ($action == 'details' && defined('ZPRESS_API') && ZPRESS_API != '') {
+			if (!isset($personal_info)) $personal_info = stripslashes_deep(get_option('personal_info'));
+			if (!empty($personal_info['google_authorship']) && !empty($personal_info['googleplus'])) {
+				$apiData .= '<p>By <a href="'.esc_url($personal_info['googleplus']).'?rel=author" target="_blank">'.$personal_info['first_name'].' '.$personal_info['last_name'].'</a></p>';
+			}
+		}
 
 		if (in_array($_SERVER["REMOTE_ADDR"], self::$DebugAllowedFrom)) {
 			if (isset($get["debug-api-response"])) {
