@@ -2,14 +2,14 @@ dsIDXpressFilters = {
 	FillHiddenWithValues: function (checkboxClass, hiddenID) {
 		var g = jQuery('.'+checkboxClass), s = '', i;
 		for (i = 0; i < g.length; i++) {
-			if (g[i].checked) { s == '' ? s = s + g[i].value : s = s + '\n' + g[i].value; }
+			if (g[i].checked) { s == '' ? s = s + g[i].value : s = s + ',' + g[i].value; }
 		}
 		document.getElementById(hiddenID).value = s;
 	},
 	FillHiddenWithSelected: function (divID, hiddenID) {
 		var f = document.getElementById(divID), g = f.childNodes, s = '', i;
 		for (i = 0; i < g.length; i++) {
-			if (g[i].selected) { s == '' ? s = s + g[i].value : s = s + '\n' + g[i].value; }
+			if (g[i].selected) { s == '' ? s = s + g[i].value : s = s + ',' + g[i].value; }
 		}
 		document.getElementById(hiddenID).value = s;
 	}

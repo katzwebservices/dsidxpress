@@ -692,8 +692,8 @@ if (isset($diagnostics["error"])) {
 			$account_options = json_decode($apiHttpResponse["body"]);
 		$urlBase = get_home_url();
 
-		$property_types = \dsSearchAgent_ApiRequest::FetchData('AccountSearchSetupPropertyTypes', array(), false, 0);
-		$default_types = \dsSearchAgent_ApiRequest::FetchData('DefaultPropertyTypes', array(), false, 0);
+		$property_types = dsSearchAgent_ApiRequest::FetchData('AccountSearchSetupPropertyTypes', array(), false, 0);
+		$default_types = dsSearchAgent_ApiRequest::FetchData('DefaultPropertyTypesNoCache', array(), false, 0);
 
 		$property_types = json_decode($property_types["body"]);
 		$default_types = json_decode($default_types["body"]);
@@ -801,16 +801,15 @@ if (isset($diagnostics["error"])) {
 								"Wisconsin"=>'WI',  
 								"Wyoming"=>'WY');
 							
+							if(isset($account_options->RestrictResultsToState)) $selected_states = explode(',', $account_options->RestrictResultsToState);
 							foreach ($states as $key => $value) {
-								if(isset($account_options->RestrictResultsToState)){//already a value, ignore defaults
-									if(!empty($value) && strstr(preg_replace('/,/', "\n", $account_options->RestrictResultsToState), (string)$value)> -1){
-										$opt_checked = "selected='selected'";
-									}
-									else{
-										$opt_checked = "";
-									}
-									if($value == "" && $account_options->RestrictResultsToState == ""){
-										$opt_checked = "selected='selected'";
+								$opt_checked = "";
+								if (isset($selected_states)) {
+									foreach ($selected_states as $selected_state) {
+										if (!empty($value) && $selected_state == $value) {
+											$opt_checked = "selected='selected'";
+											break;
+										}
 									}
 								}
 								echo '<option class="dsidxpress-states-filter" '.$opt_checked.' value="' . $value . '">' . $key . '</option>';
@@ -833,8 +832,8 @@ if (isset($diagnostics["error"])) {
 							}
 						?>
 						<td>
-							<input type="hidden" class="linkInputTextArea" id="dsidxpress-RestrictResultsToPropertyType" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[RestrictResultsToPropertyType]" value="<?php echo preg_replace("/,/", "\n", $account_options->RestrictResultsToPropertyType); ?>"></input>
-							<input type="hidden" class="linkInputTextArea" id="dsidxpress-DefaultPropertyType" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[DefaultPropertyType]" value="<?php echo (count($default_values) > 0) ? implode("\n", $default_values) : ""; ?>" />
+							<input type="hidden" class="linkInputTextArea" id="dsidxpress-RestrictResultsToPropertyType" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[RestrictResultsToPropertyType]" value="<?php echo $account_options->RestrictResultsToPropertyType; ?>"></input>
+							<input type="hidden" class="linkInputTextArea" id="dsidxpress-DefaultPropertyType" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[DefaultPropertyType]" value="<?php echo (count($default_values) > 0) ? implode(",", $default_values) : ""; ?>" />
 							<table id="dsidxpress-property-types" name="dsidxpress-property-types">
 									<tr>
 										<td></td>
@@ -842,14 +841,16 @@ if (isset($diagnostics["error"])) {
 										<td>Default</td>
 									</tr>
 									<?php
+									$filter_types = explode(',', $account_options->RestrictResultsToPropertyType);
 									foreach ($property_types as $property_type) {
 										$name = htmlentities($property_type->DisplayName);
 										$id = $property_type->SearchSetupPropertyTypeID;
 										$filter_checked = "";
 										$default_checked = "";
-										if(isset($account_options->RestrictResultsToPropertyType)){//already a value, ignore defaults
-											if(strstr(preg_replace("/,/", "\n", $account_options->RestrictResultsToPropertyType), (string)$id)> -1){
+										foreach ($filter_types as $filter_type) {
+											if ($filter_type == (string)$id) {
 												$filter_checked = "checked";
+												break;
 											}
 										}
 										foreach ($default_types as $default_type) {
@@ -876,7 +877,7 @@ if (isset($diagnostics["error"])) {
 							<label>Restrict Results by Status:</label>
 						</th>
 						<td>
-							<input type="hidden" id="dsidxpress-DefaultListingStatusTypeIDs" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[DefaultListingStatusTypeIDs]" value="<?php echo preg_replace("/,/", "\n", $account_options->DefaultListingStatusTypeIDs); ?>" />
+							<input type="hidden" id="dsidxpress-DefaultListingStatusTypeIDs" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[DefaultListingStatusTypeIDs]" value="<?php echo $account_options->DefaultListingStatusTypeIDs; ?>" />
 							<table class="dsidxpress-status-types">
 								<?php
 								$listing_status_types = array('Active' => 1, 'Conditional' => 2, 'Pending' => 4, 'Sold' => 8);
@@ -1350,7 +1351,7 @@ if (isset($diagnostics["error"])) {
 
 			foreach ($options as $key => $value) {
 				if ($options_text != "") $options_text .= ",";
-				if ($key == 'RestrictResultsToZipcode' || $key == 'RestrictResultsToCity' || $key == 'RestrictResultsToCounty' || $key == 'RestrictResultsToState' || $key == 'RestrictResultsToPropertyType' || $key == 'DefaultPropertyType' || $key == 'DefaultListingStatusTypeIDs') {
+				if ($key == 'RestrictResultsToZipcode' || $key == 'RestrictResultsToCity' || $key == 'RestrictResultsToCounty' || $key == 'RestrictResultsToState') {
 				$value = preg_replace("/\r\n|\r|\n/", ",", $value);//replace these values with new commas in api db
 				}
 				$options_text .= $key.'|'.urlencode($value);
@@ -1475,7 +1476,7 @@ if (isset($diagnostics["error"])) {
 		$link_mode   = (isset($_GET['idxlinkmode'])) ? $_GET['idxlinkmode'] : '';
 
 		$property_types_html = "";
-		$property_types = \dsSearchAgent_ApiRequest::FetchData('AccountSearchSetupPropertyTypes', array(), false, 60 * 60 * 24);
+		$property_types = dsSearchAgent_ApiRequest::FetchData('AccountSearchSetupPropertyTypes', array(), false, 60 * 60 * 24);
 		if(!empty($property_types)){
 		    $property_types = json_decode($property_types["body"]);
 		    foreach ($property_types as $property_type) {

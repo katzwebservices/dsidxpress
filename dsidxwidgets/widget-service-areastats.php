@@ -162,7 +162,7 @@ HTML;
 
         $apiStub = dsWidgets_Service_Base::$widgets_admin_api_stub;
 
-        $property_types = \dsWidgetAgent_ApiRequest::FetchData('AccountPropertyTypes', array(), false, 60 * 60 * 24);
+        $property_types = dsWidgetAgent_ApiRequest::FetchData('AccountPropertyTypes', array(), false, 60 * 60 * 24);
 
         $checked_html = ($propType == '' ? 'selected' : '');
         $property_types_html = '<option value="-1" {$checked_html} >Select Property Type</option>';
