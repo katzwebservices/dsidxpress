@@ -185,13 +185,9 @@ class dsSearchAgent_ClientAssist {
 	static function PrintListing(){
 		if($_REQUEST["PropertyID"]) $apiParams["query.PropertyID"] = $_REQUEST["PropertyID"];
 		if($_REQUEST["MlsNumber"]) $apiParams["query.MlsNumber"] = $_REQUEST["MlsNumber"];
-		$apiParams["responseDirective.ViewNameSuffix"] = "printpdf";
+		$apiParams["responseDirective.ViewNameSuffix"] = "print";
 		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("Details", $apiParams, false);
 
-		header('Content-type: application/pdf');
-		header('Content-Disposition: attachment; filename="Property-'. $_REQUEST["MlsNumber"] .'.pdf"');
-		header('Content-Transfer-Encoding: binary');
-		header('Accept-Ranges: bytes');
 		header('Cache-control: private');
 		header('Pragma: private');
 		header('X-Robots-Tag: noindex');

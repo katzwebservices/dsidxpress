@@ -65,14 +65,4 @@ jQuery().ready(function($) {
 		};
 	}
 	
-	$('.ui-autocomplete-input').on('autocompleteopen', function() {
-		var autocomplete = $(this).data('autocomplete'),
-		menu = autocomplete.menu;
-		
-		if (!autocomplete.options.selectFirst) {
-			return;
-		}
-		
-		menu.activate($.Event({ type: 'mouseenter' }), menu.element.children().first());
-	});
 });
