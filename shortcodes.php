@@ -35,7 +35,7 @@ class dsSearchAgent_Shortcodes {
 			$apiRequestParams["responseDirective.ShowLocation"] = "true";
 		}
 
-		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("Details", $apiRequestParams);
+		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("Details", $apiRequestParams, false);
 		dsidx_footer::ensure_disclaimer_exists();
 
 		if ($apiHttpResponse["response"]["code"] == "404") {

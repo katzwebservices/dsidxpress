@@ -289,6 +289,18 @@ HTML;
 				</tr>
 			</table>
 						<?php if (defined('ZPRESS_API') || isset($options["dsIDXPressPackage"]) && $options["dsIDXPressPackage"] == "pro"): ?>
+			<h4>Registration Options</h4>
+			<table class="form-table">
+				<tr>
+					<th>
+						<label for="dsidxpress-RequiredPhone-check">Require phone numbers for visitor registration</label>
+					</th>
+					<td>
+						<input type="hidden" id="dsidxpress-RequiredPhone" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[RequiredPhone]" value="<?php echo $account_options->{'RequiredPhone'}; ?>" />
+						<input type="checkbox" class="dsidxpress-api-checkbox" id="dsidxpress-RequiredPhone-check" <?php checked('true', strtolower($account_options->{'RequiredPhone'})); ?> />
+					</td>
+				</tr>
+			</table>
 			<h4>Forced Registration Settings</h4>
 			<table class="form-table">
 				<tr>

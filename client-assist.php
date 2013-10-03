@@ -396,10 +396,11 @@ class dsSearchAgent_ClientAssist {
 		$apiParams['responseDirective.ViewNameSuffix'] = 'Schools';
 		$apiParams['query.City'] = $_POST['city'];
 		$apiParams['query.State'] = $_POST['state'];
+		$apiParams['query.Zip'] = $_POST['zip'];
 		$apiParams['query.Spatial'] = $_POST['spatial'];
 		$apiParams['query.PropertyID'] = $_POST['PropertyID'];
 
-		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("Schools", $apiParams, false, 0);
+		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("Schools", $apiParams, false);
 
 		$response = json_decode($apiHttpResponse["body"]);
 		header('Content-Type: text/html');
@@ -415,7 +416,7 @@ class dsSearchAgent_ClientAssist {
 		$apiParams['query.Spatial'] = $_POST['spatial'];
 		$apiParams['query.PropertyID'] = $_POST['PropertyID'];
 
-		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("Districts", $apiParams, false, 0);
+		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("Districts", $apiParams, false);
 
 		$response = json_decode($apiHttpResponse["body"]);
 		header('Content-Type: text/html');
@@ -437,7 +438,7 @@ class dsSearchAgent_ClientAssist {
 		$post_vars = array_map("stripcslashes", $_GET);
 		$apiRequestParams = array();
 		$apiRequestParams['propertyid'] = $post_vars['pid'];
-		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData('Photos', $apiRequestParams, false, 0);
+		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData('Photos', $apiRequestParams, false);
 		header('Content-type: text/xml');
 		echo $apiHttpResponse['body'];
 		die();

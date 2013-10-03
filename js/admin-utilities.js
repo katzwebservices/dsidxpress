@@ -150,12 +150,12 @@ dsIdxLinkBuilder = {
             var $f = $('#' + field.id);
             if (field.type == 'lookupPropTypes') {//this type has different way of aquiring the value from radio inputs
                 if (lb.validate(field, $f.val())) {
-                    var curChildren = $f.children();
+                    var curChildren = $f.children('input');
                     lb.current_filters[field.id] = [];
                     var index = 0;
                     $f.children().each(function () {
                         var opt = $(this);
-                        if (opt.attr('checked') == 'checked') {
+                        if (opt.is(':checked')) {
                             lb.current_filters[field.id][index] = opt.val();
                             active_filter = true;
                             index++;

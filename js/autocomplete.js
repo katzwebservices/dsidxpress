@@ -58,7 +58,8 @@ jQuery().ready(function($) {
 			
 				return false;
 			},
-			selectFirst: true
+			selectFirst: true,
+			appendTo: '#dsidx'
 		}).data("ui-autocomplete")._renderItem = function(ul, item) {
 			var name = (item.Type == 'County') ? item.Name + ' (County)' : item.Name;
 			return $('<li>').data('ui-autocomplete-item', item).append('<a>' + name + '</a>').appendTo(ul);

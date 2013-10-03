@@ -9,6 +9,14 @@ class dsIDXWidgets_MapSearch extends WP_Widget {
         if ($pagenow == 'widgets.php')
             wp_enqueue_script('dsidxwidgets_widget_service_admin', DSIDXWIDGETS_PLUGIN_URL . 'js/widget-service-admin.js', array('jquery'), false, true);
     }
+    function getCapabilities() {
+        $capabilities = dsSearchAgent_ApiRequest::FetchData('MlsCapabilities');
+        if (isset($capabilities['response']['code']) && $capabilities['response']['code'] == 200) {
+            return json_decode($capabilities['body']);
+        } else {
+            return false;
+        }
+    }
     function widget($args, $instance) {
         $randString = dsWidgets_Service_Base::get_random_string('abcdefghijklmnopqrstuvwxyz1234567890', 5);
 		wp_enqueue_script('googlemaps3', 'http://maps.googleapis.com/maps/api/js?sensor=false', array('jquery'), false, true);
@@ -20,6 +28,11 @@ class dsIDXWidgets_MapSearch extends WP_Widget {
 		$city = str_replace(" \r\n", ",", $city);
 		$city = str_replace("\r\n ", ",", $city);
 		$city = str_replace("\r\n", ",", $city);
+
+        $capabilities = $this->getCapabilities();
+        if (empty($capabilities->MinPrice)) $instance['priceMin'] = '';
+        if (empty($capabilities->MaxPrice)) $instance['priceMax'] = '';
+        if (empty($capabilities->MinImprovedSqFt)) $instance['sqftMin'] = '';
 
         $instance = wp_parse_args($instance, array(
             "state"                 => $state,
@@ -263,6 +276,8 @@ HTML;
 
         $apiStub = dsWidgets_Service_Base::$widgets_admin_api_stub;
 
+        $capabilities = $this->getCapabilities();
+
         echo <<<HTML
             <p>
 				<label for="{$heightFieldId}">Height</label>
@@ -284,14 +299,24 @@ HTML;
 				<label for="{$zipFieldId}">Zip Code</label>
 				<input id="{$zipFieldId}" name="{$zipFieldName}" value="{$zip}" class="widefat" type="text" />
 			</p>
+HTML;
+        if (!empty($capabilities->MinPrice)) {
+            echo <<<HTML
             <p>
-				<label for="{$priceMinFieldId}">Search Min. Price</label>
-				<input id="{$priceMinFieldId}" name="{$priceMinFieldName}" value="{$priceMin}" class="widefat" type="text" />
-			</p>
+                <label for="{$priceMinFieldId}">Search Min. Price</label>
+                <input id="{$priceMinFieldId}" name="{$priceMinFieldName}" value="{$priceMin}" class="widefat" type="text" />
+            </p>
+HTML;
+        } 
+        if (!empty($capabilities->MaxPrice)) {
+            echo <<<HTML
             <p>
-				<label for="{$priceMaxFieldId}">Search Max. Price</label>
-				<input id="{$priceMaxFieldId}" name="{$priceMaxFieldName}" value="{$priceMax}" class="widefat" type="text" />
-			</p>
+                <label for="{$priceMaxFieldId}">Search Max. Price</label>
+                <input id="{$priceMaxFieldId}" name="{$priceMaxFieldName}" value="{$priceMax}" class="widefat" type="text" />
+            </p>
+HTML;
+        } 
+            echo <<<HTML
             <p>
 				<label for="{$priceFloorFieldId}">Min. Searchable Price</label>
 				<input id="{$priceFloorFieldId}" name="{$priceFloorFieldName}" value="{$priceFloor}" class="widefat" type="text" />
@@ -308,10 +333,16 @@ HTML;
 				<label for="{$bathsMinFieldId}">Min. Baths</label>
 				<input id="{$bathsMinFieldId}" name="{$bathsMinFieldName}" value="{$bathsMin}" class="widefat" type="text" />
 			</p>
+HTML;
+        if (!empty($capabilities->MinImprovedSqFt)) {
+            echo <<<HTML
             <p>
-				<label for="{$sqftMinFieldId}">Min. Square Feet</label>
-				<input id="{$sqftMinFieldId}" name="{$sqftMinFieldName}" value="{$sqftMin}" class="widefat" type="text" />
-			</p>
+                <label for="{$sqftMinFieldId}">Min. Square Feet</label>
+                <input id="{$sqftMinFieldId}" name="{$sqftMinFieldName}" value="{$sqftMin}" class="widefat" type="text" />
+            </p>
+HTML;
+        } 
+        echo <<<HTML
             <p>
                 <label for="{$statusFieldId}">Status</label>
 				<select class="widefat" id="{$statusFieldId}" name="{$statusFieldName}">

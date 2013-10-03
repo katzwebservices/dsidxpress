@@ -46,11 +46,7 @@ class dsIDXWidgets_AreaStats extends WP_Widget {
 		
         if(defined('ZPRESS_API') && ZPRESS_API != ''){
             $widget_header = call_user_func('\zpress\themes\Options::GetOption', 'theme_widgets_require_header');
-    		if(!empty($widget_header->meta) && $widget_header->meta == 'true'){
-    			echo $before_title;
-    			echo 'Area Stats';
-    			echo $after_title;
-    		}
+            if(!empty($widget_header->meta) && $widget_header->meta == 'true') echo $before_title . 'Area Stats' . $after_title;
         }
 	
         echo <<<HTML
