@@ -24,7 +24,6 @@ class dsIDXWidgets_RecentStatus extends WP_Widget {
         $statusType = htmlspecialchars($instance["statusType"]);
         $imagesStub = dsWidgets_Service_Base::$widgets_images_stub;
         $apiStub = dsWidgets_Service_Base::$widgets_api_stub;
-        $height = htmlspecialchars($instance["height"]);
         $width = htmlspecialchars($instance["width"]);
         $curURL = get_home_url();
 
@@ -43,13 +42,13 @@ class dsIDXWidgets_RecentStatus extends WP_Widget {
 		}
 
         echo $before_widget;
+        echo $before_title . $title . $after_title;
         echo <<<HTML
-        <h3 class="widget-title">{$title}</h3>
         <script type="text/javascript" id="divLocal{$randString}_">
 				window.recentStatusHasDependency = true;
                 LaunchBase{$randString} = function(){
                 var recentStatusScript, _ds_midx;
-                CreateObject{$randString} = function () { _ds_midx = { currentURL: '{$curURL}', curHeight: '{$height}', curWidth: '{$width}', showHeader: false, productType: '0', curAPIStub: '{$apiStub}', curImageStub: '{$imagesStub}', targetDomain: window["zpress_widget_domain_token"], accountId: '{$aid}',searchSetupId: '{$ssid}',muteStyles: true,curTitle: '{$title}',rowCount: '{$rowCount}',community: '{$community}',state: '{$state}',city: '{$city}',zip: '{$zip}',linkTitle: '{$linkTitle}',curDivID: 'divLocal{$randString}_',querySchema: 'MmZDz28oMETkfu/J7uVDj5me5CwqyWZUYbd0g3HEW8Ar73U98rI41MBxO894vgPN',status: '{$statusType}' }; }
+                CreateObject{$randString} = function () { _ds_midx = { currentURL: '{$curURL}', curWidth: '{$width}', showHeader: false, productType: '0', curAPIStub: '{$apiStub}', curImageStub: '{$imagesStub}', targetDomain: window["zpress_widget_domain_token"], accountId: '{$aid}',searchSetupId: '{$ssid}',muteStyles: true,curTitle: '{$title}',rowCount: '{$rowCount}',community: '{$community}',state: '{$state}',city: '{$city}',zip: '{$zip}',linkTitle: '{$linkTitle}',curDivID: 'divLocal{$randString}_',querySchema: 'MmZDz28oMETkfu/J7uVDj5me5CwqyWZUYbd0g3HEW8Ar73U98rI41MBxO894vgPN',status: '{$statusType}' }; }
                 AddJavaScriptToDOM{$randString}=function(c,d,e){if(1!=d){var a=document.createElement("script"),b=document.getElementsByTagName("script")[0];a.async=!0;a.src=c;a.onload=function(){ window[e] = 1;};b.parentNode.insertBefore(a,b)}return 1};
                 CreateWidget{$randString} = function () {
                  (window.recentStatusFinished == 1) ? (window["ds.widget.view.recentstatus"].isProcessing = true, CreateObject{$randString}(), new window["ds.widget.view.recentstatus"](_ds_midx), window["ds.widget.view.recentstatus"].isProcessing = false, window.recentStatusHasDependency = false) : window.setTimeout("CreateWidget{$randString}(false)", 20); 
@@ -76,7 +75,6 @@ HTML;
         $new_instance["recentstatusOptions"]["linkTitle"] = $new_instance["linkTitle"];
         $new_instance["recentstatusOptions"]["statusType"] = $new_instance["statusType"];
         $new_instance["recentstatusOptions"]["eDomain"] = $new_instance["eDomain"];
-        $new_instance["recentstatusOptions"]["height"] = $new_instance["height"];
         $new_instance["recentstatusOptions"]["width"] = $new_instance["width"];
         $new_instance = $new_instance["recentstatusOptions"];
         return $new_instance;
@@ -95,7 +93,6 @@ HTML;
             "linkTitle"                 => "More homes available in your area",
             "statusType"        => "1",
             "eDomain" =>   "",
-            "height" =>     "272",
             "width" =>      "306"
             ));
         $title = htmlspecialchars($instance["title"]);
@@ -130,10 +127,6 @@ HTML;
         $statusFieldId = $this->get_field_id("statusType");
         $statusFieldName = $this->get_field_name("statusType");
 
-        $height = htmlspecialchars($instance["height"]);
-        $heightFieldId = $this->get_field_id("height");
-        $heightFieldName = $this->get_field_name("height");
-
         $width = htmlspecialchars($instance["width"]);
         $widthFieldId = $this->get_field_id("width");
         $widthFieldName = $this->get_field_name("width");
@@ -147,10 +140,6 @@ HTML;
         	<p>
 				<label for="{$titleFieldId}">Title</label>
 				<input id="{$titleFieldId}" name="{$titleFieldName}" value="{$title}" class="widefat" type="text" />
-			</p>
-            <p>
-				<label for="{$heightFieldId}">Height</label>
-				<input id="{$heightFieldId}" name="{$heightFieldName}" value="{$height}" class="widefat" type="text" />
 			</p>
             <p>
 				<label for="{$widthFieldId}">Width</label>

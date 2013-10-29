@@ -884,6 +884,7 @@ if (isset($diagnostics["error"])) {
 							<span class="description">If you need/want to restrict dsIDXpress to specific property types, select the types you would like to have return results.  This setting will also restrict the property types shown in search form options.  You may also choose which types are included in the default property type selection.</span>
 						</td>
 					</tr>
+					<?php if ($account_options->{'dsIDXPress-Package'} == 'pro') : ?>
 					<tr>
 						<th>
 							<label>Restrict Results by Status:</label>
@@ -907,6 +908,7 @@ if (isset($diagnostics["error"])) {
 							<span class="description">If you need / want to restrict the properties shown on your website by property status, check the statuses you would like visitors to see in search results here</span>
 						</td>
 					</tr>
+					<?php endif; ?>
 				</table>
 				<br />
 				<p class="submit">

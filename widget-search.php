@@ -199,7 +199,7 @@ HTML;
 					</tr>
 				</table>
 				<div class="dsidx-search-button search-form">
-					<input type="submit" class="submit" value="Search for properties" /><br /><br />
+					<input type="submit" class="submit" value="Search for properties" />
 HTML;
 		if($options["HasSearchAgentPro"] == "yes" && $searchOptions["show_advanced"] == "yes"){
 			echo <<<HTML

@@ -111,20 +111,19 @@ var dsidxMultiListings = (function() {
 				},
 				success: function(data) {
 					var options = [];
-					var areaName, listingCount, urlEscapedAreaName, printableAreaName;
+					var areaName, urlEscapedAreaName, printableAreaName;
 					
 					for (var i = 0, j = data.length; i < j; ++i) {
 						areaName = data[i].Name;
-						listingCount = data[i].ListingCount;
 						urlEscapedAreaName = escape(areaName);
 						
 						if (/"/.test(areaName))
 							continue;
 						
-						if (areaName.length > 20)
-							printableAreaName = $('<div/>').text(areaName.substr(0, 20) + '... (' + String(listingCount) + ')').html();
+						if (areaName.length > 30)
+							printableAreaName = $('<div/>').text(areaName.substr(0, 30) + '...').html();
 						else
-							printableAreaName = $('<div/>').text(areaName + ' (' + String(listingCount) + ')').html();
+							printableAreaName = $('<div/>').text(areaName).html();
 						options.push('<option value="' + urlEscapedAreaName + '">' + printableAreaName + '</option>');
 					}
 					$('#area-name').html(options.join(''));

@@ -219,6 +219,10 @@ class dsSearchAgent_ListingsWidget extends WP_Widget {
 						<p><i>{$officeListingsNote}</i></p>
 					</td>
 				</tr>
+HTML;
+		if (!defined('ZPRESS_API')) {
+			echo <<<HTML
+		
 				<tr>
 					<th colspan="2"><p> - OR - </p></th>
 				</tr>
@@ -232,10 +236,10 @@ class dsSearchAgent_ListingsWidget extends WP_Widget {
 						<p>
 							<select name="{$baseFieldName}[linkSourceConfig][linkId]" class="widefat">
 HTML;
-		foreach ($availableLinks as $link) {
-			echo "<option value=\"{$link->LinkID}\" {$selectedLink[$link->LinkID]}>{$link->Title}</option>";
-		}
-		echo <<<HTML
+			foreach ($availableLinks as $link) {
+				echo "<option value=\"{$link->LinkID}\" {$selectedLink[$link->LinkID]}>{$link->Title}</option>";
+			}
+			echo <<<HTML
 							</select>
 						</p>
 
@@ -253,6 +257,9 @@ HTML;
 						</p>
 					</td>
 				</tr>
+HTML;
+		}
+		echo <<<HTML
 			</table>
 HTML;
 	}
