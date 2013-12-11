@@ -1,5 +1,7 @@
 <?php
 class dsIDXWidgets_AreaStats extends WP_Widget {
+    var $widgetsCdn;
+
     function dsIDXWidgets_AreaStats() {
 		global $pagenow;
         $this->WP_Widget("dsidx-areastats", "Area Statistics", array(
@@ -8,6 +10,8 @@ class dsIDXWidgets_AreaStats extends WP_Widget {
             ));
         if ($pagenow == 'widgets.php')
             wp_enqueue_script('dsidxwidgets_widget_service_admin', DSIDXWIDGETS_PLUGIN_URL . 'js/widget-service-admin.js', array('jquery'), false, true);
+
+        $this->widgetsCdn = dsWidgets_Service_Base::$widgets_cdn;
 
     }
     function widget($args, $instance) {
@@ -59,10 +63,10 @@ class dsIDXWidgets_AreaStats extends WP_Widget {
                 CreateWidget{$randString} = function () {
                  if ((window.historicalChartFinished == 1) && (window.historicalChartDep1Finished == 1) && (window.historicalChartDep2Finished != 1)) 
                 { if (historicalChartDep2Script != 1)
-                 { historicalChartDep2Script = AddJavaScriptToDOM{$randString}('http://widgets.diverse-cdn.com/Scripts/Dependencies/g.raphael-min.js', historicalChartDep2Script, 'historicalChartDep2Finished');}}
+                 { historicalChartDep2Script = AddJavaScriptToDOM{$randString}('{$this->widgetsCdn}/Scripts/Dependencies/g.raphael-min.js', historicalChartDep2Script, 'historicalChartDep2Finished');}}
                 if ((window.historicalChartFinished == 1) && (window.historicalChartDep1Finished == 1) && (window.historicalChartDep2Finished == 1)) {
                 if (1 != historicalChartDep3Script)
-                {historicalChartDep3Script = AddJavaScriptToDOM{$randString}('http://widgets.diverse-cdn.com/Scripts/Dependencies/g.line-min.js', historicalChartDep3Script, 'historicalChartDep3Finished');
+                {historicalChartDep3Script = AddJavaScriptToDOM{$randString}('{$this->widgetsCdn}/Scripts/Dependencies/g.line-min.js', historicalChartDep3Script, 'historicalChartDep3Finished');
                 window.historicalChartDep3Finished == 1;}if (window.historicalChartDep3Finished == 1) 
                 {window['ds.widget.view.historicalchart'].isProcessing = true;CreateObject{$randString}(); new window['ds.widget.view.historicalchart'](_ds_midx); window['ds.widget.view.historicalchart'].isProcessing = false; window.areaStatsHasDependency = false;}
                 else {
@@ -70,8 +74,8 @@ class dsIDXWidgets_AreaStats extends WP_Widget {
                 else {
                 window.setTimeout('CreateWidget{$randString}(false)', 20);} 
                 }
-                if (historicalChartScript != 1) { historicalChartScript = AddJavaScriptToDOM{$randString}("http://widgets.diverse-cdn.com/Scripts/PostCompile/HistoricalChart_v1_1.js", historicalChartScript, 'historicalChartFinished') }; 
-                if (historicalChartDep1Script != 1) { historicalChartDep1Script = AddJavaScriptToDOM{$randString}("http://widgets.diverse-cdn.com/Scripts/Dependencies/raphael-min.js", historicalChartDep1Script, 'historicalChartDep1Finished') };
+                if (historicalChartScript != 1) { historicalChartScript = AddJavaScriptToDOM{$randString}("{$this->widgetsCdn}/Scripts/PostCompile/HistoricalChart_v1_1.js", historicalChartScript, 'historicalChartFinished') }; 
+                if (historicalChartDep1Script != 1) { historicalChartDep1Script = AddJavaScriptToDOM{$randString}("{$this->widgetsCdn}/Scripts/Dependencies/raphael-min.js", historicalChartDep1Script, 'historicalChartDep1Finished') };
                 CreateWidget{$randString}();
             }
             GetToken{$randString}=function(){if(!window.zpress_widget_domain_token&&1!=window.zpress_widget_domain_token_progress){window.zpress_widget_domain_token_progress=1;var c=-1<navigator.userAgent.indexOf("MSIE 7.0")?!0:!1,d=-1<navigator.userAgent.indexOf("MSIE 8.0")||-1<navigator.userAgent.indexOf("MSIE 9.0")?!0:!1;if(c)rr=document.createElement("script"),rr.async=!0,rr.id="domainScript",rr.type="text/javascript",rr.src="{$apiStub}Encrypt/?targetString="+window.location.hostname+"&targetObject=domain&authType=Basic&curDomain="+

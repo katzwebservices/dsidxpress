@@ -548,6 +548,12 @@
     width: 548px;
     visibility: visible;
 }
+
+.mapsearch-hiden-control{
+    height:50px;
+    width:100%;
+}
+
 .mapsearch_header
 {    
     background-color: Black;
@@ -559,6 +565,7 @@
     width: 548px;
     height: 9.2%;
     position: relative;
+    z-index:1;
     top: -494px;
     left: 0px;
 }
@@ -715,6 +722,37 @@
 {
     height:100%;
     width: 100%;
+}
+.gm-style-iw{
+    width:250px;
+    left:5px;
+}
+.info-window .dsix-small-listing{
+    padding:0 !important;
+}
+.info-window .dsidx-data{
+    width:100%;
+}
+.info-window .dsidx-secondary-data-line ul{
+    float:left;
+}
+.info-window .dsidx-secondary-data-line ul li{
+    font-weight:normal;
+    font-size:12px;
+}
+.info-window .dsidx-secondary-data-line ul li.dsidx-price{
+    background:none !important;
+    display:block;
+    padding:5px 0 !important;
+    margin:0 !important;
+    clear:both;
+}
+.info-window .dsidx-secondary-data-line ul li.dsidx-price a{
+    font-weight:bold !important;
+    color:#666;
+}
+.info-window .dsidx-address a{
+    font-weight:bold;
 }
 /* viewOpenHouse */
 .OpenHouse_div
@@ -1070,4 +1108,5 @@
 {
         margin: 0 0 0 55px;
 }
+
 /* end of maps hover */

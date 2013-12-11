@@ -314,7 +314,7 @@ HTML;
 			</p>
 
 			<p>
-				<h3>Fields to Display</h3>
+				<h4>Fields to Display</h4>
 				<div id="{$searchOptionsFieldId}-show_checkboxes" class="search-widget-searchOptions">
 					<input type="checkbox" id="{$searchOptionsFieldId}-show_cities" name="{$searchOptionsFieldName}[show_cities]" {$show_cities} onclick="dsWidgetSearch.ShowBlock(this);"/>
 					<label for="{$searchOptionsFieldId}-show_cities">Cities</label><br />
@@ -338,7 +338,7 @@ HTML;
 			</p>
 
 			<div id="{$searchOptionsFieldId}-cities_block">
-				<h3>Cities (one per line)</h3>
+				<h4>Cities (one per line)</h4>
 				<p>
 					<textarea id="{$searchOptionsFieldId}[cities]" name="{$searchOptionsFieldName}[cities]" class="widefat" rows="10">{$cities}</textarea>
 				</p>

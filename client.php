@@ -431,8 +431,8 @@ class dsSearchAgent_Client {
 			add_action('wp_head', array($dsidxpress_seo, 'dsidxpress_head_action'));
 			add_filter('wp_title', array($dsidxpress_seo, 'dsidxpress_title_filter'));
 		}
-		if (!empty($firstimage))
- 		 	add_action('wp_head', array( "dsSearchAgent_Client", 'ImageMetaLinkForSharing'));
+		
+ 		add_action('wp_head', array( "dsSearchAgent_Client", 'SocialMetaTags'));
 		
  		 if ($action == "search")
  		 	dsidx_footer::ensure_disclaimer_exists("search");
@@ -528,7 +528,7 @@ class dsSearchAgent_Client {
 		if (self::$CanonicalUri && !$thesis)
 			echo "<link rel=\"canonical\" href=\"" . self::GetPermalink() . "\" />\n";
 	}
-	static function ImageMetaLinkForSharing() {
+	static function SocialMetaTags() {
 		$firstimage = self::$meta_tag_data['firstimage'];
 		$title = self::$meta_tag_data['title'];
 		$description = self::$meta_tag_data['description'];
@@ -538,6 +538,7 @@ class dsSearchAgent_Client {
 		$blogUrl = get_home_url();
 		//Twitter Card
 		echo <<<HTML
+			<meta name="og:description" content="{$description}">
 			<meta name="twitter:card" content="summary">
 		    <meta name="twitter:url" content="{$blogUrl}">
 		    <meta name="twitter:title" content="{$title}">

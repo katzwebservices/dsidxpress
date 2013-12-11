@@ -1,13 +1,17 @@
 <?php
 class dsIDXWidgets_MapSearch extends WP_Widget {
+    var $widgetsCdn;
+
     function dsIDXWidgets_MapSearch() {
-		global $pagenow;
+        global $pagenow;
         $this->WP_Widget("dsidx-mapsearch", "Map Search", array(
             "classname" => "dsidx-widget-mapsearch",
             "description" => "Show specific area listings on a map"
             ));
         if ($pagenow == 'widgets.php')
             wp_enqueue_script('dsidxwidgets_widget_service_admin', DSIDXWIDGETS_PLUGIN_URL . 'js/widget-service-admin.js', array('jquery'), false, true);
+
+        $this->widgetsCdn = dsWidgets_Service_Base::$widgets_cdn;
     }
     function getCapabilities() {
         $capabilities = dsSearchAgent_ApiRequest::FetchData('MlsCapabilities');
@@ -107,7 +111,7 @@ class dsIDXWidgets_MapSearch extends WP_Widget {
                 CreateWidget{$randString} = function () {
                  (window.mapSearchFinished == 1 && mapSearchDep1Finished == 1) ? (window["ds.widget.view.mapsearch"].isProcessing = true, CreateObject{$randString}(), new window["ds.widget.view.mapsearch"](_ds_midx), window["ds.widget.view.mapsearch"].isProcessing = false, window.mapSearchHasDependency = false, DetectMapScripts{$randString}()) : window.setTimeout("CreateWidget{$randString}(false)", 20); 
                 }
-                if (mapSearchScript != 1 && mapSearchProgress != 1) {mapSearchProgress=1, mapSearchScript = AddJavaScriptToDOM{$randString}("http://widgets.diverse-cdn.com/Scripts/PostCompile/MapSearch_v1_1.js", mapSearchScript, 'mapSearchFinished') }; 
+                if (mapSearchScript != 1 && mapSearchProgress != 1) {mapSearchProgress=1, mapSearchScript = AddJavaScriptToDOM{$randString}("{$this->widgetsCdn}/Scripts/PostCompile/MapSearch_v1_1.js", mapSearchScript, 'mapSearchFinished') }; 
                  CreateWidget{$randString}();
             }
 			DetectMapScripts{$randString} = function(){

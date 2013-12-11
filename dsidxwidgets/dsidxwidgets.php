@@ -60,6 +60,11 @@ if (defined('DS_API')) {
     dsWidgets_Service_Base::$widgets_api_stub = DS_API;
 }
 
+if (defined('WIDGETS_CDN')) {
+	// this allows us to maintain plugin independence just in case we use this outside of zpress
+    dsWidgets_Service_Base::$widgets_cdn = WIDGETS_CDN;
+}
+
 if (is_admin()) {
 	// this is needed specifically for development as PHP seems to choke when 1) loading this in admin, 2) using windows, 3) using directory junctions
     include_once(dirname( __FILE__ ) . "/admin.php");

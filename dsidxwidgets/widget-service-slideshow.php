@@ -1,5 +1,7 @@
 <?php
 class dsIDXWidgets_Slideshow extends WP_Widget {
+    var $widgetsCdn;
+
     function dsIDXWidgets_Slideshow() {
 		global $pagenow;
         $this->WP_Widget("dsidx-slideshow", "Property Slideshow", array(
@@ -8,6 +10,8 @@ class dsIDXWidgets_Slideshow extends WP_Widget {
             ));
         if ($pagenow == 'widgets.php')
             wp_enqueue_script('dsidxwidgets_widget_service_admin', DSIDXWIDGETS_PLUGIN_URL . 'js/widget-service-admin.js', array('jquery'), false, true);
+
+        $this->widgetsCdn = dsWidgets_Service_Base::$widgets_cdn;
     }
     function widget($args, $instance) {
         extract($args);
@@ -58,7 +62,7 @@ class dsIDXWidgets_Slideshow extends WP_Widget {
                 CreateWidget{$randString} = function () {
                     (window.slideshowFinished == 1) ? (window["ds.widget.view.slideshow"].isProcessing = true, CreateObject{$randString}(), new window["ds.widget.view.slideshow"](_ds_midx), window["ds.widget.view.slideshow"].isProcessing = false, window.slideshowHasDependency = false) : window.setTimeout("CreateWidget{$randString}(false)", 20); 
                 }
-                if (slideshowScript != 1) { slideshowScript = AddJavaScriptToDOM{$randString}("http://widgets.diverse-cdn.com/Scripts/PostCompile/Slideshow_v1_1.js", slideshowScript, 'slideshowFinished') }; 
+                if (slideshowScript != 1) { slideshowScript = AddJavaScriptToDOM{$randString}("{$this->widgetsCdn}/Scripts/PostCompile/Slideshow_v1_1.js", slideshowScript, 'slideshowFinished') }; 
                 CreateWidget{$randString}();
             }
 

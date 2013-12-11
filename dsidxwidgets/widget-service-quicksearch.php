@@ -1,5 +1,7 @@
 <?php
 class dsIDXWidgets_quicksearch extends WP_Widget {
+    var $widgetsCdn;
+
     function dsIDXWidgets_QuickSearch() {
 		global $pagenow;
         $this->WP_Widget("dsidx-quicksearch", "Quick Search", array(
@@ -8,6 +10,8 @@ class dsIDXWidgets_quicksearch extends WP_Widget {
             ));
         if ($pagenow == 'widgets.php')
             wp_enqueue_script('dsidxwidgets_widget_service_admin', DSIDXWIDGETS_PLUGIN_URL . 'js/widget-service-admin.js', array('jquery'), false, true);
+
+        $this->widgetsCdn = dsWidgets_Service_Base::$widgets_cdn;
     }
     function widget($args, $instance) {
         extract($args);
@@ -54,7 +58,7 @@ class dsIDXWidgets_quicksearch extends WP_Widget {
                 CreateWidget{$randString} = function () {
                  (window.quickSearchFinished == 1) ? (window["ds.widget.view.quicksearch"].isProcessing = true, CreateObject{$randString}(), new window["ds.widget.view.quicksearch"](_ds_midx), window["ds.widget.view.quicksearch"].isProcessing = false, window.quickSearchHasDependency = false) : window.setTimeout("CreateWidget{$randString}(false)", 20); 
                 }
-                if (quickSearchScript != 1) { quickSearchScript = AddJavaScriptToDOM{$randString}("http://widgets.diverse-cdn.com/Scripts/PostCompile/QuickSearch_v1_1.js", quickSearchScript, 'quickSearchFinished') }; 
+                if (quickSearchScript != 1) { quickSearchScript = AddJavaScriptToDOM{$randString}("{$this->widgetsCdn}/Scripts/PostCompile/QuickSearch_v1_1.js", quickSearchScript, 'quickSearchFinished') }; 
                   CreateWidget{$randString}();
             }
             GetToken{$randString}=function(){if(!window.zpress_widget_domain_token&&1!=window.zpress_widget_domain_token_progress){window.zpress_widget_domain_token_progress=1;var c=-1<navigator.userAgent.indexOf("MSIE 7.0")?!0:!1,d=-1<navigator.userAgent.indexOf("MSIE 8.0")||-1<navigator.userAgent.indexOf("MSIE 9.0")?!0:!1;if(c)rr=document.createElement("script"),rr.async=!0,rr.id="domainScript",rr.type="text/javascript",rr.src="{$apiStub}Encrypt/?targetString="+window.location.hostname+"&targetObject=domain&authType=Basic&curDomain="+

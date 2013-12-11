@@ -3,6 +3,7 @@ class dsWidgets_Service_Base {
     static $widgets_api_stub = 'http://api-b.idx.diversesolutions.com/api/';
     static $widgets_admin_api_stub = 'http://api-b.idx.diversesolutions.com/api/';
     static $widgets_images_stub = 'http://widgets.diverse-cdn.com/Content/Images/widgets';
+    static $widgets_cdn = 'http://widgets.diverse-cdn.com';
     //static $widgets_images_stub = '/wp-content/mu-plugins/dsidxwidgets/images';
     static function get_random_string($valid_chars, $length)
     {

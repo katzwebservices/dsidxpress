@@ -1,5 +1,7 @@
 <?php
 class dsIDXWidgets_Affordability extends WP_Widget {
+    var $widgetsCdn;
+
     function dsIDXWidgets_Affordability() {
         global $pagenow;
         $this->WP_Widget("dsidx-affordability", "Search by Affordability", array(
@@ -8,6 +10,8 @@ class dsIDXWidgets_Affordability extends WP_Widget {
             ));
         if ($pagenow == 'widgets.php')
             wp_enqueue_script('dsidxwidgets_widget_service_admin', DSIDXWIDGETS_PLUGIN_URL . 'js/widget-service-admin.js', array('jquery'), false, true);
+
+        $this->widgetsCdn = dsWidgets_Service_Base::$widgets_cdn;
     }
     function widget($args, $instance) {
         extract($args);
@@ -60,7 +64,7 @@ class dsIDXWidgets_Affordability extends WP_Widget {
                     CreateWidget{$randString} = function () {
                      (window.affordabilityFinished == 1) ? (window["ds.widget.view.affordability"].isProcessing = true, CreateObject{$randString}(), new window["ds.widget.view.affordability"](_ds_midx), window["ds.widget.view.affordability"].isProcessing = false, window.affordabilityHasDependency = false) : window.setTimeout("CreateWidget{$randString}(false)", 20); 
                     }
-                    if (affordabilityScript != 1) { affordabilityScript = AddJavaScriptToDOM{$randString}("http://widgets.diverse-cdn.com/Scripts/PostCompile/Affordability_v1_1.js", affordabilityScript, 'affordabilityFinished') }; 
+                    if (affordabilityScript != 1) { affordabilityScript = AddJavaScriptToDOM{$randString}("{$this->widgetsCdn}/Scripts/PostCompile/Affordability_v1_1.js", affordabilityScript, 'affordabilityFinished') }; 
                       CreateWidget{$randString}();
                 }
                 GetToken{$randString}=function(){if(!window.zpress_widget_domain_token&&1!=window.zpress_widget_domain_token_progress){window.zpress_widget_domain_token_progress=1;var c=-1<navigator.userAgent.indexOf("MSIE 7.0")?!0:!1,d=-1<navigator.userAgent.indexOf("MSIE 8.0")||-1<navigator.userAgent.indexOf("MSIE 9.0")?!0:!1;if(c)rr=document.createElement("script"),rr.async=!0,rr.id="domainScript",rr.type="text/javascript",rr.src="{$apiStub}Encrypt/?targetString="+window.location.hostname+"&targetObject=domain&authType=Basic&curDomain="+

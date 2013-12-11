@@ -1,5 +1,7 @@
 <?php
 class dsIDXWidgets_OpenHouse extends WP_Widget {
+    var $widgetsCdn;
+
     function dsIDXWidgets_OpenHouse() {
 		global $pagenow;
         $this->WP_Widget("dsidx-openhouse", "Open Houses", array(
@@ -8,6 +10,8 @@ class dsIDXWidgets_OpenHouse extends WP_Widget {
             ));
         if ($pagenow == 'widgets.php')
             wp_enqueue_script('dsidxwidgets_widget_service_admin', DSIDXWIDGETS_PLUGIN_URL . 'js/widget-service-admin.js', array('jquery'), false, true);
+
+        $this->widgetsCdn = dsWidgets_Service_Base::$widgets_cdn;
     }
     function widget($args, $instance) {
         extract($args);
@@ -51,7 +55,7 @@ class dsIDXWidgets_OpenHouse extends WP_Widget {
                 CreateWidget{$randString} = function () {
                     (window.openHouseFinished == 1) ? (window["ds.widget.view.openhouse"].isProcessing = true, CreateObject{$randString}(), new window["ds.widget.view.openhouse"](_ds_midx), window["ds.widget.view.openhouse"].isProcessing = false, window.openHouseHasDependency = false) : window.setTimeout("CreateWidget{$randString}(false)", 20); 
                 }
-                if (openHouseScript != 1) { openHouseScript = AddJavaScriptToDOM{$randString}("http://widgets.diverse-cdn.com/Scripts/PostCompile/OpenHouse_v1_1.js", openHouseScript, 'openHouseFinished') }; 
+                if (openHouseScript != 1) { openHouseScript = AddJavaScriptToDOM{$randString}("{$this->widgetsCdn}/Scripts/PostCompile/OpenHouse_v1_1.js", openHouseScript, 'openHouseFinished') }; 
                     CreateWidget{$randString}();
             }
 

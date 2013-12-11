@@ -111,7 +111,7 @@ class dsSearchAgent_ListAreasWidget extends WP_Widget {
 				</select>
 			</p>
 
-			<h3>Areas (one per line)</h3>
+			<h4>Areas (one per line)</h4>
 			<p>
 				<textarea id="{$areaOptionsFieldId}_areas" name="{$areaOptionsFieldName}[areas]" class="widefat" rows="10">{$areas}</textarea>
 			</p>
@@ -130,7 +130,7 @@ class dsSearchAgent_ListAreasWidget extends WP_Widget {
 			<p><a href="javascript:void(0);" onclick="jQuery('#{$advancedId}_advanced').slideDown(500); jQuery(this).hide()">Advanced</a></p>
 			<div id="{$advancedId}_advanced" style="display:none">
 				<hr />
-				<h3>Add an Area w/ a Custom Title</h3>
+				<h4>Add an Area w/ a Custom Title</h4>
 				<p>
 					<label for="{$advancedId}_title">Link Text</label>
 					<input id="{$advancedId}_title" value="" class="widefat" type="text" />
