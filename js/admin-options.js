@@ -64,11 +64,7 @@ dsIDXpressOptions = {
 		jQuery('#dsidxpress-NewSitemapLocation').val('');
 
 		var html = '<li class="ui-state-default dsidxpress-SitemapLocation">' +
-			'<div class="arrow"><span class="dsidxpress-up_down"></span></div>' +
-			'<div class="value">' +
-				'<a href="' + dsIDXpressOptions.UrlBase + location_type + '/' + location_sanitized + '" target="_blank">' + location_name + '</a>' +
-				'<input type="hidden" name="' + dsIDXpressOptions.OptionPrefix + '[SitemapLocations][' + index + '][value]" value="' + location_name + '" />' +
-			'</div>' +
+			'<div class="action"><input type="button" value="Remove" class="button" onclick="dsIDXpressOptions.RemoveSitemapLocation(this)" /></div>' +
 			'<div class="priority">' +
 				'Priority: <select name="' + dsIDXpressOptions.OptionPrefix + '[SitemapLocations][' + index + '][priority]">' +
 					'<option value="0.0">0.0</option>' +
@@ -92,7 +88,10 @@ dsIDXpressOptions = {
 					'<option value="zip"' + zip_selected + '>Zip Code</option>' +
 				'</select>' +
 			'</div>' +
-			'<div class="action"><input type="button" value="Remove" class="button" onclick="dsIDXpressOptions.RemoveSitemapLocation(this)" /></div>' +
+			'<div class="value">' +
+				'<a href="' + dsIDXpressOptions.UrlBase + location_type + '/' + location_sanitized + '" target="_blank">' + location_name + '</a>' +
+				'<input type="hidden" name="' + dsIDXpressOptions.OptionPrefix + '[SitemapLocations][' + index + '][value]" value="' + location_name + '" />' +
+			'</div>' +
 			'<div style="clear:both"></div>' +
 			'</li>';
 

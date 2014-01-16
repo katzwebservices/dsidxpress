@@ -1031,7 +1031,6 @@ if (isset($diagnostics["error"])) {
 			<?php endif; ?>
 			<div class="dsidxpress-SitemapLocations stuffbox">
 				<script type="text/javascript">jQuery(function() { xmlsitemap_page = true; dsIDXpressOptions.UrlBase = '<?php echo $urlBase; ?>'; dsIDXpressOptions.OptionPrefix = '<?php echo DSIDXPRESS_OPTION_NAME; ?>';});</script>
-				<h3><span class="hndle">Locations for Sitemap</span></h3>
 				<div class="inside">
 					<ul id="dsidxpress-SitemapLocations">
 					<?php
@@ -1044,11 +1043,7 @@ if (isset($diagnostics["error"])) {
 							$location_sanitized = urlencode(strtolower(str_replace(array("-", " "), array("_", "-"), $value["value"])));
 					?>
 								<li class="ui-state-default dsidxpress-SitemapLocation">
-									<div class="arrow"><span class="dsidxpress-up_down"></span></div>
-									<div class="value">
-										<a href="<?php echo $urlBase . $value["type"] .'/'. $location_sanitized;?>" target="_blank"><?php echo $value["value"]; ?></a>
-										<input type="hidden" name="<?php echo DSIDXPRESS_OPTION_NAME ; ?>[SitemapLocations][<?php echo $location_index; ?>][value]" value="<?php echo $value["value"]; ?>" />
-									</div>
+									<div class="action"><input type="button" value="Remove" class="button" onclick="dsIDXpressOptions.RemoveSitemapLocation(this)" /></div>
 									<div class="priority">
 										Priority: <select name="<?php echo DSIDXPRESS_OPTION_NAME ; ?>[SitemapLocations][<?php echo $location_index; ?>][priority]">
 											<option value="0.0"<?php echo ($value["priority"] == "0.0" ? ' selected="selected"' : '') ?>>0.0</option>
@@ -1072,7 +1067,10 @@ if (isset($diagnostics["error"])) {
 											<option value="zip"<?php echo ($value["type"] == "zip" ? ' selected="selected"' : ''); ?>>Zip Code</option>
 										</select>
 									</div>
-									<div class="action"><input type="button" value="Remove" class="button" onclick="dsIDXpressOptions.RemoveSitemapLocation(this)" /></div>
+									<div class="value">
+										<a href="<?php echo $urlBase . $value["type"] .'/'. $location_sanitized;?>" target="_blank"><?php echo $value["value"]; ?></a>
+										<input type="hidden" name="<?php echo DSIDXPRESS_OPTION_NAME ; ?>[SitemapLocations][<?php echo $location_index; ?>][value]" value="<?php echo $value["value"]; ?>" />
+									</div>
 									<div style="clear:both"></div>
 								</li>
 								<?php
@@ -1081,22 +1079,23 @@ if (isset($diagnostics["error"])) {
 						}
 						?>
 					</ul>
+				</div>
+			</div>
 
-					<div class="dsidxpress-SitemapLocationsNew">
-						<div class="arrow">New:</div>
-						<div class="value"><input type="text" id="dsidxpress-NewSitemapLocation" maxlength="49" value="" /></div>
-						<div class="type">
-							<select class="widefat ignore-changes" id="dsidxpress-NewSitemapLocationType">
-								<option value="city">City</option>
-								<option value="community">Community</option>
-								<option value="tract">Tract</option>
-								<option value="zip">Zip Code</option>
-							</select>
-						</div>
-						<div class="action">
-							<input type="button" class="button" id="dsidxpress-NewSitemapLocationAdd" value="Add" onclick="dsIDXpressOptions.AddSitemapLocation()" />
-						</div>
-						<div style="clear:both"></div>
+			<div class="dsidxpress-SitemapLocations dsidxpress-SitemapLocationsNew stuffbox">
+				<div class="inside">
+					<h4>New:</h4>
+					<div class="type">
+						<select class="widefat ignore-changes" id="dsidxpress-NewSitemapLocationType">
+							<option value="city">City</option>
+							<option value="community">Community</option>
+							<option value="tract">Tract</option>
+							<option value="zip">Zip Code</option>
+						</select>
+					</div>
+					<div class="value"><input type="text" id="dsidxpress-NewSitemapLocation" maxlength="49" value="" /></div>
+					<div class="action">
+						<input type="button" class="button" id="dsidxpress-NewSitemapLocationAdd" value="Add" onclick="dsIDXpressOptions.AddSitemapLocation()" />
 					</div>
 				</div>
 			</div>

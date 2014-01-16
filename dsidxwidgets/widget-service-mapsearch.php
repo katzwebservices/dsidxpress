@@ -1,6 +1,8 @@
 <?php
 class dsIDXWidgets_MapSearch extends WP_Widget {
+    
     var $widgetsCdn;
+    var $instance = false;
 
     function dsIDXWidgets_MapSearch() {
         global $pagenow;
@@ -22,6 +24,13 @@ class dsIDXWidgets_MapSearch extends WP_Widget {
         }
     }
     function widget($args, $instance) {
+        if (!$this->instance) {
+            $this->instance = true;
+        } 
+        // abort silently for the second instance of the widget
+        else {
+            return;
+        }
         $randString = dsWidgets_Service_Base::get_random_string('abcdefghijklmnopqrstuvwxyz1234567890', 5);
 		wp_enqueue_script('googlemaps3', 'http://maps.googleapis.com/maps/api/js?sensor=false', array('jquery'), false, true);
         extract($args);

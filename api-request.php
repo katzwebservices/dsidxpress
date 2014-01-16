@@ -12,7 +12,7 @@ class dsSearchAgent_ApiRequest {
 		"query.BathsMin"
 	);
 
-	static function FetchData($action, $params = array(), $echoAssetsIfNotEnqueued = true, $cacheSecondsOverride = null, $options = null) {
+	static function FetchData($action, $params = array(), $echoAssetsIfNotEnqueued = true, $cacheSecondsOverride = null, $options = null, $useGET = false) {
 		global $wp_query, $wp_version;
 
 		$options = $options ? $options : get_option(DSIDXPRESS_OPTION_NAME);
@@ -70,24 +70,32 @@ class dsSearchAgent_ApiRequest {
 		}
 		$stringToSign = rtrim($stringToSign, "\n");
 		$params["requester.Signature"] = hash_hmac("sha1", $stringToSign, $privateApiKey);
-		$response = (array)wp_remote_post($requestUri, array(
-			"body"			=> $params,
-			"redirection"	=> "0",
-			"timeout"		=> 15, // we look into anything that takes longer than 2 seconds to return
-			"reject_unsafe_urls" => false
-		));
+		$response = null;
 
-		if (empty($response["errors"]) && substr($response["response"]["code"], 0, 1) != "5") {
-			$response["body"] = self::FilterData($response["body"]);
-			if ($response["body"]){
-				if ($cacheSecondsOverride !== 0 && (!isset($options['DisableCache']) || $options['DisableCache'] != 'true'))
-					set_transient($transientKey, $compressCache ? base64_encode(gzdeflate(serialize($response))) : $response, $cacheSecondsOverride === null ? self::$CacheSeconds : $cacheSecondsOverride);
-				else
-					delete_transient($transientKey);
+		if ($useGET !== null && $useGET) {
+			header('Location: ' . $requestUri . '?' . http_build_query($params));
+		} 
+		else
+		{
+			$response = (array)wp_remote_post($requestUri, array(
+				"body"			=> $params,
+				"redirection"	=> "0",
+				"timeout"		=> 15, // we look into anything that takes longer than 2 seconds to return
+				"reject_unsafe_urls" => false
+			));
+
+			if (empty($response["errors"]) && substr($response["response"]["code"], 0, 1) != "5") {
+				$response["body"] = self::FilterData($response["body"]);
+				if ($response["body"]){
+					if ($cacheSecondsOverride !== 0 && (!isset($options['DisableCache']) || $options['DisableCache'] != 'true'))
+						set_transient($transientKey, $compressCache ? base64_encode(gzdeflate(serialize($response))) : $response, $cacheSecondsOverride === null ? self::$CacheSeconds : $cacheSecondsOverride);
+					else
+						delete_transient($transientKey);
+				}
+				
+				$response["body"] = self::ExtractAndEnqueueStyles($response["body"], $echoAssetsIfNotEnqueued);
+				$response["body"] = self::ExtractAndEnqueueScripts($response["body"], $echoAssetsIfNotEnqueued);
 			}
-			
-			$response["body"] = self::ExtractAndEnqueueStyles($response["body"], $echoAssetsIfNotEnqueued);
-			$response["body"] = self::ExtractAndEnqueueScripts($response["body"], $echoAssetsIfNotEnqueued);
 		}
 
 		return $response;
@@ -130,7 +138,7 @@ class dsSearchAgent_ApiRequest {
 		return $data;
 	}
 	public static function MakePluginsUrlRelative($url){
-		preg_match('/http:\/\/[^\/]+((\/[^\/]+)?\/wp-content\/plugins\/dsidxpress\/.*)/i', $url, $matches);
+		preg_match('/http:\/\/[^\/]+((\/[^\/]+)*\/wp-content\/plugins\/dsidxpress\/.*)/i', $url, $matches);
 		
 		return $matches[1];
 	}
@@ -155,15 +163,20 @@ class dsSearchAgent_ApiRequest {
 	private static function ExtractAndEnqueueScripts($data, $echoAssetsIfNotEnqueued) {
 		// see comment in ExtractAndEnqueueStyles
 
-		preg_match_all('/<script\s*src="(?P<src>[^"]+)"\s*data-handle="(?P<handle>[^"]+)"><\/script>/', $data, $scripts, PREG_SET_ORDER);
-		foreach ($scripts as $script) {
-			if (!$echoAssetsIfNotEnqueued || ($echoAssetsIfNotEnqueued && wp_script_is($script["handle"], 'registered')))
-				$data = str_replace($script[0], "", $data);
+		global $wp_scripts;
 
-			if ($echoAssetsIfNotEnqueued)
-				wp_register_script($script["handle"], $script["src"], false, null);
-			else
-				wp_enqueue_script($script["handle"], $script["src"], false, null);
+		preg_match_all('/<script\s*src="(?P<src>[^"]+)"\s*data-handle="(?P<handle>[^"]+)"><\/script>/', $data, $scripts, PREG_SET_ORDER);
+		
+		foreach ($scripts as $script) {
+			$alreadyIncluded = (wp_script_is($script['handle'], 'done'));
+			if ($alreadyIncluded || !$echoAssetsIfNotEnqueued) {
+				$data = str_replace($script[0], "", $data);
+				if (!$alreadyIncluded) {
+					wp_enqueue_script($script["handle"], $script["src"], false, null);
+				}
+			} else if ($echoAssetsIfNotEnqueued && !$alreadyIncluded) {
+				array_push($wp_scripts->done, $script['handle']); // a hack to make wordpress think that this script has already been both enqueued and printed to output
+			}
 		}
 
 		return $data;

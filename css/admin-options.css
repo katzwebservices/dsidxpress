@@ -28,53 +28,19 @@
 	text-align:center;
 }
 
-.dsidxpress-SitemapLocations{
+.dsidxpress-SitemapLocations {
 	margin: 10px 10px;
-	width: 600px;
-}
-
-.dsidxpress-up_down{
-	background-image:url(../assets/222222_256x240_icons_icons.png);
-	background-position:-128px -48px;
-	background-repeat:no-repeat;
-	/*display:block;*/
-	display:none;
-	overflow:hidden;
-	text-indent:-99999px;
-	height:16px;
-	width:16px;
-	margin: 4px auto;
-}
-
-.dsidxpress-SitemapLocations .dsidxpress-SitemapLocationsNew {
-	padding: 6px 0;
-	-moz-background-clip:border;
-	-moz-background-inline-policy:continuous;
-	-moz-background-origin:padding;
-	background:#EAF2FA none repeat scroll 0 0;
-}
-
-.dsidxpress-SitemapLocations li .arrow, .dsidxpress-SitemapLocations li .value{
-	/*cursor: move;*/
-}
-
-.dsidxpress-SitemapLocations .arrow{
-	width:40px;
-	height: 24px;
-	line-height:24px;
-	text-align:center;
-	float:left;
+	max-width: 800px;
 }
 
 .dsidxpress-SitemapLocations .priority{
 	width: 105px;
-	height: 24px;
 	line-height:24px;
 	float:left;
+	margin: 0 5px;
 }
 
 .dsidxpress-SitemapLocations .value{
-	width: 225px;
 	height: 24px;
 	line-height:24px;
 	float:left;
@@ -86,7 +52,6 @@
 
 .dsidxpress-SitemapLocations .type{
 	width: 150px;
-	height: 24px;
 	line-height:24px;
 	float:left;
 }
@@ -98,8 +63,6 @@
 
 .dsidxpress-SitemapLocations .action{
 	width: 80px;
-	height: 24px;
-	line-height:24px;
 	float:left;
 	text-align:center;
 }
@@ -107,12 +70,49 @@
 #dsidxpress-SitemapLocations li{
 	margin: 0;
 	padding: 6px 0 6px 0;
-	background-color:white;
 }
+
+#dsidxpress-SitemapLocations li:nth-child(even) { background: #eee; }
 
 #dsidxpress-CustomTitleText{
 	width: 300px;
 }
+
+.dsidxpress-SitemapLocations h4 { margin: 5px 0; }
+
+.dsidxpress-SitemapLocationsNew .inside { overflow: hidden; }
+
+.dsidxpress-SitemapLocationsNew .action {
+	width: auto;
+	clear: left;
+	float: right;
+	margin: 10px 0;
+}
+
+.dsidxpress-SitemapLocationsNew .type { 
+	width: 23%; 
+	margin-right: 2%; 
+}
+.dsidxpress-SitemapLocationsNew .value { width: 75%; }
+.dsidxpress-SitemapLocationsNew .type select, .dsidxpress-SitemapLocationsNew .value input { width: 100%; }
+
+@media screen and (max-width: 550px) {
+	.dsidxpress-SitemapLocations .priority { line-height: 36px; }
+	.dsidxpress-SitemapLocations .value { 
+		font-size: 16px; 
+		clear: left;
+		padding: 0 10px;
+	}
+	.dsidxpress-SitemapLocationsNew .value { clear: left; }
+	.dsidxpress-SitemapLocationsNew .value, .dsidxpress-SitemapLocationsNew .type { 
+		width: 100%;
+		margin: 5px 0;
+		padding: 0;
+		height: auto;
+	}
+}
+
+
 
 /* Styles for the link builder */
 #dsidxpress-link-builder .dsidxpress-item-wrap {
