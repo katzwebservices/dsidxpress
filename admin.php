@@ -201,14 +201,13 @@ HTML;
 		$urlBase .= dsSearchAgent_Rewrite::GetUrlSlug();
 ?>
 	<div class="wrap metabox-holder">
-		<?php screen_icon(); ?>
-		<h2>General Options</h2>
+		<h1>General Options</h1>
 		<?php if (isset($_REQUEST['settings-updated']) && $_REQUEST['settings-updated'] == 'true') : ?>
 		<div class="updated"><p><strong><?php _e( 'Options saved' ); ?></strong></p></div>
 		<?php endif; ?>
 		<form method="post" action="options.php" onsubmit="return dsIDXpressOptions.FilterViews();">
 		<?php settings_fields("dsidxpress_options"); ?>
-		<h4>Display Settings</h4>
+		<h2>Display Settings</h2>
 			<table class="form-table">
 				<?php if(!defined('ZPRESS_API') || ZPRESS_API == '') : ?>
 				<tr>
@@ -289,7 +288,7 @@ HTML;
 				</tr>
 			</table>
 						<?php if (defined('ZPRESS_API') || isset($options["dsIDXPressPackage"]) && $options["dsIDXPressPackage"] == "pro"): ?>
-			<h4>Registration Options</h4>
+			<h2>Registration Options</h2>
 			<table class="form-table">
 				<tr>
 					<th>
@@ -301,7 +300,7 @@ HTML;
 					</td>
 				</tr>
 			</table>
-			<h4>Forced Registration Settings</h4>
+			<h2>Forced Registration Settings</h2>
 			<table class="form-table">
 				<tr>
 					<th>
@@ -412,7 +411,7 @@ HTML;
 			</table>
 			<?php endif ?>
 			<?php if(!defined('ZPRESS_API') || ZPRESS_API == '') : ?>
-			<h4>Contact Information</h4>
+			<h2>Contact Information</h2>
 			<span class="description">This information is used in identifying you to the website visitor. For example: Listing PDF Printouts, Contact Forms, and Dwellicious</span>
 			<table class="form-table">
 				<tr>
@@ -444,7 +443,7 @@ HTML;
 				</tr>
 			</table>
 			
-			<h4>Copyright Settings</h4>
+			<h2>Copyright Settings</h2>
 			<span class="description">This setting allows you to remove links to <a href="http://www.diversesolutions.com">Diverse Solutions</a> that are included in the IDX disclaimer.</span>
 			<table class="form-table">
 				<tr>
@@ -457,7 +456,19 @@ HTML;
 				</tr>
 			</table>
 			<?php endif; ?>
-			<h4>My Listings</h4>
+			<h2>Mobile Settings</h2>
+			<span class="description">To set up a custom mobile domain you must configure your DNS to point a domain, or subdomain, at app.dsmobileidx.com. Then enter the custom domain's full url here. Example: http://mobile.myrealestatesite.com</span>
+			<table class="form-table">
+				<tr>
+					<th>
+						<label for="dsidxpress-MobileSiteUrl">Custom Mobile Domain:</label>
+					</th>
+					<td>
+						<input type="text" id="dsidxpress-MobileSiteUrl" maxlength="100" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[MobileSiteUrl]" value="<?php echo $account_options->MobileSiteUrl; ?>" />
+					</td>
+				</tr>
+			</table>
+			<h2>My Listings</h2>
 			<span class="description">When filled in, these settings will make pages for "My Listings" and "My Office Listings" available in your navigation menus page list.</span>
 			<table class="form-table">
 				<tr>
@@ -482,7 +493,7 @@ HTML;
 				</tr>
 			</table>
 			<?php if((!defined('ZPRESS_API') || ZPRESS_API == '') && isset($account_options->EnableMemcacheInDsIdxPress) && strtolower($account_options->EnableMemcacheInDsIdxPress) == "true") {?>
-			<h4>Memcache Options</h4>
+			<h2>Memcache Options</h2>
 			<?php if(!class_exists('Memcache') && !class_exists('Memcached')) {?>
 			<span class="description">Warning PHP is not configured with a Memcache module. See <a href="http://www.php.net/manual/en/book.memcache.php" target="_blank">here</a> or <a href="http://www.php.net/manual/en/book.memcached.php" target="_blank">here</a> to implement one.</span>
 			<?php }?>
@@ -537,11 +548,10 @@ HTML;
 ?>
 
 	<div class="wrap metabox-holder">
-		<?php screen_icon(); ?>
-		<h2>IDX Activation</h2>
+		<h1>IDX Activation</h1>
 		<form method="post" action="options.php">
 			<?php settings_fields("dsidxpress_activation"); ?>
-			<h3>Plugin activation</h3>
+			<h2>Plugin activation</h2>
 			<p>
 				In order to use <i><a href="http://www.dsidxpress.com/" target="_blank">dsIDXpress</a></i>
 				to display real estate listings from the MLS on your blog, you must have an activation key from
@@ -592,7 +602,7 @@ HTML;
 						<?php
 						if (@$diagnostics) {
 						?>
-			<h3>Diagnostics</h3>
+			<h2>Diagnostics</h2>
 <?php
 if (isset($diagnostics["error"])) {
 ?>
@@ -713,14 +723,12 @@ if (isset($diagnostics["error"])) {
 		if (substr($urlBase, strlen($urlBase), 1) != "/") $urlBase .= "/";
 			$urlBase .= dsSearchAgent_Rewrite::GetUrlSlug(); ?>
 		<div class="wrap metabox-holder">
-			<?php screen_icon(); ?>
-			<h2>Filters</h2>
+			<h1>Filters</h1>
 			<?php if (isset($_REQUEST['settings-updated']) && $_REQUEST['settings-updated'] == 'true') : ?>
 			<div class="updated"><p><strong><?php _e( 'Options saved' ); ?></strong></p></div>
 			<?php endif; ?>
 			<form method="post" action="options.php">
 				<?php settings_fields("dsidxpress_api_options"); ?>
-				<h4>Filter Results Settings</h4>
 				<span class="description">These settings will filter results.</span>
 				<table class="form-table">
 					<tr>
@@ -930,17 +938,15 @@ if (isset($diagnostics["error"])) {
 		if (substr($urlBase, strlen($urlBase), 1) != "/") $urlBase .= "/";
 			$urlBase .= dsSearchAgent_Rewrite::GetUrlSlug(); ?>
 		<div class="wrap metabox-holder">
-			<?php screen_icon(); ?>
-			<h2>SEO Settings</h2>
+			<h1>SEO Settings</h1>
 			<?php if (isset($_REQUEST['settings-updated']) && $_REQUEST['settings-updated'] == 'true') : ?>
 			<div class="updated"><p><strong><?php _e( 'Options saved' ); ?></strong></p></div>
 			<?php endif; ?>
 			<form method="post" action="options.php">
 			<?php settings_fields("dsidxpress_api_options"); ?>
-			<h4>SEO Settings</h4>
 			<span class="description">These settings are used to improve the accuracy of how search engines find and list this site.<br/>When using a replacement field please include it using lowercase characters.</span>
 			<div style="padding-left: 30px;">
-			<h4>Details Page Settings</h4>
+			<h2>Details Page Settings</h2>
 			<span class="description">These settings apply to any page holding details for a specific property. <br /><br />
 				You may use %city%, %state%, %zip%, %county%, %tract%, %community% and/or %zip% in any of the fields below and <br />
 				they will display as the relevant value. For example: Homes for sale in %zip%. will appear as Homes for sale in 92681.
@@ -969,7 +975,7 @@ if (isset($diagnostics["error"])) {
 					</td>
 				</tr>
 			</table>
-			<h4>Results Page Settings</h4>
+			<h2>Results Page Settings</h2>
 			<span class="description">
 				These settings apply to any page holding a list of properties queried through a url. You may use %location% in the fields and the relevant value will display.
 			</span>
@@ -1014,8 +1020,7 @@ if (isset($diagnostics["error"])) {
 		$urlBase .= dsSearchAgent_Rewrite::GetUrlSlug();
 	?>
 		<div class="wrap metabox-holder">
-			<?php screen_icon(); ?>
-			<h2>XML Sitemap Options</h2>
+			<h1>XML Sitemaps</h1>
 			<?php if (isset($_REQUEST['settings-updated']) && $_REQUEST['settings-updated'] == 'true') : ?>
 			<div class="updated"><p><strong><?php _e( 'Options saved' ); ?></strong></p></div>
 			<?php endif; ?>
@@ -1023,7 +1028,7 @@ if (isset($diagnostics["error"])) {
 
 			<form method="post" action="options.php">
 			<?php settings_fields("dsidxpress_xml_sitemap"); ?>
-			<h4>XML Sitemaps Locations</h4>
+			<h2>XML Sitemaps Locations</h2>
 		<?php if ( is_plugin_active('google-sitemap-generator/sitemap.php') || is_plugin_active('bwp-google-xml-sitemaps/bwp-simple-gxs.php') || class_exists('zpress\admin\Theme')) {?>
 			<span class="description">Add the Locations (City, Community, Tract, or Zip) to your XML Sitemap by adding them via the dialogs below.</span>
 			<?php if (is_plugin_active('bwp-google-xml-sitemaps/bwp-simple-gxs.php')): ?>
@@ -1102,7 +1107,7 @@ if (isset($diagnostics["error"])) {
 
 			<span class="description">"Priority" gives a hint to the web crawler as to what you think the importance of each page is. <code>1</code> being highest and <code>0</code> lowest.</span>
 
-			<h4>XML Sitemaps Options</h4>
+			<h2>XML Sitemaps Options</h2>
 			<table class="form-table">
 				<tr>
 					<th>
@@ -1147,14 +1152,12 @@ if (isset($diagnostics["error"])) {
 		if (substr($urlBase, strlen($urlBase), 1) != "/") $urlBase .= "/";
 			$urlBase .= dsSearchAgent_Rewrite::GetUrlSlug(); ?>
 		<div class="wrap metabox-holder">
-			<?php screen_icon(); ?>
-			<h2>More Options</h2>
+			<h1>More Options</h1>
 			<?php if (isset($_REQUEST['settings-updated']) && $_REQUEST['settings-updated'] == 'true') : ?>
 			<div class="updated"><p><strong><?php _e( 'Options saved' ); ?></strong></p></div>
 			<?php endif; ?>
 			<form method="post" action="options.php">
 				<?php settings_fields("dsidxpress_api_options"); ?>
-				<h4>Details Page Settings</h4>
 				<span class="description">These settings apply to any page holding details for a specific property.</span>
 				<table class="form-table">
 					<?php if (isset($account_options->{'dsIDXPress-Package'}) && $account_options->{'dsIDXPress-Package'} == "pro"): ?>
@@ -1243,7 +1246,7 @@ if (isset($diagnostics["error"])) {
 					</tr>
 				</table>
 				<?php if(!defined('ZPRESS_API') || ZPRESS_API == '') : ?>
-					<br /><p class="description">WARNING: This is an advanced setting. Disabling the cache will negatively affect the loading speed of IDX components on your site.</p>
+					<p class="description">WARNING: This is an advanced setting. Disabling the cache will negatively affect the loading speed of IDX components on your site.</p>
 					<table class="form-table">
 						<tr>
 							<th>

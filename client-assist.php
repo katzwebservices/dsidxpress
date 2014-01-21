@@ -16,9 +16,19 @@ while (!file_exists($bootstrapSearchDir . "/wp-load.php")) {
 require_once($bootstrapSearchDir . "/wp-load.php");
 if(defined('ZPRESS_API') && ZPRESS_API != '') {
 	require_once(WPMU_PLUGIN_DIR . '/akismet/loadAkismet.php');
+
 }
 
 class dsSearchAgent_ClientAssist {
+    static public function call($method) 
+    { 
+        if(method_exists('dsSearchAgent_ClientAssist', $method)) { 
+			call_user_func(array('dsSearchAgent_ClientAssist', $method));
+        }else{ 
+        	die();
+        } 
+    } 
+
 	static function SlideshowXml() {
 		$uriSuffix = '';
 		if (array_key_exists('uriSuffix', $_GET))
@@ -504,7 +514,7 @@ class dsSearchAgent_ClientAssist {
 }
 if(!empty($_REQUEST['action']))
 {
-	call_user_func(array('dsSearchAgent_ClientAssist',  $_REQUEST['action']));
+	dsSearchAgent_ClientAssist::call($_REQUEST['action']);
 }
 else
 {
