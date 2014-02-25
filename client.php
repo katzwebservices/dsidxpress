@@ -322,8 +322,6 @@ class dsSearchAgent_Client {
 			$apiParams["responseDirective.IncludeMetadata"] = "true";
 			$apiParams["responseDirective.IncludeLinkMetadata"] = "true";
 		} else if($action == "details"){
-			$apiParams["query.ListingStatuses"] = 15; // all statuses
-
 			// check allowed searched before registration
 			$allow_details_view = 1;
 			if (!empty($account_options->AllowedDetailViewsBeforeRegistration) && isset($_COOKIE['dsidx-visitor-details-views'])) {

@@ -1174,11 +1174,21 @@ if (isset($diagnostics["error"])) {
 					<?php endif ?>
 					<tr>
 						<th>
-							<label for="dsidxpress-ShowWalkScoreInDetailsCB">Show Walkscore:</label>
+							<label for="dsidxpress-ShowWalkScoreInDetailsCB">Show Walkscore In Details:</label>
 						</th>
 						<td>
 							<input type="checkbox" id="dsidxpress-ShowWalkScoreInDetailsCB" size="50" <?php checked('true', strtolower($account_options->ShowWalkScoreInDetails)); ?> onclick="dsIDXpressOptions.OptionCheckBoxClick(this);" /><br />
 							<input type="hidden" id="dsidxpress-ShowWalkScoreInDetails" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[ShowWalkScoreInDetails]" value="<?php echo $account_options->ShowWalkScoreInDetails; ?>" />
+							<span class="description"></span>
+						</td>
+					</tr>
+					<tr>
+						<th>
+							<label for="dsidxpress-ShowWalkScoreInDetailsCB">Show Walkscore In Results:</label>
+						</th>
+						<td>
+							<input type="checkbox" id="dsidxpress-ShowWalkScoreInResultsCB" size="50" <?php checked('true', strtolower($account_options->ShowWalkScoreInResults)); ?> onclick="dsIDXpressOptions.OptionCheckBoxClick(this);" /><br />
+							<input type="hidden" id="dsidxpress-ShowWalkScoreInResults" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[ShowWalkScoreInResults]" value="<?php echo $account_options->ShowWalkScoreInResults; ?>" />
 							<span class="description"></span>
 						</td>
 					</tr>

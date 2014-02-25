@@ -169,13 +169,10 @@ class dsSearchAgent_ApiRequest {
 		
 		foreach ($scripts as $script) {
 			$alreadyIncluded = (wp_script_is($script['handle'], 'done'));
-			if ($alreadyIncluded || !$echoAssetsIfNotEnqueued) {
-				$data = str_replace($script[0], "", $data);
-				if (!$alreadyIncluded) {
-					wp_enqueue_script($script["handle"], $script["src"], false, null);
-				}
-			} else if ($echoAssetsIfNotEnqueued && !$alreadyIncluded) {
-				array_push($wp_scripts->done, $script['handle']); // a hack to make wordpress think that this script has already been both enqueued and printed to output
+			if ($alreadyIncluded) {
+				$data = str_replace($script[0], "", $data); // This <script> tag has already been written to the DOM. Remove it from the HTML in $data.
+			} else {
+				array_push($wp_scripts->done, $script['handle']); // Make wordpress think that this script has already been both enqueued and printed to output.
 			}
 		}
 

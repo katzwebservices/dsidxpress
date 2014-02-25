@@ -21,6 +21,7 @@ p.dsidx-error
 }
 .dsidx-search-widget input {
 	padding: 5px;
+	box-sizing: border-box;
 }
 .dsidx-search-widget select {
 	padding: 5px;
@@ -35,7 +36,7 @@ p.dsidx-error
 .dsidx-search-widget .dsidx-improvedsqft,
 .dsidx-search-widget .dsidx-mlsnumber
 {
-	width: 94%;
+	width: 100%;
 }
 .dsidx-widget.dsidx-search-widget .dsidx-search-button
 {
