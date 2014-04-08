@@ -1,7 +1,7 @@
 var $ = jQuery;
 
 $(document).ready(function() {
-	dsIdxLinkBuilder.init();
+    dsIdxLinkBuilder.init();
 });
 
 dsIdxLinkBuilder = {
@@ -84,10 +84,10 @@ dsIdxLinkBuilder = {
                     case 'single':
                         value = (field.id in lb.current_filters) ? ' value=' + lb.escapeHtmlEntities(lb.current_filters[field.id]) : '';
                         html +=
-							'<label class="howto">' +
-							'<input id="' + fid + '" name="' + fid + '" type="text" title="' + hint + '" class="input-with-default-title"' + value + ' />' +
-							'<span>' + label + '</span>' +
-							'</label>';
+                            '<label class="howto">' +
+                            '<input id="' + fid + '" name="' + fid + '" type="text" title="' + hint + '" class="input-with-default-title"' + value + ' />' +
+                            '<span>' + label + '</span>' +
+                            '</label>';
                         break;
 
                     case 'multi':
@@ -125,7 +125,7 @@ dsIdxLinkBuilder = {
                                     }
                                 }
                             }
-                            html += '<input type="checkbox" name="groupPropType" value="' + indyValues[0] + '"' + select + '>' + indyValues[1] + '<br>';
+                            html += '<input type="checkbox" name="groupPropType" value="' + indyValues[0] + '"' + select + '>' + indyValues[1] + '<div style="height:6px; clear:both;"></div>';
                         }
                         html += '</div>';
                         break;
@@ -266,6 +266,7 @@ dsIdxLinkBuilder = {
                         }
                         break;
 
+                    case 'lookupPropTypes':
                     case 'multi':
                         for (var i = 0; ; i++) {
                             var val = (field.id.indexOf('__DSIDXINDEX__') != -1) ? lb.getQueryValue(url, field.id.replace('__DSIDXINDEX__', '<' + i + '>')) : lb.getQueryValue(url, field.id + '<' + i + '>');
@@ -356,222 +357,222 @@ dsIdxLinkBuilder = {
         mls_numbers: {
             name: 'MLS Numbers',
             fields: [
-				{
-				    id: 'idx-q-MlsNumbers',
-				    type: 'textarea',
-				    mode: 'multi',
-				    hint: 'One per line'
-				}
-			]
+                {
+                    id: 'idx-q-MlsNumbers',
+                    type: 'textarea',
+                    mode: 'multi',
+                    hint: 'One per line'
+                }
+            ]
         },
         property_types: {
             name: 'Property Types',
             fields: [
-				{
-				    id: 'idx-q-PropertyTypes',
-				    type: 'lookupPropTypes',
-				    mode: 'lookupPropTypes',
-				    hint: 'One per line'
-				}
-			]
+                {
+                    id: 'idx-q-PropertyTypes',
+                    type: 'lookupPropTypes',
+                    mode: 'lookupPropTypes',
+                    hint: 'One per line'
+                }
+            ]
         },
         property_features: {
             name: 'Property Features',
             fields: [
-				{
-				    id: 'idx-q-PropertyFeatures',
-				    type: 'string',
-				    mode: 'multi',
-				    hint: 'One per line'
-				}
-			]
+                {
+                    id: 'idx-q-PropertyFeatures',
+                    type: 'string',
+                    mode: 'multi',
+                    hint: 'One per line'
+                }
+            ]
         },
         days_on_market: {
             name: 'Days On Market',
             fields: [
-				{
-				    label: 'Minimum Days On Market',
-				    id: 'idx-q-DaysOnMarketMin',
-				    type: 'int',
-				    mode: 'single',
-				    hint: '0'
-				},
-				{
-				    label: 'Maximum Days On Market',
-				    id: 'idx-q-DaysOnMarketMax',
-				    type: 'int',
-				    mode: 'single',
-				    hint: '∞'
-				}
-			]
+                {
+                    label: 'Minimum Days On Market',
+                    id: 'idx-q-DaysOnMarketMin',
+                    type: 'int',
+                    mode: 'single',
+                    hint: '0'
+                },
+                {
+                    label: 'Maximum Days On Market',
+                    id: 'idx-q-DaysOnMarketMax',
+                    type: 'int',
+                    mode: 'single',
+                    hint: '∞'
+                }
+            ]
         },
         price: {
             name: 'Price',
             fields: [
-				{
-				    label: 'Minimum Price',
-				    id: 'idx-q-PriceMin',
-				    type: 'int',
-				    mode: 'single',
-				    hint: '0'
-				},
-				{
-				    label: 'Maximum Price',
-				    id: 'idx-q-PriceMax',
-				    type: 'int',
-				    mode: 'single',
-				    hint: '∞'
-				}
-			]
+                {
+                    label: 'Minimum Price',
+                    id: 'idx-q-PriceMin',
+                    type: 'int',
+                    mode: 'single',
+                    hint: '0'
+                },
+                {
+                    label: 'Maximum Price',
+                    id: 'idx-q-PriceMax',
+                    type: 'int',
+                    mode: 'single',
+                    hint: '∞'
+                }
+            ]
         },
         beds: {
             name: 'Beds',
             fields: [
-				{
-				    label: 'Minimum Beds',
-				    id: 'idx-q-BedsMin',
-				    type: 'int',
-				    mode: 'single',
-				    hint: '0'
-				},
-				{
-				    label: 'Maximum Beds',
-				    id: 'idx-q-BedsMax',
-				    type: 'int',
-				    mode: 'single',
-				    hint: '∞'
-				}
-			]
+                {
+                    label: 'Minimum Beds',
+                    id: 'idx-q-BedsMin',
+                    type: 'int',
+                    mode: 'single',
+                    hint: '0'
+                },
+                {
+                    label: 'Maximum Beds',
+                    id: 'idx-q-BedsMax',
+                    type: 'int',
+                    mode: 'single',
+                    hint: '∞'
+                }
+            ]
         },
         baths: {
             name: 'Baths',
             fields: [
-				{
-				    label: 'Minimum Baths',
-				    id: 'idx-q-BathsMin',
-				    type: 'int',
-				    mode: 'single',
-				    hint: '0'
-				},
-				{
-				    label: 'Maximum Baths',
-				    id: 'idx-q-BathsMax',
-				    type: 'int',
-				    mode: 'single',
-				    hint: '∞'
-				}
-			]
+                {
+                    label: 'Minimum Baths',
+                    id: 'idx-q-BathsMin',
+                    type: 'int',
+                    mode: 'single',
+                    hint: '0'
+                },
+                {
+                    label: 'Maximum Baths',
+                    id: 'idx-q-BathsMax',
+                    type: 'int',
+                    mode: 'single',
+                    hint: '∞'
+                }
+            ]
         },
         square_feet: {
             name: 'Square Feet',
             help: 'Be aware that some MLSs either do not provide lot size in their data or give us an unreliable way to calculate it.',
             fields: [
-				{
-				    label: 'Minimum Square Feet',
-				    id: 'idx-q-ImprovedSqFtMin',
-				    type: 'int',
-				    mode: 'single',
-				    hint: '0'
-				},
-				{
-				    label: 'Maximum Square Feet',
-				    id: 'idx-q-ImprovedSqFtMax',
-				    type: 'int',
-				    mode: 'single',
-				    hint: '∞'
-				}
-			]
+                {
+                    label: 'Minimum Square Feet',
+                    id: 'idx-q-ImprovedSqFtMin',
+                    type: 'int',
+                    mode: 'single',
+                    hint: '0'
+                },
+                {
+                    label: 'Maximum Square Feet',
+                    id: 'idx-q-ImprovedSqFtMax',
+                    type: 'int',
+                    mode: 'single',
+                    hint: '∞'
+                }
+            ]
         },
         lot_size: {
             name: 'Lot Size',
             help: 'Lot size in square feet.<br /><br />Be aware that some MLSs either do not provide lot size in their data or give us an unreliable way to calculate it.',
             fields: [
-				{
-				    label: 'Minimum Lot Size',
-				    id: 'idx-q-LotSqFtMin',
-				    type: 'int',
-				    mode: 'single',
-				    hint: '0'
-				},
-				{
-				    label: 'Maximum Lot Size',
-				    id: 'idx-q-LotSqFtMax',
-				    type: 'int',
-				    mode: 'single',
-				    hint: '∞'
-				}
-			]
+                {
+                    label: 'Minimum Lot Size',
+                    id: 'idx-q-LotSqFtMin',
+                    type: 'int',
+                    mode: 'single',
+                    hint: '0'
+                },
+                {
+                    label: 'Maximum Lot Size',
+                    id: 'idx-q-LotSqFtMax',
+                    type: 'int',
+                    mode: 'single',
+                    hint: '∞'
+                }
+            ]
         },
         year_built: {
             name: 'Year Built',
             fields: [
-				{
-				    label: 'Minimum Year Built',
-				    id: 'idx-q-YearBuiltMin',
-				    type: 'int',
-				    mode: 'single',
-				    hint: '0'
-				},
-				{
-				    label: 'Maximum Year Built',
-				    id: 'idx-q-YearBuiltMax',
-				    type: 'int',
-				    mode: 'single',
-				    hint: '∞'
-				}
-			]
+                {
+                    label: 'Minimum Year Built',
+                    id: 'idx-q-YearBuiltMin',
+                    type: 'int',
+                    mode: 'single',
+                    hint: '0'
+                },
+                {
+                    label: 'Maximum Year Built',
+                    id: 'idx-q-YearBuiltMax',
+                    type: 'int',
+                    mode: 'single',
+                    hint: '∞'
+                }
+            ]
         },
         price_drop: {
             name: 'Price Drop',
             help: 'The price drop percentage over a specified number of days.',
             fields: [
-				{
-				    label: 'Price Drop Days',
-				    id: 'idx-q-PriceDropDays',
-				    type: 'int',
-				    mode: 'single',
-				    hint: '#'
-				},
-				{
-				    label: 'Price Drop Percentage',
-				    id: 'idx-q-PriceDropPercent',
-				    type: 'int',
-				    mode: 'single',
-				    hint: '%'
-				}
-			]
+                {
+                    label: 'Price Drop Days',
+                    id: 'idx-q-PriceDropDays',
+                    type: 'int',
+                    mode: 'single',
+                    hint: '#'
+                },
+                {
+                    label: 'Price Drop Percentage',
+                    id: 'idx-q-PriceDropPercent',
+                    type: 'int',
+                    mode: 'single',
+                    hint: '%'
+                }
+            ]
         },
         walk_score: {
             name: 'Walk Score',
             help: 'Be aware that properties without addresses or properties that have un-geocodable addresses will not have Walk Scores.',
             fields: [
-				{
-				    label: 'Minimum Walk Score',
-				    id: 'idx-q-WalkScoreMin',
-				    type: 'int',
-				    mode: 'single',
-				    hint: '#'
-				}
-			]
+                {
+                    label: 'Minimum Walk Score',
+                    id: 'idx-q-WalkScoreMin',
+                    type: 'int',
+                    mode: 'single',
+                    hint: '#'
+                }
+            ]
         },
         distress_types: {
             name: 'Distress Types',
             fields: [
-				{
-				    id: 'idx-q-DistressTypes',
-				    type: 'lookup',
-				    mode: 'lookup',
-				    hint: '-1',
-				    options: {
-				        '1': 'only pre-foreclosures',
-				        '2': 'only foreclosed listings / REOs',
-				        '3': 'only pre-foreclosures or REOs',
-				        '0': 'neither pre-foreclosures nor REOs'
-				    }
-				}
-			]
+                {
+                    id: 'idx-q-DistressTypes',
+                    type: 'lookup',
+                    mode: 'lookup',
+                    hint: '-1',
+                    options: {
+                        '1': 'only pre-foreclosures',
+                        '2': 'only foreclosed listings / REOs',
+                        '3': 'only pre-foreclosures or REOs',
+                        '0': 'neither pre-foreclosures nor REOs'
+                    }
+                }
+            ]
         },
-		listing_statuses: {
+        listing_statuses: {
             name: 'Listing Statuses',
             fields: [
                 {
@@ -589,215 +590,215 @@ dsIdxLinkBuilder = {
                 }
             ]
         },
-		schools: {
-			name: 'Schools/Type',
-			fields: [
-				{
-					id: 'idx-q-Schools__DSIDXINDEX__-Name',
-					suffix: '-Name',
-					type: 'string',
-					mode: 'multi',
-					hint: 'One per line'
-				},
-				{
-					id: 'idx-q-Schools__DSIDXINDEX__-Type',
-					type: 'lookup',
-					mode: 'lookup',
-					hint: '-1',
-					options: {
-						'Elementary School': 'Elementary School',
-						'Grade School': 'Grade School',
-						'High School': 'High School',
-						'Jr. High School': 'Jr. High School',
-						'Middle School': 'Middle School',
-						'School District': 'School District'
-					}
-				}
-			]
-		},
+        schools: {
+            name: 'Schools/Type',
+            fields: [
+                {
+                    id: 'idx-q-Schools__DSIDXINDEX__-Name',
+                    suffix: '-Name',
+                    type: 'string',
+                    mode: 'multi',
+                    hint: 'One per line'
+                },
+                {
+                    id: 'idx-q-Schools__DSIDXINDEX__-Type',
+                    type: 'lookup',
+                    mode: 'lookup',
+                    hint: '-1',
+                    options: {
+                        'Elementary School': 'Elementary School',
+                        'Grade School': 'Grade School',
+                        'High School': 'High School',
+                        'Jr. High School': 'Jr. High School',
+                        'Middle School': 'Middle School',
+                        'School District': 'School District'
+                    }
+                }
+            ]
+        },
         listing_agent_id: {
             name: 'Listing Agent IDs',
             fields: [
-				{
-				    id: 'idx-q-ListingAgentID',
-				    type: 'string',
-				    mode: 'multi',
-				    hint: 'One per line'
-				}
-			]
+                {
+                    id: 'idx-q-ListingAgentID',
+                    type: 'string',
+                    mode: 'multi',
+                    hint: 'One per line'
+                }
+            ]
         },
-		listing_office_id: {
+        listing_office_id: {
             name: 'Listing Office IDs',
             fields: [
-				{
-				    id: 'idx-q-ListingOfficeID',
-				    type: 'string',
-				    mode: 'multi',
-				    hint: 'One per line'
-				}
-			]
+                {
+                    id: 'idx-q-ListingOfficeID',
+                    type: 'string',
+                    mode: 'multi',
+                    hint: 'One per line'
+                }
+            ]
         },
         address_masks: {
             name: 'Address Masks',
             help: 'List of partial addresses to match.  A <code>%</code> character indicates a wildcard.',
             fields: [
-				{
-				    id: 'idx-q-AddressMasks',
-				    type: 'string',
-				    mode: 'multi',
-				    hint: 'One per line'
-				}
-			]
+                {
+                    id: 'idx-q-AddressMasks',
+                    type: 'string',
+                    mode: 'multi',
+                    hint: 'One per line'
+                }
+            ]
         },
         cities: {
             name: 'Cities',
             fields: [
-				{
-				    id: 'idx-q-Cities',
-				    type: 'string',
-				    mode: 'multi',
-				    hint: 'One per line'
-				}
-			]
+                {
+                    id: 'idx-q-Cities',
+                    type: 'string',
+                    mode: 'multi',
+                    hint: 'One per line'
+                }
+            ]
         },
         states: {
             name: 'States',
             fields: [
-				{
-				    id: 'idx-q-States',
-				    type: 'string',
-				    mode: 'multi',
-				    hint: 'One per line'
-				}
-			]
+                {
+                    id: 'idx-q-States',
+                    type: 'string',
+                    mode: 'multi',
+                    hint: 'One per line'
+                }
+            ]
         },
         zip_codes: {
             name: 'Zip Codes',
             fields: [
-				{
-				    id: 'idx-q-ZipCodes',
-				    type: 'string',
-				    mode: 'multi',
-				    hint: 'One per line'
-				}
-			]
+                {
+                    id: 'idx-q-ZipCodes',
+                    type: 'string',
+                    mode: 'multi',
+                    hint: 'One per line'
+                }
+            ]
         },
         communities: {
             name: 'Communities',
             fields: [
-				{
-				    id: 'idx-q-Communities',
-				    type: 'string',
-				    mode: 'multi',
-				    hint: 'One per line'
-				}
-			]
+                {
+                    id: 'idx-q-Communities',
+                    type: 'string',
+                    mode: 'multi',
+                    hint: 'One per line'
+                }
+            ]
         },
         tracts: {
             name: 'Tracts',
             fields: [
-				{
-				    id: 'idx-q-TractIdentifiers',
-				    type: 'string',
-				    mode: 'multi',
-				    hint: 'One per line'
-				}
-			]
+                {
+                    id: 'idx-q-TractIdentifiers',
+                    type: 'string',
+                    mode: 'multi',
+                    hint: 'One per line'
+                }
+            ]
         },
         areas: {
             name: 'Areas',
             help: 'List of tracts or communities.',
             fields: [
-				{
-				    id: 'idx-q-Areas',
-				    type: 'string',
-				    mode: 'multi',
-				    hint: 'One per line'
-				}
-			]
+                {
+                    id: 'idx-q-Areas',
+                    type: 'string',
+                    mode: 'multi',
+                    hint: 'One per line'
+                }
+            ]
         },
         counties: {
             name: 'Counties',
             fields: [
-				{
-				    id: 'idx-q-Counties',
-				    type: 'string',
-				    mode: 'multi',
-				    hint: 'One per line'
-				}
-			]
+                {
+                    id: 'idx-q-Counties',
+                    type: 'string',
+                    mode: 'multi',
+                    hint: 'One per line'
+                }
+            ]
         },
         latitude: {
             name: 'Latitude',
             help: 'Latitude / longitude will correlate to a rectangular map area.<br /><code>ex: 117.714214</code>',
             fields: [
-				{
-				    label: 'Minimum Latitude',
-				    id: 'idx-q-LatitudeMin',
-				    type: 'decimal',
-				    mode: 'single',
-				    hint: ''
-				},
-				{
-				    label: 'Maximum Latitude',
-				    id: 'idx-q-LatitudeMax',
-				    type: 'decimal',
-				    mode: 'single',
-				    hint: ''
-				}
-			]
+                {
+                    label: 'Minimum Latitude',
+                    id: 'idx-q-LatitudeMin',
+                    type: 'decimal',
+                    mode: 'single',
+                    hint: ''
+                },
+                {
+                    label: 'Maximum Latitude',
+                    id: 'idx-q-LatitudeMax',
+                    type: 'decimal',
+                    mode: 'single',
+                    hint: ''
+                }
+            ]
         },
         longitude: {
             name: 'Longitude',
             help: 'Latitude / longitude will correlate to a rectangular map area.<br /><code>ex: 33.567573</code>',
             fields: [
-				{
-				    label: 'Minimum Longitude',
-				    id: 'idx-q-LongitudeMin',
-				    type: 'decimal',
-				    mode: 'single',
-				    hint: ''
-				},
-				{
-				    label: 'Maximum Longitude',
-				    id: 'idx-q-LongitudeMax',
-				    type: 'decimal',
-				    mode: 'single',
-				    hint: ''
-				}
-			]
+                {
+                    label: 'Minimum Longitude',
+                    id: 'idx-q-LongitudeMin',
+                    type: 'decimal',
+                    mode: 'single',
+                    hint: ''
+                },
+                {
+                    label: 'Maximum Longitude',
+                    id: 'idx-q-LongitudeMax',
+                    type: 'decimal',
+                    mode: 'single',
+                    hint: ''
+                }
+            ]
         },
         sort_columns: {
             name: 'Sorting',
             fields: [
-				{
-				    id: 'idx-d-SortOrders__DSIDXINDEX__-Column',
-				    label: 'Sort Column',
-				    type: 'lookup',
-				    mode: 'lookup',
-				    hint: '0',
-				    options: {
-				        'Price': 'Price',
-				        'DateAdded': 'Date Added',
-				        'OverallPriceDropPercent': 'Overall Price Drop Percentage',
-				        'WalkScore': 'Walk Score',
-				        'ImprovedSqFt': 'Improved Square Footage',
-				        'LotSqFt': 'Lot Square Footage'
-				    }
+                {
+                    id: 'idx-d-SortOrders__DSIDXINDEX__-Column',
+                    label: 'Sort Column',
+                    type: 'lookup',
+                    mode: 'lookup',
+                    hint: '0',
+                    options: {
+                        'Price': 'Price',
+                        'DateAdded': 'Date Added',
+                        'OverallPriceDropPercent': 'Overall Price Drop Percentage',
+                        'WalkScore': 'Walk Score',
+                        'ImprovedSqFt': 'Improved Square Footage',
+                        'LotSqFt': 'Lot Square Footage'
+                    }
 
-				},
-				{
-				    id: 'idx-d-SortOrders__DSIDXINDEX__-Direction',
-				    label: 'Sort Direction',
-				    type: 'lookup',
-				    mode: 'lookup',
-				    hint: '0',
-				    options: {
-				        'ASC': 'Ascending',
-				        'DESC': 'Descending'
-				    }
-				}
-			]
+                },
+                {
+                    id: 'idx-d-SortOrders__DSIDXINDEX__-Direction',
+                    label: 'Sort Direction',
+                    type: 'lookup',
+                    mode: 'lookup',
+                    hint: '0',
+                    options: {
+                        'ASC': 'Ascending',
+                        'DESC': 'Descending'
+                    }
+                }
+            ]
         }
     },
     escapeHtmlEntities: function (text) {

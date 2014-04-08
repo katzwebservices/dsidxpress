@@ -52,10 +52,11 @@ $property_types_html = substr($property_types_html, 0, strlen($property_types_ht
 	<script src="<?php echo $localUri ?>jquery/jquery.js"></script>
 	<script src="../../js/admin-utilities.js?ver=<?php echo urlencode(DSIDXPRESS_PLUGIN_VERSION) ?>"></script> 
 	<script src="js/dialog.js?ver=<?php echo urlencode(DSIDXPRESS_PLUGIN_VERSION) ?>"></script>
-	<link rel="stylesheet" type="text/css" href="<?php echo $adminUri ?>css/wp-admin.css" />
-	<link rel="stylesheet" type="text/css" href="<?php echo $adminUri ?>css/colors-fresh.css" />
+	<link rel="stylesheet" type="text/css" href="<?php echo $adminUri ?>css/colors.css" />
+	<link rel="stylesheet" type="text/css" href="<?php echo $adminUri ?>../wp-includes/css/dashicons.min.css" />
 	<link rel="stylesheet" type="text/css" href="../../css/admin-options.css?ver=<?php echo urlencode(DSIDXPRESS_PLUGIN_VERSION) ?>" />
-	<link rel="stylesheet" type="text/css" href="css/link_builder.css" />
+	<link rel="stylesheet" type="text/css" href="<?php echo $adminUri ?>css/wp-admin.css" />
+	<link rel="stylesheet" type="text/css" href="css/link_builder.css?foo=bar" />
 </head>
 
 <body class="wp-admin js admin-color-fresh">

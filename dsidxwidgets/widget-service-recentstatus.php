@@ -3,13 +3,10 @@ class dsIDXWidgets_RecentStatus extends WP_Widget {
     var $widgetsCdn;
 
     function dsIDXWidgets_RecentStatus() {
-		global $pagenow;
         $this->WP_Widget("dsidx-recentstatus", "Recent Properties", array(
             "classname" => "dsidx-widget-recentstatus",
             "description" => "Show recent listings from a specific status"
             ));
-        if ($pagenow == 'widgets.php')
-            wp_enqueue_script('dsidxwidgets_widget_service_admin', DSIDXWIDGETS_PLUGIN_URL . 'js/widget-service-admin.js', array('jquery'), false, true);
 
         $this->widgetsCdn = dsWidgets_Service_Base::$widgets_cdn;
     }
@@ -84,6 +81,7 @@ HTML;
         return $new_instance;
     }
     function form($instance) {
+        wp_enqueue_script('dsidxwidgets_widget_service_admin', DSIDXWIDGETS_PLUGIN_URL . 'js/widget-service-admin.js', array('jquery'), false, true);
         $personal_info = stripslashes_deep(get_option('personal_info')); 
         $city = empty($personal_info['city']) ? 'Irvine' : $personal_info['city'];
         $state = empty($personal_info['state']) ? 'CA' : $personal_info['state'];

@@ -128,7 +128,10 @@
 	width: 200px;
 	float: right;
 }
-
+#dsidxpress-filter-list
+{
+	margin:0;
+}
 #dsidxpress-link-builder .dsidxpress-checkbox input,
 #dsidxpress-link-builder .dsidxpress-checkbox span
 {
@@ -136,12 +139,15 @@
 	display: inline;
 	width: auto;
 }
-
 #dsidxpress-filters-wrap span {
 	font-style: italic;
 	color: #666;
 }
-
+#dsidxpress-show-url, #postbox .inside input[type=checkbox]{
+	display: inline-block !important;
+	width:16px !important;
+	height:16px !important;
+}
 #dsidxpress-link-builder #dsidxpress-filter-list li
 {
 	position: relative;

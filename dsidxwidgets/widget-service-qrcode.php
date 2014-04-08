@@ -3,13 +3,10 @@ class dsIDXWidgets_QRCode extends WP_Widget {
     var $widgetsCdn;
 
     function dsIDXWidgets_QRCode() {
-		global $pagenow;
         $this->WP_Widget("dsidx-qrcode", "QR Code", array(
             "classname" => "dsidx-widget-qrcode",
             "description" => "Show a QR Code image for your site."
             ));
-        if ($pagenow == 'widgets.php')
-            wp_enqueue_script('dsidxwidgets_widget_service_admin', DSIDXWIDGETS_PLUGIN_URL . 'js/widget-service-admin.js', array('jquery'), false, true);
 
         $this->widgetsCdn = dsWidgets_Service_Base::$widgets_cdn;
     }
@@ -72,6 +69,7 @@ HTML;
         return $new_instance;
     }
     function form($instance) {
+        wp_enqueue_script('dsidxwidgets_widget_service_admin', DSIDXWIDGETS_PLUGIN_URL . 'js/widget-service-admin.js', array('jquery'), false, true);
         $instance = wp_parse_args($instance, array(
             "title"				=> "QR Code",
             "eDomain" =>   "",

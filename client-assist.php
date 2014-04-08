@@ -43,7 +43,7 @@ class dsSearchAgent_ClientAssist {
 		header('Content-Type: text/xml');
 		echo '<?xml version="1.0"?><gallery><album lgpath="' . $urlBase . '" tnpath="' . $urlBase . '">';
 		for($i = 0; $i < (int)$_GET['count']; $i++) {
-			echo '<img src="' . $i . '-medium.jpg' . $uriSuffix . '" tn="' . $i . '-medium.jpg' . $uriSuffix . '" link="javascript:dsidx.details.LaunchLargePhoto('. $i .','. $_GET['count'] .',\''. $urlBase .'\',\''. $uriSuffix .'\')" target="_blank" />';
+			echo '<img src="' . $i . '-full.jpg' . $uriSuffix . '" tn="' . $i . '-medium.jpg' . $uriSuffix . '" link="javascript:dsidx.details.LaunchLargePhoto('. $i .','. $_GET['count'] .',\''. $urlBase .'\',\''. $uriSuffix .'\')" target="_blank" />';
 		}
 		echo '</album></gallery>';
 	}

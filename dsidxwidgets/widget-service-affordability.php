@@ -3,13 +3,10 @@ class dsIDXWidgets_Affordability extends WP_Widget {
     var $widgetsCdn;
 
     function dsIDXWidgets_Affordability() {
-        global $pagenow;
         $this->WP_Widget("dsidx-affordability", "Search by Affordability", array(
             "classname" => "dsidx-widget-affordability",
             "description" => "Show a search input based on the user's affordability for your site."
             ));
-        if ($pagenow == 'widgets.php')
-            wp_enqueue_script('dsidxwidgets_widget_service_admin', DSIDXWIDGETS_PLUGIN_URL . 'js/widget-service-admin.js', array('jquery'), false, true);
 
         $this->widgetsCdn = dsWidgets_Service_Base::$widgets_cdn;
     }
@@ -89,6 +86,7 @@ HTML;
         return $new_instance;
     }
     function form($instance) {
+        wp_enqueue_script('dsidxwidgets_widget_service_admin', DSIDXWIDGETS_PLUGIN_URL . 'js/widget-service-admin.js', array('jquery'), false, true);
         $instance = wp_parse_args($instance, array(
             "income"				=> "100000",
             "downPayment"           => "20000",

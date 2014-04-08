@@ -331,16 +331,23 @@
 /* viewAffordability */
 .affordability_div
 {
-    height:435px;
-    width:230px;
-    background-color:White;
+    background-color:#fff;
+}
+.affordability_div select, .affordability_div input[type=text]{
+    width:91%;
+    font-size:12px;
+    padding:8px;
+    height:32px;
+    border-color: #ddd;
+    margin-bottom:8px;
 }
 .affordability_title
 {
     font-family:arial,sans-serif;
     font-size:16px;
     font-weight:bold;
-    border-bottom: solid Black 1px;
+    border-bottom: solid #dedede 1px;
+    padding-bottom:4px;
     text-align:left;
     width:150px;
 }
@@ -381,6 +388,7 @@
     width:170px;
     height:32px;
     border:solid Black 1px;
+    margin:10px auto;
 }
 .affordability_height_spacer
 {
@@ -390,9 +398,7 @@
 .affordability_button_cell
 {
     text-align:center;
-    background-color:#eeeeee;
-    height:50px;
-    border-top:solid 1px #d3d3d3;
+    border-top:solid 1px #dedede;
 }
 /* viewQuickSearch */
 .QuickSearch_div

@@ -34,3 +34,12 @@ label span {
 	visibility: hidden;
 }
 
+input[type=checkbox]{
+	display:inline-block;
+	width:16px !important;
+	height:16px !important;
+}
+input[type=checkbox]:checked:before{
+	margin: -3px 0 0 -4px;
+	font-size:21px;
+}

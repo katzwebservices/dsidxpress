@@ -3,13 +3,10 @@ class dsIDXWidgets_quicksearch extends WP_Widget {
     var $widgetsCdn;
 
     function dsIDXWidgets_QuickSearch() {
-		global $pagenow;
         $this->WP_Widget("dsidx-quicksearch", "Quick Search", array(
             "classname" => "dsidx-widget-quicksearch",
             "description" => "Show a quicksearch input widget"
             ));
-        if ($pagenow == 'widgets.php')
-            wp_enqueue_script('dsidxwidgets_widget_service_admin', DSIDXWIDGETS_PLUGIN_URL . 'js/widget-service-admin.js', array('jquery'), false, true);
 
         $this->widgetsCdn = dsWidgets_Service_Base::$widgets_cdn;
     }
@@ -53,7 +50,7 @@ class dsIDXWidgets_quicksearch extends WP_Widget {
             LaunchBase{$randString} = function(){
 				window.quickSearchHasDependency = true;
                 var quickSearchScript, _ds_midx;
-                CreateObject{$randString} = function () { _ds_midx = { currentURL: '{$curURL}', widgetType: '{$widgetType}', curAPIStub: '{$apiStub}', curImageStub: '{$imagesStub}', targetDomain: window["zpress_widget_domain_token"], accountId: '{$aid}',searchSetupId: '{$ssid}',muteStyles: true,curDivID: 'divLocal{$randString}_',product: '0' }; }
+                CreateObject{$randString} = function () { _ds_midx = { currentURL: '{$curURL}', widgetType: '{$widgetType}', curAPIStub: '{$apiStub}', curImageStub: '{$imagesStub}', targetDomain: window["zpress_widget_domain_token"], accountId: '{$aid}',searchSetupId: '{$ssid}',muteStyles: true,location: 0,fields: '0123',city: '', community: '', curDivID: 'divLocal{$randString}_',product: '0' }; }
                 AddJavaScriptToDOM{$randString}=function(c,d,e){if(1!=d){var a=document.createElement("script"),b=document.getElementsByTagName("script")[0];a.async=!0;a.src=c;a.onload=function(){ window[e] = 1;};b.parentNode.insertBefore(a,b)}return 1};
                 CreateWidget{$randString} = function () {
                  (window.quickSearchFinished == 1) ? (window["ds.widget.view.quicksearch"].isProcessing = true, CreateObject{$randString}(), new window["ds.widget.view.quicksearch"](_ds_midx), window["ds.widget.view.quicksearch"].isProcessing = false, window.quickSearchHasDependency = false) : window.setTimeout("CreateWidget{$randString}(false)", 20); 
@@ -77,6 +74,7 @@ HTML;
         return $new_instance;
     }
     function form($instance) {
+        wp_enqueue_script('dsidxwidgets_widget_service_admin', DSIDXWIDGETS_PLUGIN_URL . 'js/widget-service-admin.js', array('jquery'), false, true);
         $instance = wp_parse_args($instance, array(
             "eDomain" =>   "",
             "widgetType" => 0

@@ -1,14 +1,10 @@
 <?php
 class dsSearchAgent_SearchWidget extends WP_Widget {
 	function dsSearchAgent_SearchWidget() {
-		global $pagenow;
 		$this->WP_Widget("dsidx-search", "IDX Search", array(
 			"classname" => "dsidx-widget-search",
 			"description" => "A real estate search form"
 		));
-
-		if ($pagenow == 'widgets.php')
-			wp_enqueue_script('dsidxpress_widget_search', DSIDXPRESS_PLUGIN_URL . 'js/widget-search.js', array('jquery'), DSIDXPRESS_PLUGIN_VERSION, true);
 	}
 	function widget($args, $instance) {
 		extract($args);
@@ -25,7 +21,9 @@ class dsSearchAgent_SearchWidget extends WP_Widget {
 		wp_enqueue_script('dsidxpress_widget_search_view', $pluginUrl . 'js/widget-client.js', array('jquery'), DSIDXPRESS_PLUGIN_VERSION, true);
 
 		$formAction = get_home_url() . "/idx/";
-
+		$capabilities = dsSearchAgent_ApiRequest::FetchData('MlsCapabilities');
+		$capabilities = json_decode($capabilities['body'], true);
+		
 		$defaultSearchPanels = dsSearchAgent_ApiRequest::FetchData("AccountSearchPanelsDefault", array(), false, 60 * 60 * 24);
 		$defaultSearchPanels = $defaultSearchPanels["response"]["code"] == "200" ? json_decode($defaultSearchPanels["body"]) : null;
 		$propertyTypes = dsSearchAgent_ApiRequest::FetchData("AccountSearchSetupFilteredPropertyTypes", array(), false, 60 * 60 * 24);
@@ -177,7 +175,7 @@ HTML;
 HTML;
 		if(isset($defaultSearchPanels)){
 			foreach ($defaultSearchPanels as $key => $value) {
-				if ($value->DomIdentifier == "search-input-home-size") {
+				if ($value->DomIdentifier == "search-input-home-size" && isset($capabilities['MinImprovedSqFt']) && $capabilities['MinImprovedSqFt'] > 0) {
 					echo <<<HTML
 						<tr>
 							<th><label for="idx-q-ImprovedSqFtMin">Size</label></th>
@@ -278,6 +276,8 @@ HTML;
 		return $new_instance;
 	}
 	function form($instance) {
+		wp_enqueue_script('dsidxpress_widget_search', DSIDXPRESS_PLUGIN_URL . 'js/widget-search.js', array('jquery'), DSIDXPRESS_PLUGIN_VERSION, true);
+		
 		$pluginUrl = DSIDXPRESS_PLUGIN_URL;
 
 		$options = get_option(DSIDXPRESS_OPTION_NAME);

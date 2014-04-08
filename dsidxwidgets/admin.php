@@ -18,7 +18,7 @@ class dsIDXWidgets_Admin {
 		$idxpress_options = get_option(DSIDXPRESS_OPTION_NAME);
 
 		// hide the menu if it's a zpress site and it has the IDs filled in
-		if((empty($idxpress_options['AccountID']) && empty($idxpress_options['SearchSetupID']))){
+		if (!defined('ZPRESS_API') && empty($idxpress_options['AccountID']) && empty($idxpress_options['SearchSetupID'])) {
 			add_menu_page('IDX Widgets', 'IDX Widgets', "manage_options", "dsidxwidgets-options", "", $icon_url);
 
 			$optionsPage = add_submenu_page("dsidxwidgets", "IDX Widgets Options", "Options", "manage_options", "dsidxwidgets-options", array("dsIDXWidgets_Admin", "EditOptions"));
@@ -69,7 +69,7 @@ HTML;
 						<label for="dsidxwidgets-AccountID">Account ID:</label>
 					</th>
 					<td>
-						<input type="text" id="dsidxwidgets-AccountID" maxlength="4" name="<?php echo DSIDXWIDGETS_OPTION_NAME; ?>[AccountID]" value="<?php echo $options["AccountID"]; ?>" /><br />
+						<input type="text" id="dsidxwidgets-AccountID" name="<?php echo DSIDXWIDGETS_OPTION_NAME; ?>[AccountID]" value="<?php echo $options["AccountID"]; ?>" /><br />
 						<span class="description"></span>
 					</td>
 				</tr>

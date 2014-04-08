@@ -292,7 +292,7 @@ HTML;
 			<table class="form-table">
 				<tr>
 					<th>
-						<label for="dsidxpress-RequiredPhone-check">Require phone numbers for visitor registration</label>
+						<label for="dsidxpress-RequiredPhone-check">Require phone numbers for visitor registration and contact forms</label>
 					</th>
 					<td>
 						<input type="hidden" id="dsidxpress-RequiredPhone" name="<?php echo DSIDXPRESS_API_OPTIONS_NAME; ?>[RequiredPhone]" value="<?php echo $account_options->{'RequiredPhone'}; ?>" />

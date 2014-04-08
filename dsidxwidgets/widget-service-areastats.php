@@ -3,16 +3,12 @@ class dsIDXWidgets_AreaStats extends WP_Widget {
     var $widgetsCdn;
 
     function dsIDXWidgets_AreaStats() {
-		global $pagenow;
         $this->WP_Widget("dsidx-areastats", "Area Statistics", array(
             "classname" => "dsidx-widget-areastats",
             "description" => "Show an interactive chart with important listing data"
             ));
-        if ($pagenow == 'widgets.php')
-            wp_enqueue_script('dsidxwidgets_widget_service_admin', DSIDXWIDGETS_PLUGIN_URL . 'js/widget-service-admin.js', array('jquery'), false, true);
 
         $this->widgetsCdn = dsWidgets_Service_Base::$widgets_cdn;
-
     }
     function widget($args, $instance) {
         extract($args);
@@ -102,6 +98,7 @@ HTML;
         return $new_instance;
     }
     function form($instance) {
+        wp_enqueue_script('dsidxwidgets_widget_service_admin', DSIDXWIDGETS_PLUGIN_URL . 'js/widget-service-admin.js', array('jquery'), false, true);
         $personal_info = stripslashes_deep(get_option('personal_info')); 
         $city = empty($personal_info['city']) ? 'Irvine' : $personal_info['city'];
         $state = empty($personal_info['state']) ? 'CA' : $personal_info['state'];
