@@ -34,7 +34,7 @@ dsidx_w.searchWidget = (function () {
     	validate: function () {
             if (!isLocationValid() && !MLSExists())
             {
-            	$("#idx-search-invalid-msg").text("Please select at least one of the following fields: " + isFieldShown());
+            	$("#idx-search-invalid-msg").text("Please select at least one of the following fields: " + isFieldShown()).show();
             	return false;
             }
             else

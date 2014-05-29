@@ -356,6 +356,7 @@
     font-family:arial,sans-serif;
     font-size:10px;
     color:#747474;
+    padding-left:6px;
 }
 .affordability_label
 {
@@ -377,6 +378,9 @@
     font-family:arial,sans-serif;
     font-size:11px;
     color:#747474;
+}
+.affordability_checkbox span{
+    padding-left:6px;
 }
 .affordability_button
 {

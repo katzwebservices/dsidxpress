@@ -19,35 +19,39 @@ p.dsidx-error
 	max-width: 400px;
 	margin: 0 auto;
 }
-.dsidx-search-widget input {
+.dsidx-search-widget label {
+	display: inline-block;
+	width: 20%;
 	padding: 5px;
+	float: left;
+	clear: both;
+	-moz-box-sizing: border-box;
 	box-sizing: border-box;
 }
-.dsidx-search-widget select {
+.dsidx-search-widget input[type=text], .dsidx-search-widget select {
+	display: inline-block;
+	width: 80%;
 	padding: 5px;
-	width: 100%;
+	margin: 3px 0;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
 }
-.dsidx-search-widget .dsidx-price
+.dsidx-search-widget input.dsidx-price
 {
-	width: 42%;
+	width: 39%;
 }
-.dsidx-search-widget .dsidx-beds,
-.dsidx-search-widget .dsidx-baths,
-.dsidx-search-widget .dsidx-improvedsqft,
-.dsidx-search-widget .dsidx-mlsnumber
+.dsidx-search-widget #idx-q-PriceMax,
+.dsidx-search-widget input.dsidx-beds,
+.dsidx-search-widget input.dsidx-baths,
+.dsidx-search-widget input.dsidx-improvedsqft,
+.dsidx-search-widget input.dsidx-mlsnumber
 {
-	width: 100%;
+	float: right;
 }
 .dsidx-widget.dsidx-search-widget .dsidx-search-button
 {
 	padding-top: 6px;
 	text-align:center;
-}
-.dsidx-search-widget td{
-	padding: 4px;
-}
-.dsidx-search-widget th{
-	padding: 8px;
 }
 .dsidx-search-widget .dsidx-search-button
 {
@@ -58,13 +62,9 @@ p.dsidx-error
 	vertical-align:-3px;
 	border: 0;
 }
-.dsidx-search-widget .dsidx-search-widget-propertyTypes
+.dsidx-search-widget .dsidx-search-widget-propertyTypes, .dsidx-search-widget .idx-q-Location-Filter
 {
 	width: 100% !important;
-}
-.dsidx-search-widget table
-{
-	width:100%;
 }
 .dsidx-widget.dsidx-search-widget .dsidx-search-button
 {
@@ -78,7 +78,8 @@ p.dsidx-error
 {
 	font-size: 12px;
 	float: none;
-	margin: 0 auto;
+	margin: 15px auto 0;
 	padding: 5px;
 	text-align: center;
 }
+.dsidx-search-widget #idx-search-invalid-msg { display: none; }

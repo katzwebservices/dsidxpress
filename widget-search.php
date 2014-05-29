@@ -14,7 +14,6 @@ class dsSearchAgent_SearchWidget extends WP_Widget {
 
 		if (!$options["Activated"])
 			return;
-		
 
 		$pluginUrl = plugins_url() . '/dsidxpress/';
 
@@ -32,18 +31,6 @@ class dsSearchAgent_SearchWidget extends WP_Widget {
 		$account_options = dsSearchAgent_ApiRequest::FetchData("AccountOptions", array(), false);
 		$account_options = $account_options["response"]["code"] == "200" ? json_decode($account_options["body"]) : null;
 
-		$num_location_dropdowns = 0;
-		if($searchOptions["show_cities"] == "yes" || !isset($instance["searchOptions"]["show_cities"]))
-			$num_location_dropdowns++;
-		if($searchOptions["show_communities"] == "yes")
-			$num_location_dropdowns++;
-		if($searchOptions["show_tracts"] == "yes")
-			$num_location_dropdowns++;
-		if($searchOptions["show_zips"] == "yes")
-			$num_location_dropdowns++;
-		if($searchOptions["show_mlsnumber"] == "yes")
-			$num_location_dropdowns++;
-
 		echo $before_widget;
 		if ($title)
 			echo $before_title . $title . $after_title;
@@ -51,11 +38,8 @@ class dsSearchAgent_SearchWidget extends WP_Widget {
 		echo <<<HTML
 			<div class="dsidx-search-widget dsidx-widget">
 			<form action="{$formAction}" method="get" onsubmit="return dsidx_w.searchWidget.validate();" >
-				<table>
-					<tr>
-						<td colspan="2">
-							<select name="idx-q-PropertyTypes" class="dsidx-search-widget-propertyTypes">
-								<option value="">- All property types -</option>
+				<select name="idx-q-PropertyTypes" class="dsidx-search-widget-propertyTypes">
+					<option value="">- All property types -</option>
 HTML;
 
 		if (is_array($propertyTypes)) {
@@ -66,136 +50,84 @@ HTML;
 		}
 
 		echo <<<HTML
-							</select>
-							<label id="idx-search-invalid-msg" style="color:red"></label>
-						</td>
-					</tr>
+				</select>
+				<label id="idx-search-invalid-msg" style="color:red"></label>
 HTML;
-		if($searchOptions["show_cities"] == "yes" || !isset($instance["searchOptions"]["show_cities"])) {
+		if ($searchOptions['show_cities'] == 'yes' && !empty($searchOptions['cities'])) {
 			echo <<<HTML
-					<tr>
-						<th><label for="idx-q-Cities">City</label></th>
-						<td>
-							<select id="idx-q-Cities" name="idx-q-Cities" class="idx-q-Location-Filter">
+				<select id="idx-q-Cities" name="idx-q-Cities" class="idx-q-Location-Filter">
+					<option value="">- City -</option>
 HTML;
-			if($num_location_dropdowns > 1)
-				echo "<option value=\"\">- Any -</option>";
 			foreach ($searchOptions["cities"] as $city) {
 				// there's an extra trim here in case the data was corrupted before the trim was added in the update code below
 				$city = htmlentities(trim($city));
 				echo "<option value=\"{$city}\">{$city}</option>";
 			}
-
-			echo <<<HTML
-							</select>
-						</td>
-					</tr>
-HTML;
+			echo '</select>';
 		}
-		if($searchOptions["show_communities"] == "yes") {
+		if($searchOptions['show_communities'] == 'yes' && !empty($searchOptions['communities'])) {
 			echo <<<HTML
-					<tr>
-						<th><label for="idx-q-Communities">Community</label></th>
-						<td>
-							<select id="idx-q-Communities" name="idx-q-Communities" class="idx-q-Location-Filter">
+				<select id="idx-q-Communities" name="idx-q-Communities" class="idx-q-Location-Filter">
+					<option value="">- Community -</option>
 HTML;
-			if($num_location_dropdowns > 1)
-				echo "<option value=\"\">- Any -</option>";
-			foreach ($searchOptions["communities"] as $community) {
+			foreach ($searchOptions['communities'] as $community) {
 				// there's an extra trim here in case the data was corrupted before the trim was added in the update code below
 				$community = htmlentities(trim($community));
 				echo "<option value=\"{$community}\">{$community}</option>";
 			}
-
-			echo <<<HTML
-							</select>
-						</td>
-					</tr>
-HTML;
+			echo '</select>';
 		}
-		if($searchOptions["show_tracts"] == "yes") {
+		if($searchOptions['show_tracts'] == 'yes' &&  !empty($searchOptions['tracts'])) {
 			echo <<<HTML
-					<tr>
-						<th><label for="idx-q-TractIdentifiers">Tract</label></th>
-						<td>
-							<select id="idx-q-TractIdentifiers" name="idx-q-TractIdentifiers" class="idx-q-Location-Filter">
+				<select id="idx-q-TractIdentifiers" name="idx-q-TractIdentifiers" class="idx-q-Location-Filter">
+					<option value="">- Tract -</option>
 HTML;
-			if($num_location_dropdowns > 1)
-				echo "<option value=\"\">- Any -</option>";
 			foreach ($searchOptions["tracts"] as $tract) {
 				// there's an extra trim here in case the data was corrupted before the trim was added in the update code below
 				$tract = htmlentities(trim($tract));
 				echo "<option value=\"{$tract}\">{$tract}</option>";
 			}
-
-			echo <<<HTML
-							</select>
-						</td>
-					</tr>
-HTML;
+			echo '</select>';
 		}
-		if($searchOptions["show_zips"] == "yes") {
+		if($searchOptions['show_zips'] == 'yes' && !empty($searchOptions['zips'])) {
 			echo <<<HTML
-					<tr>
-						<th><label for="idx-q-ZipCodes">Zip</label></th>
-						<td>
-							<select id="idx-q-ZipCodes" name="idx-q-ZipCodes" class="idx-q-Location-Filter">
+				<select id="idx-q-ZipCodes" name="idx-q-ZipCodes" class="idx-q-Location-Filter">
+					<option value="">- Zip -</option>
 HTML;
-			if($num_location_dropdowns > 1)
-				echo "<option value=\"\">- Any -</option>";
 			foreach ($searchOptions["zips"] as $zip) {
 				// there's an extra trim here in case the data was corrupted before the trim was added in the update code below
 				$zip = htmlentities(trim($zip));
 				echo "<option value=\"{$zip}\">{$zip}</option>";
 			}
-
-			echo <<<HTML
-							</select>
-						</td>
-					</tr>
-HTML;
+			echo '</select>';
 		}
 		if($searchOptions["show_mlsnumber"] == "yes") {
 			echo <<<HTML
-					<tr>
-						<th><label for="idx-q-MlsNumbers">MLS #</label></th>
-						<td><input id="idx-q-MlsNumbers" name="idx-q-MlsNumbers" type="text" class="dsidx-mlsnumber" /></td>
-					</tr>
+				<label for="idx-q-MlsNumbers">MLS #</label>
+				<input id="idx-q-MlsNumbers" name="idx-q-MlsNumbers" type="text" class="dsidx-mlsnumber" />
 HTML;
 		}
 		echo <<<HTML
-					<tr>
-						<th><label for="idx-q-PriceMin">Price</label></th>
-						<td>
-							<input id="idx-q-PriceMin" name="idx-q-PriceMin" type="text" class="dsidx-price" placeholder="min price" />
-							<span class="separator"> > </span>
-							<input id="idx-q-PriceMax" name="idx-q-PriceMax" type="text" class="dsidx-price" placeholder="max price" />
-						</td>
-					</tr>
+				<label for="idx-q-PriceMin">Price</label>
+				<input id="idx-q-PriceMin" name="idx-q-PriceMin" type="text" class="dsidx-price" placeholder="min price" />
+				<input id="idx-q-PriceMax" name="idx-q-PriceMax" type="text" class="dsidx-price" placeholder="max price" />
 HTML;
 		if(isset($defaultSearchPanels)){
 			foreach ($defaultSearchPanels as $key => $value) {
 				if ($value->DomIdentifier == "search-input-home-size" && isset($capabilities['MinImprovedSqFt']) && $capabilities['MinImprovedSqFt'] > 0) {
 					echo <<<HTML
-						<tr>
-							<th><label for="idx-q-ImprovedSqFtMin">Size</label></th>
-							<td><input id="idx-q-ImprovedSqFtMin" name="idx-q-ImprovedSqFtMin" type="text" class="dsidx-improvedsqft" placeholder="min sqft" /></td>
-						</tr>
+						<label for="idx-q-ImprovedSqFtMin">Size</label>
+						<input id="idx-q-ImprovedSqFtMin" name="idx-q-ImprovedSqFtMin" type="text" class="dsidx-improvedsqft" placeholder="min sqft" />
 HTML;
 					break;
 				}
 			}
 		}
 		echo <<<HTML
-					<tr>
-						<th><label for="idx-q-BedsMin">Beds</label></th>
-						<td><input id="idx-q-BedsMin" name="idx-q-BedsMin" type="text" class="dsidx-beds" placeholder="min bedrooms" /></td>
-					</tr>
-					<tr>
-						<th><label for="idx-q-BathsMin">Baths</label></th>
-						<td><input id="idx-q-BathsMin" name="idx-q-BathsMin" type="text" class="dsidx-baths" placeholder="min bathrooms" /></td>
-					</tr>
-				</table>
+				<label for="idx-q-BedsMin">Beds</label>
+				<input id="idx-q-BedsMin" name="idx-q-BedsMin" type="text" class="dsidx-beds" placeholder="min bedrooms" />
+				<label for="idx-q-BathsMin">Baths</label>
+				<input id="idx-q-BathsMin" name="idx-q-BathsMin" type="text" class="dsidx-baths" placeholder="min bathrooms" />
 				<div class="dsidx-search-button search-form">
 					<input type="submit" class="submit" value="Search for properties" />
 HTML;

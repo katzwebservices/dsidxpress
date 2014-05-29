@@ -244,7 +244,7 @@ class dsSearchAgent_Client {
 
 			$key = str_replace(array("-", "<", ">"), array(".", "[", "]"), substr($key, 4));
 			$key = self::$QueryStringTranslations[substr($key, 0, 1)] . substr($key, strpos($key, "."));
-			$value = str_replace("_", "-", str_replace("-", " ", $value));
+			$value = str_replace('-', ' ', $value);
 			$value = str_replace(";amp;", "&", $value);
 			$apiParams[(string)$key] = $value;
 		}

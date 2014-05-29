@@ -1045,7 +1045,7 @@ if (isset($diagnostics["error"])) {
 						usort($options["SitemapLocations"], array("dsSearchAgent_Admin", "CompareListObjects"));
 
 						foreach ($options["SitemapLocations"] as $key => $value) {
-							$location_sanitized = urlencode(strtolower(str_replace(array("-", " "), array("_", "-"), $value["value"])));
+							$location_sanitized = urlencode(strtolower(str_replace(' ', '-', $value['value'])));
 					?>
 								<li class="ui-state-default dsidxpress-SitemapLocation">
 									<div class="action"><input type="button" value="Remove" class="button" onclick="dsIDXpressOptions.RemoveSitemapLocation(this)" /></div>
@@ -1503,7 +1503,7 @@ if (isset($diagnostics["error"])) {
 
 		$property_types_html = "";
 		$property_types = dsSearchAgent_ApiRequest::FetchData('AccountSearchSetupPropertyTypes', array(), false, 60 * 60 * 24);
-		if(!empty($property_types)){
+		if(!empty($property_types) && is_array($property_types)){
 		    $property_types = json_decode($property_types["body"]);
 		    foreach ($property_types as $property_type) {
 		        $checked_html = '';

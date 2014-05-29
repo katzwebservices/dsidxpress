@@ -37,8 +37,10 @@ $locations = json_decode($apiHttpResponse["body"]);
 <body>
 	<h2>Possible <?php echo ucwords($_REQUEST["type"]); ?> Locations</h2>
 <?php
-foreach ($locations as $location) {
-	?><div><?php echo $location->Name; ?></div><?php
+if(is_array($locations)){
+	foreach ($locations as $location) {
+		?><div><?php echo $location->Name; ?></div><?php
+	}
 }
 ?>
 	</body>

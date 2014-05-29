@@ -40,7 +40,7 @@ class dsSearchAgent_ListAreasWidget extends WP_Widget {
 			}
 
 			if (preg_match('/^[\w\d\s\-_]+$/', $actualArea)) {
-				$encodedArea = urlencode(strtolower(str_replace(array("-", " "), array("_", "-"), $actualArea)));
+				$encodedArea = urlencode(strtolower(str_replace(' ', '-', $actualArea)));
 				$fullAreaUrl = $urlBase . $areaType .'/'. $encodedArea . '/';
 			} else if ($areaType == "city") {
 				$fullAreaUrl = $urlBase . "?idx-q-Cities=" . urlencode($actualArea);

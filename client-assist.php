@@ -100,17 +100,29 @@ class dsSearchAgent_ClientAssist {
 		$referring_url = @$_SERVER['HTTP_REFERER'];
 		$post_vars = $_POST;
 		$post_vars["referringURL"] = $referring_url;
-		
+
 		//Fix up post vars for Beast ContactForm API
 		if (isset($post_vars['name']) && !isset($post_vars['firstName'])) {
+			if(empty($post_vars['name']) || !is_email($post_vars['emailAddress'])){
+				header('Content-type: application/json');
+				echo '{ "Error": true, "Message": "Failed to submit." }';
+				die();
+	        }
 			$name = $post_vars['name'];
 			$name_split = preg_split('/[\s]+/', $post_vars['name'], 2, PREG_SPLIT_NO_EMPTY);
 			$post_vars['firstName'] = count($name_split) > 0 ? $name_split[0] : '';
 			$post_vars['lastName'] = count($name_split) > 1 ? $name_split[1] : '';
 		}
+		if (isset($post_vars['firstName']) && !isset($post_vars['name'])) {
+			if(empty($post_vars['firstName']) || empty($post_vars['lastName']) || !is_email($post_vars['emailAddress'])){
+				header('Content-type: application/json');
+				echo '{ "Error": true, "Message": "Failed to submit." }';
+				die();
+	        }
+	    }
 		if (!isset($post_vars['phoneNumber'])) $post_vars['phoneNumber'] = '';
 		
-		$message = (!empty($post_vars['scheduleYesNo']) && $post_vars['scheduleYesNo'] == 'on' ? "Schedule showing on {$post_vars['scheduleDateDay']} / {$post_vars['scheduleDateMonth']} " : "Request info ") . 
+		$message = (!empty($post_vars['scheduleYesNo']) && $post_vars['scheduleYesNo'] == 'on' ? "Schedule showing on {$post_vars['scheduleDateMonth']} / {$post_vars['scheduleDateDay']} " : "Request info ") . 
 						@"for ".(!empty($post_vars['propertyStreetAddress']) ? $post_vars['propertyStreetAddress']:"")." ".(!empty($post_vars['propertyCity']) ? $post_vars['propertyCity'] : "").", ".(!empty($post_vars['propertyState']) ? $post_vars['propertyState'] : "")." ".(!empty($post_vars['propertyZip']) ? $post_vars['propertyZip'] : "").
 						@". ".$post_vars['comments'];
 
