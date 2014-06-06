@@ -1045,7 +1045,7 @@ if (isset($diagnostics["error"])) {
 						usort($options["SitemapLocations"], array("dsSearchAgent_Admin", "CompareListObjects"));
 
 						foreach ($options["SitemapLocations"] as $key => $value) {
-							$location_sanitized = urlencode(strtolower(str_replace(' ', '-', $value['value'])));
+							$location_sanitized = urlencode(strtolower(str_replace(array("-", " "), array("_", "-"), $value["value"])));
 					?>
 								<li class="ui-state-default dsidxpress-SitemapLocation">
 									<div class="action"><input type="button" value="Remove" class="button" onclick="dsIDXpressOptions.RemoveSitemapLocation(this)" /></div>

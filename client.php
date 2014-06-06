@@ -147,6 +147,8 @@ class dsSearchAgent_Client {
 		remove_filter("the_content", "wpautop");
 		remove_filter("the_content", "prepend_attachment");
 
+		add_filter('get_edit_post_link', function($editLink, $postId, $context) { return; }, 10, 3);
+
 		// we handle our own redirects and canonicals
 		add_filter("wp_redirect", array("dsSearchAgent_Client", "CancelAllRedirects"));
 		add_filter("redirect_canonical", array("dsSearchAgent_Client", "CancelAllRedirects"));
@@ -244,7 +246,7 @@ class dsSearchAgent_Client {
 
 			$key = str_replace(array("-", "<", ">"), array(".", "[", "]"), substr($key, 4));
 			$key = self::$QueryStringTranslations[substr($key, 0, 1)] . substr($key, strpos($key, "."));
-			$value = str_replace('-', ' ', $value);
+			$value = str_replace("_", "-", str_replace("-", " ", $value));
 			$value = str_replace(";amp;", "&", $value);
 			$apiParams[(string)$key] = $value;
 		}
