@@ -147,7 +147,7 @@ class dsSearchAgent_Client {
 		remove_filter("the_content", "wpautop");
 		remove_filter("the_content", "prepend_attachment");
 
-		add_filter('get_edit_post_link', function($editLink, $postId, $context) { return; }, 10, 3);
+		add_filter('get_edit_post_link', array('dsSearchAgent_Client', 'RemoveEditLink'), 10, 3);
 
 		// we handle our own redirects and canonicals
 		add_filter("wp_redirect", array("dsSearchAgent_Client", "CancelAllRedirects"));
@@ -545,6 +545,9 @@ class dsSearchAgent_Client {
 		    <meta name="twitter:description" content="{$description}">
 		    <meta name="twitter:image" content="{$firstimage}0-medium.jpg">
 HTML;
+	}
+	static function RemoveEditLink($editLink, $postId, $context) {
+		return;
 	}
 }
 ?>

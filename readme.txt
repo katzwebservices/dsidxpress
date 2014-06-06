@@ -3,7 +3,7 @@ Contributors: Diverse Solutions
 Tags: mls, idx, rets, housing, real estate, idxpress, dsidxpress, diverse solutions, zillow
 Requires at least: 2.8
 Tested up to: 3.9
-Stable tag: 2.1.5
+Stable tag: 2.1.6
 
 This plugin allows WordPress to embed live real estate data from an MLS directly into a blog. You MUST have a dsIDXpress account to use this plugin.
 
@@ -18,7 +18,7 @@ With the [dsIDXpress plugin](http://www.dsidxpress.com), bloggers can embed **li
 * You must be an active member with a multiple listing service (MLS). This means that anyone other than real estate agents and brokers (and, in some MLS's, even agents are excluded) cannot use this plugin.
 * The executives at the MLS must be progressive enough to allow the data to be syndicated to your blog from our ([Diverse Solutions]) API.
 * Downloading and installing the dsIDXpress plugin is 100% free, but getting the data from your MLS is not. You can use the [free demo data](http://www.dsidxpress.com/tryit/) in the beginning and move on to [obtaining your MLS's data](http://www.dsidxpress.com/) after you've evaluated it.
-* Your web host must be running at least PHP 5.2. PHP 5.2 has been out for 3 years at this point, so if they aren't using PHP 5.2, they're quite a ways behind the times. This is almost never an issue nowadays.
+* Your web host must be running at least PHP 5.2. PHP 5.2 has been out since 2006, so if they aren't using PHP 5.2, they're quite a ways behind the times. This is almost never an issue nowadays.
 * You must be using at least WordPress 2.8. It will run faster on WordPress 2.9.1 and later.
 
 [dsIDXpress](http://www.dsidxpress.com/) contains many advanced features that enable bloggers to create "sticky content," visitors to find properties they like, and search engines to crawl the MLS data so that the listings show up with the blogger's domain in the search engines. It is intended to be a real estate agent's / broker's all-inclusive interface between the MLS they belong to and their WordPress site / blog. Following is a very high-level overview of the plugin's functionality.
@@ -45,6 +45,9 @@ If you'd like to **see the plugin in action**, you can check out our [dsIDXpress
 *Note: If you're searching for idx press, idxpress, ds idxpress, id xpress, or id express, this is the plugin you're probably looking for.*
 
 == Changelog ==
+
+= 2.1.6 =
+* PHP 5.2 compatibility fix
 
 = 2.1.5 =
 * Roll back underscore changes to locations in pretty-urls
