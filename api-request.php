@@ -21,6 +21,7 @@ class dsSearchAgent_ApiRequest {
 		$compressCache = function_exists('gzdeflate') && function_exists('gzinflate');
 
 		$params["query.SearchSetupID"] = $options["SearchSetupID"];
+		$params["requester.SearchSetupID"] = $options["SearchSetupID"];
 		$params["requester.AccountID"] = $options["AccountID"];
 		if(!isset($params["requester.ApplicationProfile"]))
 			$params["requester.ApplicationProfile"] = "WordPressIdxModule";

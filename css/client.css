@@ -30,7 +30,7 @@ p.dsidx-error
 }
 .dsidx-search-widget input[type=text], .dsidx-search-widget select {
 	display: inline-block;
-	width: 80%;
+	width: 80% !important;
 	padding: 5px;
 	margin: 3px 0;
 	-moz-box-sizing: border-box;
@@ -70,9 +70,9 @@ p.dsidx-error
 {
 	padding-top: 6px;
 	text-align:center;
-	width: 220px;
 	margin: 0 auto;
 	background: none;
+	clear: both;
 }
 .dsidx-search-widget .dsidx-search-button .submit
 {
