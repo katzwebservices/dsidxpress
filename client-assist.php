@@ -52,7 +52,7 @@ class dsSearchAgent_ClientAssist {
 		$uriSuffix = @$_GET['uriSuffix'];
 		$uriBase = @$_GET['uriBase'];
 
-		$slideshow_xml_url = dsSearchAgent_ApiRequest::MakePluginsUrlRelative(plugins_url() . '/dsidxpress/' . "client-assist.php?action=SlideshowXml&count=$count&uriSuffix=$uriSuffix&uriBase=$uriBase");
+		$slideshow_xml_url = dsSearchAgent_ApiRequest::MakePluginsUrlRelative(plugin_dir_url(__FILE__) . "client-assist.php?action=SlideshowXml&count=$count&uriSuffix=$uriSuffix&uriBase=$uriBase");
 		$param_xml = file_get_contents('assets/slideshowpro-generic-params.xml');
 
 		$param_xml = str_replace("{xmlFilePath}", htmlspecialchars($slideshow_xml_url), $param_xml);

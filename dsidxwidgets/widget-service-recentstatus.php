@@ -168,7 +168,7 @@ HTML;
 				<input id="{$zipFieldId}" name="{$zipFieldName}" value="{$zip}" class="widefat" type="text" />
 			</p>
             <p>
-				<label for="{$linkTitleFieldId}">Property Type</label>
+				<label for="{$linkTitleFieldId}">View More Link Title</label>
 				<input id="{$linkTitleFieldId}" name="{$linkTitleFieldName}" value="{$linkTitle}" class="widefat" type="text" />
 			</p>
             <p>

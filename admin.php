@@ -105,6 +105,10 @@ class dsSearchAgent_Admin {
 			wp_enqueue_script('dsidxpress_admin_utilities', DSIDXPRESS_PLUGIN_URL . 'js/admin-utilities.js', array(), DSIDXPRESS_PLUGIN_VERSION, true);
 			wp_enqueue_style('dsidxpress_admin_options_style', DSIDXPRESS_PLUGIN_URL . 'css/admin-options.css', array(), DSIDXPRESS_PLUGIN_VERSION);
 		}
+
+		if ($hook == 'post.php' && $_GET['action'] == 'edit') {
+			wp_enqueue_style('dsidxpress_admin_options_style', DSIDXPRESS_PLUGIN_URL . 'css/admin-options.css', array(), DSIDXPRESS_PLUGIN_VERSION);
+		}
 	}
 	static function LoadHeader() {
 		if (self::$HeaderLoaded)

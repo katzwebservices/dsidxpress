@@ -15,7 +15,7 @@ class dsidxpress_autocomplete {
 		
 		if ($needs_plugin_url) {
 			$home_url   = get_home_url();
-			$plugin_url = dsSearchAgent_ApiRequest::MakePluginsUrlRelative(plugins_url() . '/dsidxpress/');
+			$plugin_url = dsSearchAgent_ApiRequest::MakePluginsUrlRelative(plugin_dir_url(__FILE__));
 			
 			echo <<<HTML
 				<script type="text/javascript">

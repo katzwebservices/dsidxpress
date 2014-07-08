@@ -74,7 +74,7 @@ class dsSearchAgent_ListingsWidget extends WP_Widget {
 			$data = "<p class=\"dsidx-error\">We're sorry, but it seems that we're having some problems loading properties from our database. Please check back soon.</p>";
 		}
 
-		$data = str_replace('{$pluginUrlPath}', dsSearchAgent_ApiRequest::MakePluginsUrlRelative(plugins_url() . '/dsidxpress/'), $data);
+		$data = str_replace('{$pluginUrlPath}', dsSearchAgent_ApiRequest::MakePluginsUrlRelative(plugin_dir_url(__FILE__)), $data);
 
 		echo $data;
 		echo $after_widget;

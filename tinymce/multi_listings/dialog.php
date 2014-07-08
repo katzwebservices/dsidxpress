@@ -28,6 +28,12 @@ if (is_ssl()) {
 }
 $options = get_option(DSIDXPRESS_OPTION_NAME);
 
+$mls_rules = dsSearchAgent_ApiRequest::FetchData('MlsDisplayRules', array('SearchSetupID' => $options["SearchSetupID"]));
+if(isset($mls_rules['body'])){
+	$mls_rules = json_decode($mls_rules['body'], true);
+}
+$hideSold = isset($mls_rules['HideSoldPropertyFunctionality']);
+
 $propertyTypes = dsSearchAgent_ApiRequest::FetchData("AccountSearchSetupPropertyTypes", array(), false, 60 * 60 * 24);
 $propertyTypes = json_decode($propertyTypes["body"]);
 
@@ -57,6 +63,9 @@ if (!defined('ZPRESS_API')) {
 			font-family:Verdana,Arial;
 			font-size:10px;
 			line-height:15px;
+		}
+		body {
+			background: none;
 		}
 		p {
 			margin: 0 0 15px;
@@ -223,7 +232,11 @@ if (!defined('ZPRESS_API')) {
 								<?php if (defined('ZPRESS_API') || isset($options["dsIDXPressPackage"]) && $options["dsIDXPressPackage"] == "pro"): ?>
 								<tr>
 									<td><input type="checkbox" id="status-3" name="status-3" value="3" />Pending</td>
-									<td><input type="checkbox" id="status-4" name="status-4" value="4" />Sold</td>
+									<td>
+										<?php if(!$hideSold): ?>
+										<input type="checkbox" id="status-4" name="status-4" value="4" />Sold
+										<?php endif; ?>
+									</td>
 								</tr>
 								<?php endif ?>
 							</table>
