@@ -33,11 +33,12 @@ class dsSearchAgent_Client {
 			}
 		}
 	}
-	static function Activate($posts) {
+	static function Activate($posts, $params=array(), $idx_page_id=false) {
 		global $wp_query;
-
-		$get = self::GetUrlParams();
-
+		$get = $params;
+		if(empty($params)){
+			$get = self::GetUrlParams();
+		}
 		// for remote debugging
 		if (in_array($_SERVER["REMOTE_ADDR"], self::$DebugAllowedFrom)) {
 			if (isset($get["debug-wpquery"])) {
@@ -172,15 +173,16 @@ class dsSearchAgent_Client {
 		$wp_query->is_singular = 1;
 
 		if($action == "framed")
-			return self::FrameAction($action, $get);
+			return self::FrameAction($action, $get, $idx_page_id);
 		else
-			return self::ApiAction($action, $get);
+			return self::ApiAction($action, $get, $idx_page_id);
 	}
 
-	static function FrameAction($action, $get){
+	static function FrameAction($action, $get, $idx_page_id=false){
 		global $wp_query;
 		$options = get_option(DSIDXPRESS_OPTION_NAME);
-		$post_id = time();
+
+		$post_id = !$idx_page_id?time():$idx_page_id;
 
 		if ($options["AdvancedTemplate"])
 			wp_cache_set($post_id, array("_wp_page_template" => array($options["AdvancedTemplate"])), "post_meta");
@@ -208,18 +210,24 @@ class dsSearchAgent_Client {
 			"post_title"		=> $title,
 			"post_type"			=> "page"
 		);
-		wp_cache_set( $post_id, $post, 'posts');
+		if(!$idx_page_id){
+			wp_cache_set( $post_id, $post, 'posts');
+		}
 		$posts = array( $post );
 
 		return $posts;
 	}
 
-	static function GetUrlParams(){
+	static function GetUrlParams($get=array()){
 		// wordpress adds magic quotes for us automatically. this quoting behavior seems to be pretty old and well built in, and so we're going to
 		// forcefully strip them out. see http://core.trac.wordpress.org/browser/trunk/wp-includes/load.php?rev=12732#L346 for an example of how long
 		// this has existed for
-		$get = stripslashes_deep($_GET);
-
+		if(empty($get)){
+			$get = stripslashes_deep($_GET);
+		}
+		else{
+			$get = stripslashes_deep($get);
+		}
 		// we're going to make our own _corrected_ array for the superglobal $_GET due to bugs in the "preferred" way to host WP on windows w/ IIS 6.
 		// the reason for this is because the URL that handles the request becomes wp-404-handler.php and _SERVER["QUERY_STRING"] subsequently ends up
 		// being in the format of 404;http://<domain>:<port>/<url>?<query-arg-1>&<query-arg-2>. the result of that problem is that the first query arg
@@ -263,11 +271,11 @@ class dsSearchAgent_Client {
 		}
 		return $apiParams;
 	}
-	static function ApiAction($action, $get) {
+	static function ApiAction($action, $get, $idx_page_id=null) {
 		global $wp_query;
-
 		$options = get_option(DSIDXPRESS_OPTION_NAME);
-		$post_id = time();
+		
+		$post_id = !$idx_page_id?time():$idx_page_id;
 
 		wp_enqueue_script("jquery-ui-dialog", false, array(), false, true);
 		
@@ -397,12 +405,15 @@ class dsSearchAgent_Client {
 		self::$meta_tag_data = array('firstimage' => $firstimage, 'title' => $title, 'description' => $description);
 		self::$CanonicalUri = self::ExtractValueFromApiData($apiData, "canonical");
 		self::$TriggeredAlternateUrlStructure = self::ExtractValueFromApiData($apiData, "alternate-urls");
-		if ($apiHttpResponse["response"]["code"] != "404")
-			self::EnsureBaseUri();
-
+		if (!isset($wp_query->query['ds-idx-listings-page'])){
+			if ($apiHttpResponse["response"]["code"] != "404"){
+				self::EnsureBaseUri();
+			}
+		}
+		
 		set_query_var("name", "dsidxpress-{$action}"); // at least a few themes require _something_ to be set here to display a good <title> tag
 		set_query_var("pagename", "dsidxpress-{$action}"); // setting pagename in case someone wants to do a custom theme file for this "page"
-		
+
 		$post = (object)array(
 			"ID"				=> $post_id,
 			"comment_count"		=> 0,
@@ -419,24 +430,27 @@ class dsSearchAgent_Client {
 			"post_title"		=> $title,
 			"post_type"			=> "page"
 		);
-		wp_cache_set( $post_id, $post, 'posts');
+		if(!$idx_page_id){
+			wp_cache_set( $post_id, $post, 'posts');
+		}
 		$posts = array( $post );
 
 		// track the detail & result views, do this at the end in case something errors or w/e
 		$views = intval(@$_COOKIE["dsidx-visitor-$action-views"]);
 		setcookie("dsidx-visitor-$action-views", $views + 1, time()+60*60*24*30, '/');
-		
-		if (isset($seo_keywords) || isset($seo_description) || isset($seo_title)) {
-			$dsidxpress_seo = new dsidxpress_seo($seo_title, $seo_description, $seo_keywords);
-			add_action('wp_head', array($dsidxpress_seo, 'dsidxpress_head_action'));
+
+		$dsidxpress_seo = new dsidxpress_seo($seo_title, $seo_description, $seo_keywords);
+		if (!$idx_page_id && isset($seo_title)) {
 			add_filter('wp_title', array($dsidxpress_seo, 'dsidxpress_title_filter'));
+		}
+		if (isset($seo_keywords) || isset($seo_description)) {	
+			add_action('wp_head', array($dsidxpress_seo, 'dsidxpress_head_action'));
 		}
 		
  		add_action('wp_head', array( "dsSearchAgent_Client", 'SocialMetaTags'));
 		
  		 if ($action == "search")
  		 	dsidx_footer::ensure_disclaimer_exists("search");
-
 		return $posts;
 	}
 	static function Return404($header) { 
@@ -481,14 +495,12 @@ class dsSearchAgent_Client {
 					$redirect .= "&";
 				$redirect .= urlencode($sortColumnKey) . "=" . urlencode($sortColumn) . "&" . urlencode($sortDirectionKey) . "=" . urlencode($sortDirection);
 			}
-
 			header("Location: $redirect", true, 301);
 			exit();
 		}
 	}
 	static function GetBasePath(){
 		$urlSlug = empty(self::$TriggeredAlternateUrlStructure) ? "idx/" : "";
-
 		$blogUrlWithoutProtocol = str_replace("http://", "", get_home_url());
 		$blogUrlDirIndex = strpos($blogUrlWithoutProtocol, "/");
 		$blogUrlDir = "";

@@ -101,12 +101,12 @@ class dsSearchAgent_Admin {
 			wp_enqueue_script('dsidxpress_admin_filters', DSIDXPRESS_PLUGIN_URL . 'js/admin-filters.js', array(), DSIDXPRESS_PLUGIN_VERSION);		
 		}
 
-		if ($hook == 'nav-menus.php') {
+		if ($hook == 'nav-menus.php' || $hook == 'post.php' || $hook == 'post-new.php') {
 			wp_enqueue_script('dsidxpress_admin_utilities', DSIDXPRESS_PLUGIN_URL . 'js/admin-utilities.js', array(), DSIDXPRESS_PLUGIN_VERSION, true);
 			wp_enqueue_style('dsidxpress_admin_options_style', DSIDXPRESS_PLUGIN_URL . 'css/admin-options.css', array(), DSIDXPRESS_PLUGIN_VERSION);
 		}
 
-		if ($hook == 'post.php' && $_GET['action'] == 'edit') {
+		if (($hook == 'post.php' && $_GET['action'] == 'edit') || $hook == 'post-new.php' && $_GET['post_type'] == 'ds-idx-listings-page') {
 			wp_enqueue_style('dsidxpress_admin_options_style', DSIDXPRESS_PLUGIN_URL . 'css/admin-options.css', array(), DSIDXPRESS_PLUGIN_VERSION);
 		}
 	}
@@ -1499,11 +1499,14 @@ if (isset($diagnostics["error"])) {
 		dsSearchAgent_Admin::LinkBuilderHtml(false, $_nav_menu_placeholder, $nav_menu_selected_id);
 	}
 		
-	public static function LinkBuilderHtml($in_post_dialog = false, $_nav_menu_placeholder = -1, $nav_menu_selected_id = 1) {
+	public static function LinkBuilderHtml($in_post_dialog = false, $_nav_menu_placeholder = -1, $nav_menu_selected_id = 1, $in_idx_page_options=false, $preset_url='') {
 		$label_class = (!$in_post_dialog) ? ' input-with-default-title' : '';
 		$label_value = ($in_post_dialog && isset($_GET['selected_text'])) ? ' value="'.esc_attr(strip_tags($_GET['selected_text'])).'"' : '';
 		$url_value   = ($in_post_dialog && isset($_GET['selected_url'])) ? htmlspecialchars($_GET['selected_url']) : 'http://';
 		$link_mode   = (isset($_GET['idxlinkmode'])) ? $_GET['idxlinkmode'] : '';
+		if(!empty($preset_url)){
+			$url_value = $preset_url;
+		}
 
 		$property_types_html = "";
 		$property_types = dsSearchAgent_ApiRequest::FetchData('AccountSearchSetupPropertyTypes', array(), false, 60 * 60 * 24);
@@ -1525,12 +1528,14 @@ HTML;
 	    <input type="hidden" id="linkBuilderPropertyTypes" value="<?php echo $property_types_html ?>" />
 		<input type="hidden" value="custom" name="menu-item[<?php echo $_nav_menu_placeholder; ?>][menu-item-type]" />
 		<input type="hidden" value="<?php esc_attr_e($link_mode) ?>" id="dsidx-linkbuilder-mode" ?>
+		<?php if(!$in_idx_page_options): ?>
 		<p class="dsidxpress-item-wrap">
 			<label class="howto" for="dsidxpress-menu-item-label">
 				<span><?php _e('Label'); ?></span>
 				<input id="dsidxpress-menu-item-label" name="menu-item-label" type="text" class="regular-text menu-item-textbox<?php echo $label_class ?>" title="<?php esc_attr_e('Menu Item'); ?>"<?php echo $label_value ?> />
 			</label>
 		</p>
+		<?php endif; ?>
 		<p class="dsidxpress-item-wrap">
 			<label class="howto" for="dsidxpress-filter-menu">
 				<span><?php _e('Add Filter'); ?></span>
@@ -1557,20 +1562,30 @@ HTML;
 			<ul id="dsidxpress-filter-list"></ul>
 		</div>
 
+		<?php if(!$in_idx_page_options): ?>	
 		<p class="dsidxpress-item-wrap">
 			<label class="howto dsidxpress-checkbox">
 				<input id="dsidxpress-show-url" type="checkbox" />
 				<span><?php _e('Display Generated URL'); ?></span>
 			</label>
 		</p>
+		<?php endif; ?>
 		
+		<?php
+		$inputName = 'menu-item['.$_nav_menu_placeholder.'][menu-item-url]';
+		
+		if($in_idx_page_options):
+			$inputName = 'dsidxpress-assembled-url';
+		endif; ?>
+
 		<p id="dsidxpress-assembled-url-wrap" class="dsidxpress-item-wrap hidden">
 			<label class="howto" for="dsidxpress-assembled-url">
 				<span><?php _e('URL'); ?></span>
-				<textarea id="dsidxpress-assembled-url" name="menu-item[<?php echo $_nav_menu_placeholder; ?>][menu-item-url]" type="text" rows="4" class="code menu-item-textbox"><?php echo $url_value; ?></textarea>
+				<textarea id="dsidxpress-assembled-url" name="<?php echo $inputName; ?>" type="text" rows="4" class="code menu-item-textbox"><?php echo $url_value; ?></textarea>
 			</label>
 		</p>
-			
+		
+		<?php if(!$in_idx_page_options): ?>
 		<p class="button-controls">
 			<span class="add-to-menu">
 				<?php if (!$in_post_dialog): ?>
@@ -1582,6 +1597,7 @@ HTML;
 				<?php endif ?>
 			</span>
 		</p>
+		<?php endif; ?>
 	</div><!-- /#dsidxpress-link-builder -->
 	<?php
 	}

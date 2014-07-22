@@ -5,7 +5,7 @@ Plugin URI: http://www.dsidxpress.com/
 Description: This plugin allows WordPress to embed live real estate data from an MLS directly into a blog. You MUST have a dsIDXpress account to use this plugin.
 Author: Diverse Solutions
 Author URI: http://www.diversesolutions.com/
-Version: 2.1.8
+Version: 2.1.9
 */
 
 /*
@@ -71,6 +71,7 @@ require_once($require_prefix . "roles.php");
 require_once($require_prefix . "footer.php");
 require_once($require_prefix . "dsidxpress_seo.php");
 require_once($require_prefix . "autocomplete.php");
+require_once($require_prefix . "idx-listings-pages.php");
 
 if (is_admin()) {
 	// this is needed specifically for development as PHP seems to choke when 1) loading this in admin, 2) using windows, 3) using directory junctions

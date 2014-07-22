@@ -18,7 +18,10 @@ class dsSearchAgent_XmlSitemaps {
 		$urlBase .= dsSearchAgent_Rewrite::GetUrlSlug();
 
 		$sitemapUrls = array();
-
+		$idxPages     = get_pages(array('post_type' => 'ds-idx-listings-page', 'post_status'=>'publish'));
+		foreach ($idxPages as $page) {
+    		$sitemapUrls[] = array('location' => get_permalink($page->ID), 'frequency' => 'daily', 'priority' => 0.5);
+    	}
 		if (isset($options["SitemapLocations"]) && is_array($options["SitemapLocations"])) {
 			$location_index = 0;
 			usort($options["SitemapLocations"], array("dsSearchAgent_XmlSitemaps", "CompareListObjects"));
@@ -42,13 +45,8 @@ class dsSearchAgent_XmlSitemaps {
 					$sitemapUrls[] = array('location' => $url, 'frequency' => $options['SitemapFrequency'], 'priority' => floatval($value["priority"]));
 					
 				}
-			return $sitemapUrls;
-
-   		} else {
-
-   			return false;
    		}
-
+   		return empty($sitemapUrls)?false:$sitemapUrls;
 	}
 
 	static function GoogleXmlSitemap() {

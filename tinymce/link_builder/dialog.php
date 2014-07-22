@@ -40,7 +40,7 @@ HTML;
     }
 }
 $property_types_html = substr($property_types_html, 0, strlen($property_types_html)-1); 
-        
+$idxPagesUrl = get_admin_url().'edit.php?post_type=ds-idx-listings-page'     
 ?>
 
 <!DOCTYPE html>
@@ -54,6 +54,7 @@ $property_types_html = substr($property_types_html, 0, strlen($property_types_ht
 	<script src="js/dialog.js?ver=<?php echo urlencode(DSIDXPRESS_PLUGIN_VERSION) ?>"></script>
 	<link rel="stylesheet" type="text/css" href="<?php echo $adminUri ?>css/colors.css" />
 	<link rel="stylesheet" type="text/css" href="<?php echo $adminUri ?>../wp-includes/css/dashicons.min.css" />
+	<link rel="stylesheet" type="text/css" href="<?php echo $adminUri ?>../wp-includes/css/dashicons.min.css" />
 	<link rel="stylesheet" type="text/css" href="../../css/admin-options.css?ver=<?php echo urlencode(DSIDXPRESS_PLUGIN_VERSION) ?>" />
 	<link rel="stylesheet" type="text/css" href="<?php echo $adminUri ?>css/wp-admin.css" />
 	<link rel="stylesheet" type="text/css" href="css/link_builder.css?foo=bar" />
@@ -61,6 +62,20 @@ $property_types_html = substr($property_types_html, 0, strlen($property_types_ht
 
 <body class="wp-admin js admin-color-fresh">
 	<div id="wpbody">
+		<div class="postbox" id="ds-idx-dialog-notice">
+			<div class="inside">
+					<strong>NOTICE:</strong>
+					<p>
+						This tool is scheduled for removal. For future link insertion, please use the following steps:
+						<ol>
+						<li>Build your listings pages using the <a href="<?php echo $idxPagesUrl; ?>" target="_top">IDX Pages</a> section found in the left-hand navigation.</li>
+						<li>Select the "Insert/edit link" button <img src="<?php echo DSIDXPRESS_PLUGIN_URL; ?>images/hyperlink-icon.png" alt="" style="position:relative; top:4px; width:20px;" /> from the text editor tool.</li>
+						<li>Expand the "Or link to existing content" section and select from your available IDX Pages.</li>
+						</ol>
+					</p>
+					<a href="#" style="float:right;" onclick="$('#ds-idx-dialog-notice').remove(); return false;">close</a>
+			</div>
+		</div>
 		<div class="postbox">
 			<div class="inside">
                 <input type="hidden" id="linkBuilderPropertyTypes" value="<?php echo $property_types_html ?>" />
