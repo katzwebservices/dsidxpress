@@ -40,20 +40,29 @@ HTML;
     }
 }
 $property_types_html = substr($property_types_html, 0, strlen($property_types_html)-1); 
-$idxPagesUrl = get_admin_url().'edit.php?post_type=ds-idx-listings-page'     
+$idxPagesUrl = get_admin_url().'edit.php?post_type=ds-idx-listings-page';
+$pluginUrl = DSIDXPRESS_PLUGIN_URL;  
 ?>
 
 <!DOCTYPE html>
 <html>
 <head>
 	<title>dsIDXpress: Build Link</title>
+	<script type="text/javascript">
+		var dsIdxPluginUri = "<?php echo $pluginUrl; ?>";
+	</script>
 	<script src="<?php echo $localUri ?>/tinymce/tiny_mce_popup.js?ver=<?php echo urlencode($tinymce_version) ?>"></script>
 	<script src="<?php echo $localUri ?>/tinymce/utils/mctabs.js?ver=<?php echo urlencode($tinymce_version) ?>"></script>
 	<script src="<?php echo $localUri ?>jquery/jquery.js"></script>
+	<script src="<?php echo $localUri ?>jquery/ui/jquery.ui.core.min.js"></script>
+	<script src="<?php echo $localUri ?>jquery/ui/jquery.ui.widget.min.js"></script>
+	<script src="<?php echo $localUri ?>jquery/ui/jquery.ui.mouse.min.js"></script>
+	<script src="<?php echo $localUri ?>jquery/ui/jquery.ui.position.min.js"></script>
+	<script src="<?php echo $localUri ?>jquery/ui/jquery.ui.menu.min.js"></script>
+	<script src="<?php echo $localUri ?>jquery/ui/jquery.ui.autocomplete.min.js"></script>
+	<script type="text/javascript" src="//maps.googleapis.com/maps/api/js?sensor=false&libraries=drawing,geometry"></script>
 	<script src="../../js/admin-utilities.js?ver=<?php echo urlencode(DSIDXPRESS_PLUGIN_VERSION) ?>"></script> 
 	<script src="js/dialog.js?ver=<?php echo urlencode(DSIDXPRESS_PLUGIN_VERSION) ?>"></script>
-	<link rel="stylesheet" type="text/css" href="<?php echo $adminUri ?>css/colors.css" />
-	<link rel="stylesheet" type="text/css" href="<?php echo $adminUri ?>../wp-includes/css/dashicons.min.css" />
 	<link rel="stylesheet" type="text/css" href="<?php echo $adminUri ?>../wp-includes/css/dashicons.min.css" />
 	<link rel="stylesheet" type="text/css" href="../../css/admin-options.css?ver=<?php echo urlencode(DSIDXPRESS_PLUGIN_VERSION) ?>" />
 	<link rel="stylesheet" type="text/css" href="<?php echo $adminUri ?>css/wp-admin.css" />
@@ -73,7 +82,7 @@ $idxPagesUrl = get_admin_url().'edit.php?post_type=ds-idx-listings-page'
 						<li>Expand the "Or link to existing content" section and select from your available IDX Pages.</li>
 						</ol>
 					</p>
-					<a href="#" style="float:right;" onclick="$('#ds-idx-dialog-notice').remove(); return false;">close</a>
+					<a href="#" style="float:right;" onclick="jQuery('#ds-idx-dialog-notice').remove(); return false;">close</a>
 			</div>
 		</div>
 		<div class="postbox">

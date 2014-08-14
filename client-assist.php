@@ -380,6 +380,19 @@ class dsSearchAgent_ClientAssist {
 		echo $apiHttpResponse["body"];
 		die();
 	}
+
+	static function UpdateSavedSearchTitle(){
+				
+		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("UpdateSavedSearchTitle", $_POST, false, 0);
+
+		$response = json_decode($apiHttpResponse["body"]);
+				
+		header('Content-Type: application/json');
+		echo $apiHttpResponse["body"];
+		die();
+	}
+
+
 	static function ToggleSearchAlert(){
 				
 		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("ToggleSearchAlert", $_POST, false, 0);
@@ -432,12 +445,22 @@ class dsSearchAgent_ClientAssist {
 	}
 	static function LoadAreasByType(){
 		
-		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("LocationsByType", $_POST, false, 0);
-
-		$response = json_decode($apiHttpResponse["body"]);
-				
-		header('Content-Type: application/json');
-		echo $apiHttpResponse["body"];
+		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("LocationsByType", $_REQUEST, false, 0);
+		if(!isset($_REQUEST['dataField'])){
+			$response = json_decode($apiHttpResponse["body"]);
+			header('Content-Type: application/json');
+			echo $apiHttpResponse["body"];
+		}
+		else{
+			$response = json_decode($apiHttpResponse["body"], true);
+			$r = array();
+			foreach($response as $item){
+				if(isset($item[$_REQUEST['dataField']])){
+					$r[] = $item[$_REQUEST['dataField']];
+				}
+			}
+			echo json_encode($r);
+		}
 		die();
 	}
 	static function LoadSimilarListings() {

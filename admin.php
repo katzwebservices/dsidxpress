@@ -6,6 +6,7 @@ add_action("admin_menu", array("dsSearchAgent_Admin", "AddMenu"), 40);
 add_action("admin_notices", array("dsSearchAgent_Admin", "DisplayAdminNotices"));
 add_action("wp_ajax_dsidxpress-dismiss-notification", array("dsSearchAgent_Admin", "DismissNotification"));
 add_filter("manage_nav-menus_columns", array("dsSearchAgent_Admin", "CreateLinkBuilderMenuWidget"), 9);
+add_action("admin_print_scripts", array("dsSearchAgent_Admin", "SetPluginUri"));
 
 if (defined('ZPRESS_API') && ZPRESS_API != '') {
 	add_filter('nav_menu_items_zpress-page', array('dsSearchAgent_Admin', 'NavMenus'));
@@ -102,13 +103,24 @@ class dsSearchAgent_Admin {
 		}
 
 		if ($hook == 'nav-menus.php' || $hook == 'post.php' || $hook == 'post-new.php') {
+			wp_enqueue_script('dsidxpress_google_maps_geocode_api', '//maps.googleapis.com/maps/api/js?sensor=false&libraries=drawing,geometry');
 			wp_enqueue_script('dsidxpress_admin_utilities', DSIDXPRESS_PLUGIN_URL . 'js/admin-utilities.js', array(), DSIDXPRESS_PLUGIN_VERSION, true);
 			wp_enqueue_style('dsidxpress_admin_options_style', DSIDXPRESS_PLUGIN_URL . 'css/admin-options.css', array(), DSIDXPRESS_PLUGIN_VERSION);
+			wp_enqueue_script( 'jquery-ui-autocomplete', '', array( 'jquery-ui-widget', 'jquery-ui-position' ), '1.10.4' );
 		}
 
 		if (($hook == 'post.php' && $_GET['action'] == 'edit') || $hook == 'post-new.php' && $_GET['post_type'] == 'ds-idx-listings-page') {
 			wp_enqueue_style('dsidxpress_admin_options_style', DSIDXPRESS_PLUGIN_URL . 'css/admin-options.css', array(), DSIDXPRESS_PLUGIN_VERSION);
 		}
+	}
+
+	static function SetPluginUri(){
+		$pluginUrl = DSIDXPRESS_PLUGIN_URL;
+		echo <<<HTML
+			<script type="text/javascript">
+				var dsIdxPluginUri = "$pluginUrl";
+			</script>
+HTML;
 	}
 	static function LoadHeader() {
 		if (self::$HeaderLoaded)

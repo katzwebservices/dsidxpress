@@ -2,6 +2,7 @@
 add_action("pre_get_posts", array("dsSearchAgent_Client", "PreActivate"));
 add_filter("posts_request", array("dsSearchAgent_Client", "ClearQuery"));
 add_filter("the_posts", array("dsSearchAgent_Client", "Activate"));
+add_filter("comments_template", array("dsSearchAgent_Client", "CleanCommentsBlock"), 500);
 
 class dsSearchAgent_Client {
 	static $Options = null;
@@ -35,10 +36,16 @@ class dsSearchAgent_Client {
 	}
 	static function Activate($posts, $params=array(), $idx_page_id=false) {
 		global $wp_query;
-		$get = $params;
-		if(empty($params)){
-			$get = self::GetUrlParams();
+
+		$get = array_merge($params, self::GetUrlParams());
+		$prefix = '/?';
+		$pattern = '/page-[0-9]{1,3}/';
+		preg_match($pattern, $_SERVER['REQUEST_URI'], $matches);
+		if(isset($matches[0])){
+			$prefix = '/'.$matches[0].'?';
 		}
+		$wp_query->query['idx-result-params'] = $prefix . http_build_query($get);
+
 		// for remote debugging
 		if (in_array($_SERVER["REMOTE_ADDR"], self::$DebugAllowedFrom)) {
 			if (isset($get["debug-wpquery"])) {
@@ -238,7 +245,6 @@ class dsSearchAgent_Client {
 			$get[substr($getKeys[0], strpos($getKeys[0], "?") + 1)] = $get[$getKeys[0]];
 			unset($get[$getKeys[0]]);
 		}
-
 		return $get;
 	}
 
@@ -540,6 +546,13 @@ class dsSearchAgent_Client {
 		if (self::$CanonicalUri && !$thesis)
 			echo "<link rel=\"canonical\" href=\"" . self::GetPermalink() . "\" />\n";
 	}
+	public static function CleanCommentsBlock($path){
+        global $wp_query;
+        if (is_array($wp_query->query) && isset($wp_query->query["idx-action"])) {
+            return dirname(__FILE__) . '/comments-template.php';
+        }
+        return $path;
+    }
 	static function SocialMetaTags() {
 		$firstimage = self::$meta_tag_data['firstimage'];
 		$title = self::$meta_tag_data['title'];

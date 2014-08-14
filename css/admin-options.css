@@ -139,6 +139,21 @@
 	display: inline;
 	width: auto;
 }
+
+#dsidxpress-link-builder .filter-autocomplete{
+	clear:both;
+	padding-bottom:5px;
+	text-align:right;
+}
+
+#dsidxpress-link-builder .filter-autocomplete input, #dsidxpress-link-builder .filter-autocomplete label, {
+	display:inline;
+}
+
+#dsidxpress-link-builder .filter-autocomplete label:after{
+	display:inline;
+}
+
 #dsidxpress-filters-wrap span {
 	font-style: italic;
 	color: #666;
@@ -256,6 +271,12 @@
 	margin: 0 0 0.5em;
 }
 
+.dsidxpress-filter-editor .dsidxpress-editor-main select.narrow{
+	float:right;
+	width:auto !important;
+	margin: 0px !important;
+}
+
 #dsidxpress-editor-wrap .dsidxpress-filter-editor label
 {
 	min-height: 1px;
@@ -264,13 +285,22 @@
 #dsidxpress-editor-wrap .dsidxpress-filter-editor label.howto
 {
 	font-style: normal;
-	margin: 0 5px 0.5em;
+	margin: 0 0px 0.5em;
 }
 
 #dsidxpress-editor-wrap .dsidxpress-filter-editor label input
 {
 	float: right;
-	width: 65px;
+	width: 119px;
+}
+
+#dsidxpress-editor-wrap .dsidxpress-filter-editor label.radius-search input{
+	width:40%;
+	margin:8px 0px;
+}
+#dsidxpress-editor-wrap .dsidxpress-filter-editor label.radius-search input.button{
+	width:auto;
+	margin-left:3px;
 }
 
 #dsidxpress-editor-wrap .dsidxpress-filter-editor label span

@@ -20,9 +20,13 @@ class dsSearchAgent_ApiRequest {
 		$requestUri = self::$ApiEndPoint . $action;
 		$compressCache = function_exists('gzdeflate') && function_exists('gzinflate');
 
+		$params["SearchSetupID"] = $options["SearchSetupID"];
 		$params["query.SearchSetupID"] = $options["SearchSetupID"];
 		$params["requester.SearchSetupID"] = $options["SearchSetupID"];
 		$params["requester.AccountID"] = $options["AccountID"];
+		if(is_array($wp_query->query) && isset($wp_query->query['ds-idx-listings-page'])){
+			$params["requester.HideIdxUrlFilters"] = 'hide';
+		}
 		if(!isset($params["requester.ApplicationProfile"]))
 			$params["requester.ApplicationProfile"] = "WordPressIdxModule";
 		$params["requester.ApplicationVersion"] = $wp_version;

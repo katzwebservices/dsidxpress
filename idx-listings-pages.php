@@ -41,6 +41,8 @@ class dsIdxListingsPages {
                 'supports' => array('title'),
                 'public' => true,
                 'hierarchical' => true,
+                'taxonomies' => array(),
+                'capability_type'     => 'page',
                 'rewrite' => array('slug'=>'idx/listings', 'with_base'=>true)
                 )
         );
@@ -52,22 +54,22 @@ class dsIdxListingsPages {
             if(substr($parts[0], -1) == '/'){
                 return;
             }
-            $redirect = $parts[0].'/';
-            if(count($parts) > 1){
-                $redirect .= '?'.$parts[1];
+            if(count($parts) == 1){
+                $redirect = $parts[0].'/';
+                header("Location: $redirect", true, 301);
+                exit();
             }
-            header("Location: $redirect", true, 301);
-            exit();
+            return;
         }
     }
 
     public static function RewriteRules() {
 
             add_rewrite_tag('%ds-idx-listings-page%', '([^&]+)');
-            add_rewrite_rule("idx/listings/([^/]+)(?:/page\-(\\d+))?", 'index.php?ds-idx-listings-page=$matches[1]&idx-d-ResultPage=$matches[2]', 'top');
+            add_rewrite_rule('[Ii][Dd][Xx]/[Ll][Ii][Ss][Tt][Ii][Nn][Gg][Ss]/([^/]+)(?:/page\-(\\d+))?', 'index.php?ds-idx-listings-page=$matches[1]&idx-d-ResultPage=$matches[2]', 'top');
 
             $rules = get_option('rewrite_rules');
-            if (!isset($rules["idx/listings/([^/]+)(?:/page\-(\\d+))?"]))
+            if (!isset($rules["[Ii][Dd][Xx]/[Ll][Ii][Ss][Tt][Ii][Nn][Gg][Ss]/([^/]+)(?:/page\-(\\d+))?"]))
                     add_action('wp_loaded', array('dsIdxListingsPages', 'FlushRewriteRules'));
 
     }
@@ -89,16 +91,19 @@ class dsIdxListingsPages {
 
     public static function DisplayPage($posts) {
             global $wp_query;
+
             if (is_array($wp_query->query) && (isset($wp_query->query['ds-idx-listings-page']))) {
                 if(!isset($posts[0])){
                     return $posts;
                 }
                 $pageData = $posts[0];
                 $wp_query->query['idx-action'] = 'results';
+                $wp_query->is_page = 1;
+                $wp_query->is_singular = 1;
+                $wp_query->is_single = 0;
                 if(!isset($_GET)){
                     $_GET = array();
                 }
-
                 $linkUrl = get_post_meta($pageData->ID, 'dsidxpress-assembled-url', true);
                 $parts = parse_url($linkUrl);
                 parse_str($parts['query'], $filters);
@@ -106,13 +111,14 @@ class dsIdxListingsPages {
                 $newPosts[0]->post_name = $pageData->post_name;
                 $newPosts[0]->ID = $pageData->ID;
                 $newPosts[0]->post_title = $pageData->post_title;
-                $newPosts[0]->post_type = $pageData->post_type;
+                $newPosts[0]->post_type = 'page';
                 return $newPosts;
             }
             return $posts;
     }
 
-     public static function AddPostClass($class) {
+
+    public static function AddPostClass($class) {
             global $wp_query;
             if (get_query_var('post_type') == 'ds-idx-listings-page') {
                     $class[] = 'page';
