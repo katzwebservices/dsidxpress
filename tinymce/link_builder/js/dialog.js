@@ -1,4 +1,4 @@
-var dsidxLinkBuilder = (function() {
+var dsidxLinkBuilder = (function($) {
 	var nodeEditing;
 	var returnObj;
 	
@@ -21,6 +21,6 @@ var dsidxLinkBuilder = (function() {
 	};
 	
 	return returnObj;
-})();
+})(jQuery);
 
 tinyMCEPopup.onInit.add(dsidxLinkBuilder.init, dsidxLinkBuilder);

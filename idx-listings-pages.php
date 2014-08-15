@@ -64,13 +64,12 @@ class dsIdxListingsPages {
     }
 
     public static function RewriteRules() {
-
             add_rewrite_tag('%ds-idx-listings-page%', '([^&]+)');
             add_rewrite_rule('[Ii][Dd][Xx]/[Ll][Ii][Ss][Tt][Ii][Nn][Gg][Ss]/([^/]+)(?:/page\-(\\d+))?', 'index.php?ds-idx-listings-page=$matches[1]&idx-d-ResultPage=$matches[2]', 'top');
 
             $rules = get_option('rewrite_rules');
             if (!isset($rules["[Ii][Dd][Xx]/[Ll][Ii][Ss][Tt][Ii][Nn][Gg][Ss]/([^/]+)(?:/page\-(\\d+))?"]))
-                    add_action('wp_loaded', array('dsIdxListingsPages', 'FlushRewriteRules'));
+                add_action('wp_loaded', array('dsIdxListingsPages', 'FlushRewriteRules'));
 
     }
     
@@ -84,7 +83,6 @@ class dsIdxListingsPages {
 
             if (is_array($wp_query->query) && isset($wp_query->query['ds-idx-listings-page']) && current_user_can('manage_options') && is_admin_bar_showing()) {
                     global $wp_admin_bar;
-
                     $wp_admin_bar->remove_menu('edit');
             }
     }
@@ -93,6 +91,7 @@ class dsIdxListingsPages {
             global $wp_query;
 
             if (is_array($wp_query->query) && (isset($wp_query->query['ds-idx-listings-page']))) {
+                remove_filter("the_posts", array("dsSearchAgent_Client", "Activate"));
                 if(!isset($posts[0])){
                     return $posts;
                 }
@@ -131,7 +130,7 @@ class dsIdxListingsPages {
 
             // let thesis handle the canonical
             if (!$thesis)
-                    echo "<link rel=\"canonical\" href=\"" . get_permalink() . "\" />\n";
+                echo "<link rel=\"canonical\" href=\"" . get_permalink() . "\" />\n";
     }
 
     public static function addIdxOptions($post){
