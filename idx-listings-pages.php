@@ -38,7 +38,7 @@ class dsIdxListingsPages {
                 'show_ui' => true,
                 'menu_position' => 15,
                 'menu_icon' => 'dashicons-admin-home',
-                'supports' => array('title'),
+                'supports' => array('title', 'editor'),
                 'public' => true,
                 'hierarchical' => true,
                 'taxonomies' => array(),
@@ -96,6 +96,10 @@ class dsIdxListingsPages {
                     return $posts;
                 }
                 $pageData = $posts[0];
+                $pageContent = trim($pageData->post_content);
+                if(!empty($pageContent)){
+                    $pageContent = wpautop(wpautop($pageContent)).'<div class="dsidx-clear;"></div><hr class="dsidx-separator" />';
+                }
                 $wp_query->query['idx-action'] = 'results';
                 $wp_query->is_page = 1;
                 $wp_query->is_singular = 1;
@@ -107,6 +111,7 @@ class dsIdxListingsPages {
                 $parts = parse_url($linkUrl);
                 parse_str($parts['query'], $filters);
                 $newPosts = dsSearchAgent_Client::Activate($posts, $filters, $pageData->ID);
+                $newPosts[0]->post_content = $pageContent . $newPosts[0]->post_content;
                 $newPosts[0]->post_name = $pageData->post_name;
                 $newPosts[0]->ID = $pageData->ID;
                 $newPosts[0]->post_title = $pageData->post_title;

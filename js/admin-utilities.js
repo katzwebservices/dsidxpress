@@ -202,7 +202,7 @@
             this.resetMenu();
         },
         disableSubmitOnEnterKey: function (){
-            $(document).on('keypress', $('input', '#dsidxpress-link-builder'), function(e){
+            $(document).on('keypress', '#dsidxpress-link-builder input', function(e){
                 if ( e.which == 13 ) return false;
             });
         },
