@@ -101,7 +101,7 @@ HTML;
 HTML;
         if ($widgetType == '1') echo 'checked'; 
         echo <<<HTML
-            value="1"/> Vertical<br/>
+            value="1"/> Vertical - <i>Recommended for side columns</i><br/>
             <input type="radio" name="{$widgetTypeFieldName}"
 HTML;
         if ($widgetType == '2') echo 'checked'; 

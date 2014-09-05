@@ -1200,7 +1200,7 @@ if (isset($diagnostics["error"])) {
 					</tr>
 					<tr>
 						<th>
-							<label for="dsidxpress-ShowWalkScoreInDetailsCB">Show Walkscore In Results:</label>
+							<label for="dsidxpress-ShowWalkScoreInResultsCB">Show Walkscore In Results:</label>
 						</th>
 						<td>
 							<input type="checkbox" id="dsidxpress-ShowWalkScoreInResultsCB" size="50" <?php checked('true', strtolower($account_options->ShowWalkScoreInResults)); ?> onclick="dsIDXpressOptions.OptionCheckBoxClick(this);" /><br />

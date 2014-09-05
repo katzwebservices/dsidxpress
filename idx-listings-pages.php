@@ -38,7 +38,7 @@ class dsIdxListingsPages {
                 'show_ui' => true,
                 'menu_position' => 15,
                 'menu_icon' => 'dashicons-admin-home',
-                'supports' => array('title', 'editor'),
+                'supports' => array('title', 'editor', 'thumbnail'),
                 'public' => true,
                 'hierarchical' => true,
                 'taxonomies' => array(),
@@ -109,13 +109,16 @@ class dsIdxListingsPages {
                 }
                 $linkUrl = get_post_meta($pageData->ID, 'dsidxpress-assembled-url', true);
                 $parts = parse_url($linkUrl);
-                parse_str($parts['query'], $filters);
+                $filters = array();
+                if(isset($parts['query'])){
+                    parse_str($parts['query'], $filters);
+                }
                 $newPosts = dsSearchAgent_Client::Activate($posts, $filters, $pageData->ID);
                 $newPosts[0]->post_content = $pageContent . $newPosts[0]->post_content;
                 $newPosts[0]->post_name = $pageData->post_name;
                 $newPosts[0]->ID = $pageData->ID;
                 $newPosts[0]->post_title = $pageData->post_title;
-                $newPosts[0]->post_type = 'page';
+                $newPosts[0]->post_type = 'ds-idx-listings-page';
                 return $newPosts;
             }
             return $posts;

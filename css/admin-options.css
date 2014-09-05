@@ -331,17 +331,3 @@
 	clear: both;
 	visibility: hidden;
 }
-
-/* tinymce styles */
-.mce-panel {
-	max-height: 90%;
-	overflow: hidden;
-}
-.mce-panel .mce-reset {
-	height: 100%;
-	overflow: hidden;
-}
-.mce-panel .mce-reset .mce-container-body {
-	max-height: 90%;
-	overflow: auto;
-}

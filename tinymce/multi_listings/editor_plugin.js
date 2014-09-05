@@ -4,7 +4,7 @@ tinymce.create('tinymce.plugins.dsidxListings', {
 			ed.windowManager.open({
 				file : url + '/dialog.php',
 				width : 380,
-				height : 700,
+				height : 500,
 				inline : 1
 			}, {
 				plugin_url : url
