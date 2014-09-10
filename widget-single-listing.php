@@ -26,7 +26,16 @@ class dsSearchAgent_SingleListingWidget extends WP_Widget {
 		if (empty($apiHttpResponse['errors']) && $apiHttpResponse['response']['code'] == '200') {
 			$data = $apiHttpResponse['body'];
 		} else {
-			$data = '<p class="dsidx-error">We\'re sorry, but it seems that we\'re having some problems loading properties from our database. Please check back soon.</p>';
+			switch ($apiHttpResponse["response"]["code"]) {
+				case 403:
+					$data = '<p class="dsidx-error">'.DSIDXPRESS_INACTIVE_ACCOUNT_MESSAGE.'</p>';
+					break;
+				case 404:
+					$data = '<p class="dsidx-error">'.sprintf(DSIDXPRESS_INVALID_MLSID_MESSAGE, $instance["mls_number"]).'</p>';
+					break;
+				default:
+					$data = '<p class="dsidx-error">'.DSIDXPRESS_IDX_ERROR_MESSAGE.'</p>';
+			}
 		}
 		
 		echo $before_widget . $data . $after_widget;

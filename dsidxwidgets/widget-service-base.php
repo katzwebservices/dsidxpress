@@ -17,5 +17,31 @@ class dsWidgets_Service_Base {
         }
         return $random_string;
     }
+
+    static function getCapabilities() {
+        $capabilities = dsSearchAgent_ApiRequest::FetchData('MlsCapabilities');
+        if (isset($capabilities['response']['code'])) {
+            switch($capabilities['response']['code']){
+                case 200:
+                    return json_decode($capabilities['body']);
+                    break;
+                default:
+                    return $capabilities['response']['code'];
+            }   
+        } else {
+            return false;
+        }
+    }
+
+    static function getWidgetErrorMsg($before='', $after='') {
+        $capabilities = self::getCapabilities();
+        if(!$capabilities || $capabilities == 500){
+            return $before.'<p class="dsidx-error">'.DSIDXPRESS_IDX_ERROR_MESSAGE.'</p>'.$after;
+        }
+        if($capabilities == 403){
+            return $before.'<p class="dsidx-error">'.DSIDXPRESS_INACTIVE_ACCOUNT_MESSAGE.'</p>'.$after;
+        }
+        return false;
+    }
 }
 ?>

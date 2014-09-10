@@ -38,7 +38,7 @@ p.dsidx-error
 }
 .dsidx-search-widget input.dsidx-price
 {
-	width: 39%;
+	width: 39% !important;
 }
 .dsidx-search-widget #idx-q-PriceMax,
 .dsidx-search-widget input.dsidx-beds,

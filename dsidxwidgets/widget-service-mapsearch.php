@@ -15,14 +15,7 @@ class dsIDXWidgets_MapSearch extends WP_Widget {
 
         $this->widgetsCdn = dsWidgets_Service_Base::$widgets_cdn;
     }
-    function getCapabilities() {
-        $capabilities = dsSearchAgent_ApiRequest::FetchData('MlsCapabilities');
-        if (isset($capabilities['response']['code']) && $capabilities['response']['code'] == 200) {
-            return json_decode($capabilities['body']);
-        } else {
-            return false;
-        }
-    }
+    
     function widget($args, $instance) {
         if (!$this->instance) {
             $this->instance = true;
@@ -31,10 +24,21 @@ class dsIDXWidgets_MapSearch extends WP_Widget {
         else {
             return;
         }
-        $randString = dsWidgets_Service_Base::get_random_string('abcdefghijklmnopqrstuvwxyz1234567890', 5);
-		wp_enqueue_script('googlemaps3', 'http://maps.googleapis.com/maps/api/js?sensor=false', array('jquery'), false, true);
+
         extract($args);
         extract($instance);
+
+        $error_message = dsWidgets_Service_Base::getWidgetErrorMsg($before_widget, $after_widget);
+        if($error_message){
+            echo $error_message;
+            return;
+        }
+
+        $capabilities = dsWidgets_Service_Base::getCapabilities();
+
+        $randString = dsWidgets_Service_Base::get_random_string('abcdefghijklmnopqrstuvwxyz1234567890', 5);
+        wp_enqueue_script('googlemaps3', 'http://maps.googleapis.com/maps/api/js?sensor=false', array('jquery'), false, true);
+
         $options = get_option(DSIDXWIDGETS_OPTION_NAME);
         $state = htmlspecialchars($instance["state"]);
 		$city = str_replace(" \r\n ", ",", htmlspecialchars($instance["city"]));
@@ -42,7 +46,7 @@ class dsIDXWidgets_MapSearch extends WP_Widget {
 		$city = str_replace("\r\n ", ",", $city);
 		$city = str_replace("\r\n", ",", $city);
 
-        $capabilities = $this->getCapabilities();
+        
         if (empty($capabilities->MinPrice)) $instance['priceMin'] = '';
         if (empty($capabilities->MaxPrice)) $instance['priceMax'] = '';
         if (empty($capabilities->MinImprovedSqFt)) $instance['sqftMin'] = '';
@@ -289,7 +293,7 @@ HTML;
 
         $apiStub = dsWidgets_Service_Base::$widgets_admin_api_stub;
 
-        $capabilities = $this->getCapabilities();
+        $capabilities = dsWidgets_Service_Base::getCapabilities();
 
         echo <<<HTML
             <p>

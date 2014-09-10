@@ -13,6 +13,13 @@ class dsIDXWidgets_Slideshow extends WP_Widget {
     function widget($args, $instance) {
         extract($args);
         extract($instance);
+
+        $error_message = dsWidgets_Service_Base::getWidgetErrorMsg($before_widget . $before_title . $title . $after_title, $after_widget);
+        if($error_message){
+            echo $error_message;
+            return;
+        }
+
         $options = get_option(DSIDXWIDGETS_OPTION_NAME);
         $randString = dsWidgets_Service_Base::get_random_string('abcdefghijklmnopqrstuvwxyz1234567890', 5);
         $horzCount = htmlspecialchars($instance["horzCount"]);

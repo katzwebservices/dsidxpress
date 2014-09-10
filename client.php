@@ -297,11 +297,18 @@ class dsSearchAgent_Client {
 		
 		// pull account options
 		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("AccountOptions");
-		if (!empty($apiHttpResponse["errors"]) || $apiHttpResponse["response"]["code"] != "200")
-			wp_die("We're sorry, but we ran into a temporary problem while trying to load the account data. Please check back soon.", "Account data load error");
-		else
+		if (!empty($apiHttpResponse["errors"]) || $apiHttpResponse["response"]["code"] != "200"){
+			switch ($apiHttpResponse["response"]["code"]) {
+				case 403:
+					wp_die(
+						"We're sorry, but there’s nothing to display here; MLS data service is not activated for this account.");
+				break;
+				default:
+					wp_die("We're sorry, but we ran into a temporary problem while trying to load the account data. Please check back soon.", "Account data load error");
+			}
+		} else {
 			$account_options = json_decode($apiHttpResponse["body"]);	
-
+		}
 		if ($action == "results" || $action == "search") dsidxpress_autocomplete::AddScripts(false);
 
 		if ($action == "results") {

@@ -38,13 +38,16 @@ class dsSearchAgent_Shortcodes {
 		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("Details", $apiRequestParams, false);
 		dsidx_footer::ensure_disclaimer_exists();
 
+		if ($apiHttpResponse["response"]["code"] == "403") {
+			return '<p class="dsidx-error">'.DSIDXPRESS_INACTIVE_ACCOUNT_MESSAGE.'</p>';
+		}
 		if ($apiHttpResponse["response"]["code"] == "404") {
-			return "<p class=\"dsidx-error\">We're sorry, but we couldn't find MLS # {$atts[mlsnumber]} in our database. This property may be a new listing or possibly taken off the market. Please check back again.</p>";
+			return '<p class="dsidx-error">'.sprintf(DSIDXPRESS_INVALID_MLSID_MESSAGE, $atts[mlsnumber]).'</p>';
 		}
 		else if (empty($apiHttpResponse["errors"]) && $apiHttpResponse["response"]["code"] == "200") {
 			return $apiHttpResponse["body"];
 		} else {
-			return "<p class=\"dsidx-error\">We're sorry, but it seems that we're having some problems loading MLS # {$atts[mlsnumber]} from our database. Please check back soon.</p>";
+			return '<p class="dsidx-error">'.DSIDXPRESS_IDX_ERROR_MESSAGE.'</p>';
 		}
 	}
 	static function Listings($atts, $content = null, $code = "") {
@@ -129,7 +132,10 @@ class dsSearchAgent_Shortcodes {
 		if (empty($apiHttpResponse["errors"]) && $apiHttpResponse["response"]["code"] == "200") {
 			return $apiHttpResponse["body"];
 		} else {
-			return "<p class=\"dsidx-error\">We're sorry, but it seems that we're having some problems loading MLS data from our database. Please check back soon.</p>";
+			if ($apiHttpResponse["response"]["code"] == "403") {
+				return '<p class="dsidx-error">'.DSIDXPRESS_INACTIVE_ACCOUNT_MESSAGE.'</p>';
+			}
+			return '<p class="dsidx-error">'.DSIDXPRESS_IDX_ERROR_MESSAGE.'</p>';
 		}
 	}
 	

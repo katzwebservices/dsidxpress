@@ -281,6 +281,15 @@ class dsSearchAgent_ClientAssist {
 		echo $apiHttpResponse["body"];
 		die();
 	}
+	static function isOptIn(){
+		$post_vars = $_GET;
+		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("isOptIn", $post_vars, false, 0, null);
+		$response = json_decode($apiHttpResponse["body"]);
+
+		header('Content-Type: application/json');
+		echo $apiHttpResponse["body"];
+		die();	
+	}
 	static function SsoAuthenticated () {
 		$post_vars = $_GET;
 
@@ -338,8 +347,9 @@ class dsSearchAgent_ClientAssist {
 					//'Subject' => '',
 					'Zuid' => get_option('zuid'),
 					'ListingUrl' => @$post_vars['newVisitor.ListingUrl'],
-					'Uid' => md5(uniqid())
-
+					'Uid' => md5(uniqid()),
+					'optIn' => $post_vars['optIn'],
+					'isOptIn' => $post_vars['isOptIn']
 				)));
 			}
 			$post_vars["skipThirdParty"] = 'true';

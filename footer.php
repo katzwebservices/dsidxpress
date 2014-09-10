@@ -33,7 +33,7 @@ class dsidx_footer {
 			$apiParams["responseDirective.ViewName"] = self::$viewName;
 
 		$disclaimer = dsSearchAgent_ApiRequest::FetchData("Disclaimer", $apiParams);
-		if(isset($disclaimer['response']['code']) && $disclaimer['response']['code'] != '500'){
+		if(isset($disclaimer['response']['code']) && $disclaimer['response']['code'] == '500'){
 			echo $disclaimer["body"];
 		}
 	}
