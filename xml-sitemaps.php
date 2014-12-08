@@ -43,9 +43,16 @@ class dsSearchAgent_XmlSitemaps {
 					// zips will always match the regex
 
 					$sitemapUrls[] = array('location' => $url, 'frequency' => $options['SitemapFrequency'], 'priority' => floatval($value["priority"]));
-					
+
 				}
    		}
+
+   		/**
+   		 * Modify what URLs are displayed in the sitemap
+   		 * @param array $sitemapUrls Array of sitemap URLs to be displayed.
+   		 */
+   		$sitemapUrls = apply_filters( 'dsidxpress_xmlsitemaps_urls', $sitemapUrls );
+
    		return empty($sitemapUrls)?false:$sitemapUrls;
 	}
 
