@@ -32,7 +32,7 @@ class dsSearchAgent_ApiRequest {
 		$params["requester.ApplicationVersion"] = $wp_version;
 		$params["requester.PluginVersion"] = DSIDXPRESS_PLUGIN_VERSION;
 		$params["requester.RequesterUri"] = get_home_url();
-		
+
 		if(isset($_COOKIE['dsidx-visitor-public-id']))
 			$params["requester.VisitorPublicID"] = $_COOKIE['dsidx-visitor-public-id'];
 		if(isset($_COOKIE['dsidx-visitor-auth']))
@@ -46,6 +46,14 @@ class dsSearchAgent_ApiRequest {
 		}
 
 		ksort($params);
+
+		/**
+		 * Modify the request parameters
+		 * @param array $params The request parameters
+		 * @param string $action The current action
+		 */
+		$params = apply_filters( 'dsidxpress_apirequest_fetchdata_params', $params, $action );
+
 		$transientKey = "idx_" . sha1($action . "_" . http_build_query($params));
 
 		if ($cacheSecondsOverride !== 0 && (!isset($options['DisableCache']) || $options['DisableCache'] != 'true')) {
@@ -65,7 +73,7 @@ class dsSearchAgent_ApiRequest {
 		if(isset($_SERVER["HTTP_REFERER"]))
 			$params["requester.UrlReferrer"] = $_SERVER["HTTP_REFERER"];
 		$params["requester.UtcRequestDate"] = gmdate("c");
-		
+
 		ksort($params);
 		$stringToSign = "";
 		foreach ($params as $key => $value) {
@@ -79,7 +87,7 @@ class dsSearchAgent_ApiRequest {
 
 		if ($useGET !== null && $useGET) {
 			header('Location: ' . $requestUri . '?' . http_build_query($params));
-		} 
+		}
 		else
 		{
 			$response = (array)wp_remote_post($requestUri, array(
@@ -90,14 +98,24 @@ class dsSearchAgent_ApiRequest {
 			));
 
 			if (empty($response["errors"]) && substr($response["response"]["code"], 0, 1) != "5") {
+
 				$response["body"] = self::FilterData($response["body"]);
+
+				/**
+				 * Modify the response body
+				 * @param string|null $response['body'] The response HTML, if exists
+				 * @param array $params The request parameters
+				 * @param string $action The current action
+				 */
+				$response["body"] = apply_filters( 'dsidxpress_apirequest_fetchdata_response', $response['body'], $params, $action );
+
 				if ($response["body"]){
 					if ($cacheSecondsOverride !== 0 && (!isset($options['DisableCache']) || $options['DisableCache'] != 'true'))
 						set_transient($transientKey, $compressCache ? base64_encode(gzdeflate(serialize($response))) : $response, $cacheSecondsOverride === null ? self::$CacheSeconds : $cacheSecondsOverride);
 					else
 						delete_transient($transientKey);
 				}
-				
+
 				$response["body"] = self::ExtractAndEnqueueStyles($response["body"], $echoAssetsIfNotEnqueued);
 				$response["body"] = self::ExtractAndEnqueueScripts($response["body"], $echoAssetsIfNotEnqueued);
 			}
@@ -144,7 +162,7 @@ class dsSearchAgent_ApiRequest {
 	}
 	public static function MakePluginsUrlRelative($url){
 		preg_match('/http:\/\/[^\/]+((\/[^\/]+)*\/wp-content\/plugins\/dsidxpress\/.*)/i', $url, $matches);
-		
+
 		if (isset($matches[1]))
 			return $matches[1];
 		else
@@ -174,7 +192,7 @@ class dsSearchAgent_ApiRequest {
 		global $wp_scripts;
 
 		preg_match_all('/<script\s*src="(?P<src>[^"]+)"\s*data-handle="(?P<handle>[^"]+)"><\/script>/', $data, $scripts, PREG_SET_ORDER);
-		
+
 		foreach ($scripts as $script) {
 			$alreadyIncluded = (wp_script_is($script['handle'], 'done'));
 			if ($alreadyIncluded) {
