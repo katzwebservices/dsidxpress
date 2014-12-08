@@ -20,14 +20,14 @@ if(defined('ZPRESS_API') && ZPRESS_API != '') {
 }
 
 class dsSearchAgent_ClientAssist {
-    static public function call($method) 
-    { 
-        if(method_exists('dsSearchAgent_ClientAssist', $method)) { 
+    static public function call($method)
+    {
+        if(method_exists('dsSearchAgent_ClientAssist', $method)) {
 			call_user_func(array('dsSearchAgent_ClientAssist', $method));
-        }else{ 
+        }else{
         	die();
-        } 
-    } 
+        }
+    }
 
 	static function SlideshowXml() {
 		$uriSuffix = '';
@@ -61,7 +61,7 @@ class dsSearchAgent_ClientAssist {
 		header('Content-Type: text/xml');
 		echo($param_xml);
 	}
-	static function EmailFriendForm() {
+	static function EmailFriendForm( $die = true ) {
 		$referring_url = $_SERVER['HTTP_REFERER'];
 		$post_vars = $_POST;
 		$post_vars["referringURL"] = $referring_url;
@@ -69,32 +69,38 @@ class dsSearchAgent_ClientAssist {
 		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("EmailFriendForm", $post_vars, false, 0);
 
 		echo $apiHttpResponse["body"];
-		die();
+
+		if( $die ) {
+			die();
+		}
 	}
-	static function LoginRecovery(){
+	static function LoginRecovery( $die = true ) {
 		global $curent_site, $current_blog, $blog_id;
-		
+
 		$referring_url = $_SERVER['HTTP_REFERER'];
 		$post_vars = $_POST;
 		$post_vars["referringURL"] = $referring_url;
 		$post_vars["domain"] = $current_blog->domain;
 		$post_vars["path"] = $current_blog->path;
-		
+
 		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("LoginRecovery", $post_vars, false, 0);
-		
+
 		echo $apiHttpResponse["body"];
-		die();
+		if( $die ) {
+			die();
+		}
 	}
-	static function ResetPassword()
-	{
+	static function ResetPassword( $die = true ) {
 		$referring_url = $_SERVER['HTTP_REFERER'];
 		$post_vars = $_POST;
 		$post_vars["referringURL"] = $referring_url;
 
 		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("ResetPassword", $post_vars, false, 0);
-		
+
 		echo $apiHttpResponse["body"];
-		die();	
+		if( $die ) {
+			die();
+		}
 	}
 	static function ContactForm(){
 		$referring_url = @$_SERVER['HTTP_REFERER'];
@@ -121,8 +127,8 @@ class dsSearchAgent_ClientAssist {
 	        }
 	    }
 		if (!isset($post_vars['phoneNumber'])) $post_vars['phoneNumber'] = '';
-		
-		$message = (!empty($post_vars['scheduleYesNo']) && $post_vars['scheduleYesNo'] == 'on' ? "Schedule showing on {$post_vars['scheduleDateMonth']} / {$post_vars['scheduleDateDay']} " : "Request info ") . 
+
+		$message = (!empty($post_vars['scheduleYesNo']) && $post_vars['scheduleYesNo'] == 'on' ? "Schedule showing on {$post_vars['scheduleDateMonth']} / {$post_vars['scheduleDateDay']} " : "Request info ") .
 						@"for ".(!empty($post_vars['propertyStreetAddress']) ? $post_vars['propertyStreetAddress']:"")." ".(!empty($post_vars['propertyCity']) ? $post_vars['propertyCity'] : "").", ".(!empty($post_vars['propertyState']) ? $post_vars['propertyState'] : "")." ".(!empty($post_vars['propertyZip']) ? $post_vars['propertyZip'] : "").
 						@". ".$post_vars['comments'];
 
@@ -130,9 +136,9 @@ class dsSearchAgent_ClientAssist {
 			$z_akismet_values = array(
                 'author' => isset($post_vars['name']) ? $post_vars['name'] : $post_vars['firstName']." ".$post_vars['lastName'],
                 'email' => $post_vars['emailAddress'],
-                'website' => '', 
+                'website' => '',
                 'body' => $message,
-                'permalink' => '', 
+                'permalink' => '',
                 'comment_type' => 'ContactFormSubmission', //set for all contact requests
 	        );
 			$z_akismet = createAkismet(get_option('siteurl'), Z_AKISMET_API_KEY, $z_akismet_values);
@@ -163,8 +169,8 @@ class dsSearchAgent_ClientAssist {
 						if(!empty($post_vars['lastName'])) $lastname = $post_vars['lastName'];
 
 						// call sns to send the contact to Zillow.com
-						$sns = new AmazonSNS( defined(AWS_KEY) ? 
-							array('certificate_authority' => true, 'key' => AWS_KEY, 'secret' => AWS_SECRET_KEY) : 
+						$sns = new AmazonSNS( defined(AWS_KEY) ?
+							array('certificate_authority' => true, 'key' => AWS_KEY, 'secret' => AWS_SECRET_KEY) :
 							array('certificate_authority' => true));
 						$sns->publish(SNS_ARN_CONTACT_REQUEST, json_encode((object) array(
 							'ContactDate' => gmdate('Y-m-d\TH:i:s.uP'),
@@ -206,7 +212,7 @@ class dsSearchAgent_ClientAssist {
 		echo '{ "Error": false, "Message": "" }';
 		die();
 	}
-	static function PrintListing(){
+	static function PrintListing( $die = true ) {
 		if($_REQUEST["PropertyID"]) $apiParams["query.PropertyID"] = $_REQUEST["PropertyID"];
 		if($_REQUEST["MlsNumber"]) $apiParams["query.MlsNumber"] = $_REQUEST["MlsNumber"];
 		$apiParams["responseDirective.ViewNameSuffix"] = "print";
@@ -219,32 +225,38 @@ class dsSearchAgent_ClientAssist {
 
 		echo($apiHttpResponse["body"]);
 
-		die();
+		if( $die ) {
+			die();
+		}
 	}
-	static function OnBoard_GetAccessToken(){
+	static function OnBoard_GetAccessToken( $die = true ){
 		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("OnBoard_GetAccessToken");
 		echo $apiHttpResponse["body"];
-		die();
+		if( $die ) {
+			die();
+		}
 	}
-	static function Login(){
+	static function Login( $die = true ){
 		$post_vars = $_POST;
 
 		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("Login", $post_vars, false, 0);
 
 		$response = json_decode($apiHttpResponse["body"]);
-		
-		if($response->Success){			
+
+		if($response->Success){
 			$remember = !empty($_POST["remember"]) && $_POST["remember"] == "on" ? time()+60*60*24*30 : 0;
-			
+
 			setcookie('dsidx-visitor-public-id', $response->Visitor->PublicID, $remember, '/');
 			setcookie('dsidx-visitor-auth', $response->Visitor->Auth, $remember, '/');
 		}
 
 		header('Content-Type: application/json');
 		echo $apiHttpResponse["body"];
-		die();
+		if( $die ) {
+			die();
+		}
 	}
-	static function ValidateLogout() {
+	static function ValidateLogout( $die = true ) {
 		// Already logged out
 		if ($_COOKIE['dsidx-visitor-auth'] == '')
 		{
@@ -260,17 +272,21 @@ class dsSearchAgent_ClientAssist {
 		header('Content-Type: application/json');
 		echo $apiHttpResponse["body"];
 
-		die();
+		if( $die ) {
+			die();
+		}
 	}
-	static function Logout() {
+	static function Logout( $die = true ) {
 		$post_vars = $_GET;
 
 		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("Logout", $post_vars, false, 0);
 		echo $apiHttpResponse["body"];
 
-		die();
+		if( $die ) {
+			die();
+		}
 	}
-	static function GetVisitor() {
+	static function GetVisitor( $die = true ) {
 		$post_vars = $_POST;
 
 		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("GetVisitor", $post_vars, false, 0);
@@ -279,26 +295,30 @@ class dsSearchAgent_ClientAssist {
 
 		header('Content-Type: application/json');
 		echo $apiHttpResponse["body"];
-		die();
+		if( $die ) {
+			die();
+		}
 	}
-	static function isOptIn(){
+	static function isOptIn( $die = true ) {
 		$post_vars = $_GET;
 		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("isOptIn", $post_vars, false, 0, null);
 		$response = json_decode($apiHttpResponse["body"]);
 
 		header('Content-Type: application/json');
 		echo $apiHttpResponse["body"];
-		die();	
+		if( $die ) {
+			die();
+		}
 	}
 	static function SsoAuthenticated () {
 		$post_vars = $_GET;
 
 		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("SSOAuthenticated", $post_vars, false, 0, null);
 		$response = json_decode($apiHttpResponse["body"]);
-		
-		if($response->Success){			
+
+		if($response->Success){
 			$remember = !empty($_POST["remember"]) && $_POST["remember"] == "on" ? time()+60*60*24*30 : 0;
-			
+
 			setcookie('dsidx-visitor-public-id', $response->Visitor->PublicID, $remember, '/');
 			setcookie('dsidx-visitor-auth', $response->Visitor->Auth, $remember, '/');
 		} else {
@@ -314,16 +334,16 @@ class dsSearchAgent_ClientAssist {
 	}
 	static function SsoAuthenticate () {
 		$post_vars = $_GET;
-		
+
 		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("SSO", $post_vars, false, 0, null, true);
 	}
-	static function SsoSignout () {
+	static function SsoSignout ( $die = true ) {
 		$post_vars = $_GET;
 
 		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("SSOSignOut", $post_vars, false, 0, null, true);
 	}
-	static function Register(){
-		
+	static function Register( $die = true ) {
+
 		foreach($_POST as $key => $value) {
 			$post_vars[str_replace('newVisitor_', 'newVisitor.', $key)] = $_POST[$key];
 		}
@@ -334,8 +354,8 @@ class dsSearchAgent_ClientAssist {
 				$name_split = preg_split('/[\s]+/', $post_vars['name'], 2, PREG_SPLIT_NO_EMPTY);
 
 				// call sns to send the contact to Zillow.com
-				$sns = new AmazonSNS( defined(AWS_KEY) ? 
-						array('certificate_authority' => true, 'key' => AWS_KEY, 'secret' => AWS_SECRET_KEY) : 
+				$sns = new AmazonSNS( defined(AWS_KEY) ?
+						array('certificate_authority' => true, 'key' => AWS_KEY, 'secret' => AWS_SECRET_KEY) :
 						array('certificate_authority' => true));
 				$sns->publish(SNS_ARN_CONTACT_REQUEST, json_encode((object) array(
 					'ContactDate' => gmdate('Y-m-d\TH:i:s.uP'),
@@ -354,111 +374,131 @@ class dsSearchAgent_ClientAssist {
 			}
 			$post_vars["skipThirdParty"] = 'true';
 		}
-		
+
 		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("Register", $post_vars, false, 0);
 
 		$response = json_decode($apiHttpResponse["body"]);
-		
-		if($response->Success){			
+
+		if($response->Success){
 			$remember = @$_POST["remember"] == "on" ? time()+60*60*24*30 : 0;
-			
+
 			setcookie('dsidx-visitor-public-id', $response->Visitor->PublicID, $remember, '/');
 			setcookie('dsidx-visitor-auth', $response->Visitor->Auth, $remember, '/');
 		}
-		
+
 		header('Content-Type: application/json');
 		echo $apiHttpResponse["body"];
-		die();
+		if( $die ) {
+			die();
+		}
 	}
-	static function UpdatePersonalInfo(){
-		
+	static function UpdatePersonalInfo( $die = true ) {
+
 		foreach($_POST as $key => $value) {
 			$post_vars[str_replace('personalInfo_', 'personalInfo.', $key)] = $_POST[$key];
 		}
-		
+
 		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("UpdatePersonalInfo", $post_vars, false, 0);
 
 		$response = json_decode($apiHttpResponse["body"]);
-		
+
 		header('Content-Type: application/json');
 		echo $apiHttpResponse["body"];
-		die();
+
+		if( $die ) {
+			die();
+		}
 	}
-	static function Searches(){
-				
+	static function Searches( $die = true ) {
+
 		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("Searches", null, false, 0);
 
 		$response = json_decode($apiHttpResponse["body"]);
-				
+
 		header('Content-Type: application/json');
 		echo $apiHttpResponse["body"];
-		die();
+
+		if( $die ) {
+			die();
+		}
 	}
 
-	static function UpdateSavedSearchTitle(){
-				
+	static function UpdateSavedSearchTitle( $die = true ) {
+
 		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("UpdateSavedSearchTitle", $_POST, false, 0);
 
 		$response = json_decode($apiHttpResponse["body"]);
-				
+
 		header('Content-Type: application/json');
 		echo $apiHttpResponse["body"];
-		die();
+		if( $die ) {
+			die();
+		}
 	}
 
 
-	static function ToggleSearchAlert(){
-				
+	static function ToggleSearchAlert( $die = true ) {
+
 		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("ToggleSearchAlert", $_POST, false, 0);
 
 		$response = json_decode($apiHttpResponse["body"]);
-				
+
 		header('Content-Type: application/json');
 		echo $apiHttpResponse["body"];
-		die();
+		if( $die ) {
+			die();
+		}
 	}
-	static function DeleteSearch(){
-				
+	static function DeleteSearch( $die = true ) {
+
 		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("DeleteSearch", $_POST, false, 0);
 
 		$response = json_decode($apiHttpResponse["body"]);
-				
+
 		header('Content-Type: application/json');
 		echo $apiHttpResponse["body"];
-		die();
+		if( $die ) {
+			die();
+		}
 	}
-	static function FavoriteStatus(){
-				
+	static function FavoriteStatus( $die = true ) {
+
 		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("FavoriteStatus", $_POST, false, 0);
 
 		$response = json_decode($apiHttpResponse["body"]);
-				
+
 		header('Content-Type: application/json');
 		echo $apiHttpResponse["body"];
-		die();
+		if( $die ) {
+			die();
+		}
 	}
-	static function Favorite(){
-				
+	static function Favorite( $die = true ) {
+
 		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("Favorite", $_POST, false, 0);
 
 		$response = json_decode($apiHttpResponse["body"]);
-				
+
 		header('Content-Type: application/json');
 		echo $apiHttpResponse["body"];
-		die();
+		if( $die ) {
+			die();
+		}
 	}
-	static function VisitorListings(){
-				
+	static function VisitorListings( $die = true ) {
+
 		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("VisitorListings", $_POST, false, 0);
 
 		$response = json_decode($apiHttpResponse["body"]);
-				
+
 		header('Content-Type: text/html');
 		echo $apiHttpResponse["body"];
-		die();
+		if( $die ) {
+			die();
+		}
 	}
-	static function LoadAreasByType(){
-		
+	static function LoadAreasByType( $die = true ) {
+
 		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("LocationsByType", $_REQUEST, false, 0);
 		if(!isset($_REQUEST['dataField'])){
 			$response = json_decode($apiHttpResponse["body"]);
@@ -475,9 +515,11 @@ class dsSearchAgent_ClientAssist {
 			}
 			echo json_encode($r);
 		}
-		die();
+		if( $die ) {
+			die();
+		}
 	}
-	static function LoadSimilarListings() {
+	static function LoadSimilarListings( $die = true ) {
 		$apiParams = array();
 		$apiParams["query.SimilarToPropertyID"] = $_POST["PropertyID"];
 		$apiParams["query.ListingStatuses"] = '1';
@@ -490,9 +532,11 @@ class dsSearchAgent_ClientAssist {
 		$response = json_decode($apiHttpResponse["body"]);
 		header('Content-Type: text/html');
 		echo $apiHttpResponse["body"];
-		die();
+		if( $die ) {
+			die();
+		}
 	}
-	static function LoadSoldListings(){
+	static function LoadSoldListings( $die = true ) {
 		$apiParams = array();
 
 		$apiParams["query.SimilarToPropertyID"] = $_POST["PropertyID"];
@@ -505,9 +549,11 @@ class dsSearchAgent_ClientAssist {
 		$response = json_decode($apiHttpResponse["body"]);
 		header('Content-Type: text/html');
 		echo $apiHttpResponse["body"];
-		die();
+		if( $die ) {
+			die();
+		}
 	}
-	static function LoadSchools() {
+	static function LoadSchools( $die = true ) {
 		$apiParams = array();
 
 		$apiParams['responseDirective.ViewNameSuffix'] = 'Schools';
@@ -522,9 +568,11 @@ class dsSearchAgent_ClientAssist {
 		$response = json_decode($apiHttpResponse["body"]);
 		header('Content-Type: text/html');
 		echo $apiHttpResponse["body"];
-		die();
+		if( $die ) {
+			die();
+		}
 	}
-	static function LoadDistricts() {
+	static function LoadDistricts( $die = true ) {
 		$apiParams = array();
 
 		$apiParams['responseDirective.ViewNameSuffix'] = 'Districts';
@@ -538,27 +586,33 @@ class dsSearchAgent_ClientAssist {
 		$response = json_decode($apiHttpResponse["body"]);
 		header('Content-Type: text/html');
 		echo $apiHttpResponse["body"];
-		die();
+		if( $die ) {
+			die();
+		}
 	}
-	static function AutoComplete() {
+	static function AutoComplete( $die = true ) {
 		$apiParams = array();
-		
+
 		$apiParams['query.partialLocationTerm'] = $_GET['term'];
-		
+
 		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData('AutoCompleteOmniBox', $apiParams, false, 0);
-		
+
 		header('Content-Type: application/json');
 		echo $apiHttpResponse['body'];
-		die();
+		if( $die ) {
+			die();
+		}
 	}
-	static function GetPhotosXML() {
+	static function GetPhotosXML( $die = true ) {
 		$post_vars = array_map("stripcslashes", $_GET);
 		$apiRequestParams = array();
 		$apiRequestParams['propertyid'] = $post_vars['pid'];
 		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData('Photos', $apiRequestParams, false);
 		header('Content-type: text/xml');
 		echo $apiHttpResponse['body'];
-		die();
+		if( $die ) {
+			die();
+		}
 	}
 }
 if(!empty($_REQUEST['action']))
