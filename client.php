@@ -83,7 +83,7 @@ class dsSearchAgent_Client {
 		}
 
 		wp_enqueue_style('dsidxpress-unconditional', DSIDXPRESS_PLUGIN_URL . 'css/client.css');
-		
+
 		// the dsidxpress js that's on the CDN unfortunately looks to jquery to register a document.ready function. i dont like
 		// having to include this on every page, but we have to pick our battles carefully. hopefully we can fix this someday.
 		wp_enqueue_script('jquery');
@@ -140,7 +140,7 @@ class dsSearchAgent_Client {
 		    && empty($apiQueryOnlyParams["query.PropertySearchID"])
 		    && empty($apiQueryOnlyParams["query.RadiusDistance"])
 		) {
-			// we used to null out the $posts here, but we're going to try to just noindex instead, so we don't block a 
+			// we used to null out the $posts here, but we're going to try to just noindex instead, so we don't block a
 			// user from using the search intarface however they want.
 			add_action("wp_head", array("dsSearchAgent_Client", "NoIndex"));
 		} else if($options["SearchSetupID"] == "124") {
@@ -250,7 +250,7 @@ class dsSearchAgent_Client {
 
 	static function GetApiParams($get, $onlyQueryParams = false) {
 		global $wp_query;
-		
+
 		$apiParams = array();
 		foreach ($wp_query->query as $key => $value) {
 			if (strpos($key, "idx-q") === false && ((!$onlyQueryParams && strpos($key, "idx-d") === false) || $onlyQueryParams))
@@ -280,11 +280,11 @@ class dsSearchAgent_Client {
 	static function ApiAction($action, $get, $idx_page_id=null) {
 		global $wp_query;
 		$options = get_option(DSIDXPRESS_OPTION_NAME);
-		
+
 		$post_id = !$idx_page_id?time():$idx_page_id;
 
 		wp_enqueue_script("jquery-ui-dialog", false, array(), false, true);
-		
+
 		add_action("wp_head", array("dsSearchAgent_Client", "Header"));
 
 		// allow wordpress to consume the page template option the user choose in the dsIDXpress settings
@@ -294,7 +294,7 @@ class dsSearchAgent_Client {
 			wp_cache_set($post_id, array("_wp_page_template" => array($options["DetailsTemplate"])), "post_meta");
 
 		$apiParams = self::GetApiParams($get);
-		
+
 		// pull account options
 		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("AccountOptions");
 		if (!empty($apiHttpResponse["errors"]) || $apiHttpResponse["response"]["code"] != "200"){
@@ -307,7 +307,7 @@ class dsSearchAgent_Client {
 					wp_die("We're sorry, but we ran into a temporary problem while trying to load the account data. Please check back soon.", "Account data load error");
 			}
 		} else {
-			$account_options = json_decode($apiHttpResponse["body"]);	
+			$account_options = json_decode($apiHttpResponse["body"]);
 		}
 		if ($action == "results" || $action == "search") dsidxpress_autocomplete::AddScripts(false);
 
@@ -318,14 +318,14 @@ class dsSearchAgent_Client {
 				$apiParams["updates"] = $get["idx-save-updates"] == "on" ? "true" : "false";
 
 				$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData("SaveSearch", $apiParams, false, 0);
-				
-				$response = json_decode($apiHttpResponse["body"]);				
-				
+
+				$response = json_decode($apiHttpResponse["body"]);
+
 				header('Content-Type: application/json');
 				echo $apiHttpResponse["body"];
 				die();
 			}
-			
+
 			// check allowed searched before registration
 			$allow_results_view = 1;
 			if (!empty($account_options->AllowedSearchesBeforeRegistration) && isset($_COOKIE['dsidx-visitor-results-views'])) {
@@ -361,13 +361,13 @@ class dsSearchAgent_Client {
 			// echo $useJuiceBox;
 			$apiParams["requester.AllowVisitorDetailView"] = $allow_details_view;
 			$apiParams["responseDirective.UseJuiceBoxSlideShow"] = $useJuiceBox;
-			
+
 			// if we have an auth cookie then record a property visit
 			if(@$_COOKIE['dsidx-visitor-auth']) {
 				$visitParams = array( "mlsNumber" => $apiParams["query.MlsNumber"] );
 				$apiVisitResponse = dsSearchAgent_ApiRequest::FetchData("RecordVisit", $visitParams, false, 0);
 			}
-			
+
 			$screen_name = get_option('zillow_screen_name');
 			if (!empty($screen_name))
 				$apiParams["responseDirective.ZillowScreenName"] = $screen_name;
@@ -378,7 +378,7 @@ class dsSearchAgent_Client {
 
 		$apiHttpResponse = dsSearchAgent_ApiRequest::FetchData($wp_query->query["idx-action"], $apiParams, false);
 		$apiData = $apiHttpResponse["body"];
-		
+
 		$apiData = str_replace('{$contentDomId}', $post_id, $apiData);
 
 		if ($action == 'details' && defined('ZPRESS_API') && ZPRESS_API != '') {
@@ -394,7 +394,7 @@ class dsSearchAgent_Client {
 				exit();
 			}
 		}
-		
+
 		if ($apiHttpResponse["response"]["code"] == "404") {
 			$wp_query->set('is_404', true);
 			add_action('get_header', array("dsSearchAgent_Client", "Return404"));
@@ -423,7 +423,7 @@ class dsSearchAgent_Client {
 				self::EnsureBaseUri();
 			}
 		}
-		
+
 		set_query_var("name", "dsidxpress-{$action}"); // at least a few themes require _something_ to be set here to display a good <title> tag
 		set_query_var("pagename", "dsidxpress-{$action}"); // setting pagename in case someone wants to do a custom theme file for this "page"
 
@@ -443,6 +443,17 @@ class dsSearchAgent_Client {
 			"post_title"		=> $title,
 			"post_type"			=> "page"
 		);
+
+		/**
+		 * Modify the post object
+		 * @param object $post The post object being created
+		 * @param array  $apiParams The parameters sent to FetchData()
+		 * @param string $action The action being processed
+		 * @param  array $get The $_GET parameters for the request
+		 * @param int|null $idx_page_id If null, not using IDX Page. If int, the ID of the IDX Page being processed.
+		 */
+		$post = apply_filters( 'dsidxpress_client_apiaction_post', $post, $apiParams, $action, $get, $idx_page_id );
+
 		if(!$idx_page_id){
 			wp_cache_set( $post_id, $post, 'posts');
 		}
@@ -456,17 +467,17 @@ class dsSearchAgent_Client {
 		if (!$idx_page_id && isset($seo_title)) {
 			add_filter('wp_title', array($dsidxpress_seo, 'dsidxpress_title_filter'));
 		}
-		if (isset($seo_keywords) || isset($seo_description)) {	
+		if (isset($seo_keywords) || isset($seo_description)) {
 			add_action('wp_head', array($dsidxpress_seo, 'dsidxpress_head_action'));
 		}
-		
+
  		add_action('wp_head', array( "dsSearchAgent_Client", 'SocialMetaTags'));
-		
+
  		 if ($action == "search")
  		 	dsidx_footer::ensure_disclaimer_exists("search");
 		return $posts;
 	}
-	static function Return404($header) { 
+	static function Return404($header) {
 		return status_header(404);
 	}
 	static function ExtractValueFromApiData(&$apiData, $key) {
