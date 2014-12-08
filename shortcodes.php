@@ -39,16 +39,25 @@ class dsSearchAgent_Shortcodes {
 		dsidx_footer::ensure_disclaimer_exists();
 
 		if ($apiHttpResponse["response"]["code"] == "403") {
-			return '<p class="dsidx-error">'.DSIDXPRESS_INACTIVE_ACCOUNT_MESSAGE.'</p>';
+			$return = '<p class="dsidx-error">'.DSIDXPRESS_INACTIVE_ACCOUNT_MESSAGE.'</p>';
 		}
 		if ($apiHttpResponse["response"]["code"] == "404") {
-			return '<p class="dsidx-error">'.sprintf(DSIDXPRESS_INVALID_MLSID_MESSAGE, $atts[mlsnumber]).'</p>';
+			$return = '<p class="dsidx-error">'.sprintf(DSIDXPRESS_INVALID_MLSID_MESSAGE, $atts[mlsnumber]).'</p>';
 		}
 		else if (empty($apiHttpResponse["errors"]) && $apiHttpResponse["response"]["code"] == "200") {
-			return $apiHttpResponse["body"];
+			$return = $apiHttpResponse["body"];
 		} else {
-			return '<p class="dsidx-error">'.DSIDXPRESS_IDX_ERROR_MESSAGE.'</p>';
+			$return = '<p class="dsidx-error">'.DSIDXPRESS_IDX_ERROR_MESSAGE.'</p>';
 		}
+
+		/**
+		 * Modify the output of the shortcode
+		 * @param string $return HTML output of the shortcode
+		 * @param  array $apiRequestParams The array of parameters sent to dsSearchAgent_ApiRequest::FetchData()
+		 */
+		$return = apply_filters( 'dsidxpress_shortcode_listing', $return, $apiRequestParams );
+
+		return $return;
 	}
 	static function Listings($atts, $content = null, $code = "") {
 		$options = get_option(DSIDXPRESS_OPTION_NAME);
@@ -130,15 +139,26 @@ class dsSearchAgent_Shortcodes {
 		dsidx_footer::ensure_disclaimer_exists();
 
 		if (empty($apiHttpResponse["errors"]) && $apiHttpResponse["response"]["code"] == "200") {
-			return $apiHttpResponse["body"];
+
+			$return = $apiHttpResponse["body"];
+
 		} else {
 			if ($apiHttpResponse["response"]["code"] == "403") {
-				return '<p class="dsidx-error">'.DSIDXPRESS_INACTIVE_ACCOUNT_MESSAGE.'</p>';
+				$return = '<p class="dsidx-error">'.DSIDXPRESS_INACTIVE_ACCOUNT_MESSAGE.'</p>';
 			}
-			return '<p class="dsidx-error">'.DSIDXPRESS_IDX_ERROR_MESSAGE.'</p>';
+			$return = '<p class="dsidx-error">'.DSIDXPRESS_IDX_ERROR_MESSAGE.'</p>';
 		}
+
+		/**
+		 * Modify the output of the shortcode
+		 * @param string $return HTML output of the shortcode
+		 * @param  array $apiRequestParams The array of parameters sent to dsSearchAgent_ApiRequest::FetchData()
+		 */
+		$return = apply_filters( 'dsidxpress_shortcode_listings', $return, $apiRequestParams );
+
+		return $return;
 	}
-	
+
 	static function TranslateStatuses($ids) {
 		$values = '';
 		$ids = explode(',',$ids);
