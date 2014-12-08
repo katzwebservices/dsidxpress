@@ -119,6 +119,13 @@ class dsIdxListingsPages {
                 $newPosts[0]->ID = $pageData->ID;
                 $newPosts[0]->post_title = $pageData->post_title;
                 $newPosts[0]->post_type = 'ds-idx-listings-page';
+
+                /**
+                 * Allow modifying the post data before output
+                 * @param array $newPosts Array including the post content at index 0
+                 */
+                $newPosts = apply_filters( 'dsidx_listingspages_posts', $newPosts, $posts );
+
                 return $newPosts;
             }
             return $posts;
