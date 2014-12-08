@@ -36,9 +36,17 @@ define("DSIDXPRESS_MIN_VERSION_WORDPRESS", "2.8");
 define("DSIDXPRESS_PLUGIN_URL", plugins_url() . "/dsidxpress/");
 define("DSIDXPRESS_PLUGIN_VERSION", $pluginData["Version"]);
 
-define('DSIDXPRESS_INACTIVE_ACCOUNT_MESSAGE', 'We\'re sorry, but there’s nothing to display here; MLS data service is not activated for this account.');
-define('DSIDXPRESS_IDX_ERROR_MESSAGE', 'We\'re sorry, but it seems that we\'re having some problems loading properties from our database. Please check back soon.');
-define('DSIDXPRESS_INVALID_MLSID_MESSAGE', 'We\'re sorry, but we couldn\'t find MLS # %s in our database. This property may be a new listing or possibly taken off the market. Please check back again.');
+if( !defined('DSIDXPRESS_INACTIVE_ACCOUNT_MESSAGE') ) {
+	define('DSIDXPRESS_INACTIVE_ACCOUNT_MESSAGE', 'We\'re sorry, but there’s nothing to display here; MLS data service is not activated for this account.');
+}
+
+if( !defined('DSIDXPRESS_IDX_ERROR_MESSAGE') ) {
+	define('DSIDXPRESS_IDX_ERROR_MESSAGE', 'We\'re sorry, but it seems that we\'re having some problems loading properties from our database. Please check back soon.');
+}
+
+if( !defined('DSIDXPRESS_INVALID_MLSID_MESSAGE') ) {
+	define('DSIDXPRESS_INVALID_MLSID_MESSAGE', 'We\'re sorry, but we couldn\'t find MLS # %s in our database. This property may be a new listing or possibly taken off the market. Please check back again.');
+}
 
 if (version_compare(phpversion(), DSIDXPRESS_MIN_VERSION_PHP) == -1 || version_compare($wp_version, DSIDXPRESS_MIN_VERSION_WORDPRESS) == -1) {
 	add_action("admin_notices", "dsidxpress_DisplayVersionWarnings");
